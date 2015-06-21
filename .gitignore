@@ -1,0 +1,7 @@
+*.suo
+*.filters
+*.sdf
+*.opensdf
+/build/intermediate
+/build/output
+*.user
