@@ -1,12 +1,14 @@
+typedef unsigned char byte;
+typedef unsigned int uint32;
+typedef unsigned short uint16;
+
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <fstream>
 #include <assert.h>
 #include "Khronos\spirv.h"
-
-typedef unsigned char byte;
-typedef unsigned int uint32;
-typedef unsigned short uint16;
+#include "lookups.h"
 
 std::string USAGE = "-i <input file>";
 
@@ -45,15 +47,54 @@ bool p_expect(uint32 e) {
 }
 
 void p_readInstruction() {
+  uint32* opData = buffer;
   uint32 word = p_getAndEat();
-  uint16 op = (uint16)(word & spv::OpCodeMask);
+  spv::Op op = (spv::Op)(word & spv::OpCodeMask);
   uint16 wordCount = (uint16)(word >> spv::WordCountShift);
 
-  std::cout << "Op: " << op;
+  std::cout << OpStrings[(uint32)op];
+
+  WordType wordTypes[255];
+
+  if (sizeof(LUTOpWordTypes) / sizeof(void*) <= op) {
+    wordTypes[0] = WordType::TOp;
+    for (int i = 1; i < wordCount; i++) {
+      wordTypes[i] = WordType::TValue;
+    }
+  } else {
+    WordType* opWordTypes = (WordType*)LUTOpWordTypes[op];
+    uint32 opWordTypeCount = LUTOpWordTypesCount[op];
+
+    for (int i = 0; i < wordCount; i++) {
+      wordTypes[i] = opWordTypes[i > opWordTypeCount - 1 ? opWordTypeCount - 1 : i];
+    }
+  }
   
-  for (int i = 0; i < wordCount-1; i++) {
+
+  for (int i = 1; i < wordCount; i++) {
     word = p_getAndEat();
-    std::cout << " " << word;
+    if (wordTypes[i] == WordType::TValue) {
+      std::cout << " " << word;
+    }
+    else if (wordTypes[i] == WordType::TId) {
+      std::cout << " [" << word << "]";
+    }
+    else if (wordTypes[i] == WordType::TChar) {
+      if (wordTypes[i - 1] != WordType::TChar) {
+        std::cout << " ";
+      }
+
+      char* cbuff = (char*)&word;
+      for (int j = 0; j < 4; j++) {
+        std::cout << *cbuff;
+        cbuff++;
+      }
+    }
+    else {
+      std::string* lutPointer = *((std::string**)LUTPointers + (uint32)wordTypes[i]);
+      std::string name = lutPointer[word];
+      std::cout << " " << name;
+    }
   }
 
   std::cout << std::endl;
@@ -120,8 +161,14 @@ int main(int argc, const char** argv) {
   uint32 instructionSchema = p_getAndEat();
   std::cout << "Instruction Schema: " << instructionSchema << std::endl;
 
+  std::cout << "=================================================" << std::endl;
+
+  int instructionIndex = 0;
+
   while (!p_End()) {
+    std::cout << std::setw(3) << instructionIndex << ": ";
     p_readInstruction();
+    instructionIndex++;
   }
 
   getchar();

@@ -51,10 +51,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -76,6 +80,7 @@
   <ItemGroup>
     <ClInclude Include="Khronos\GLSL450Lib.h" />
     <ClInclude Include="Khronos\spirv.h" />
+    <ClInclude Include="lookups.h" />
   </ItemGroup>
   <ItemGroup>
     <Copy Include="data\sample.frag.spv">
