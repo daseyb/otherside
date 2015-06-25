@@ -59,7 +59,7 @@ void p_readInstruction() {
   if (sizeof(LUTOpWordTypes) / sizeof(void*) <= op) {
     wordTypes[0] = WordType::TOp;
     for (int i = 1; i < wordCount; i++) {
-      wordTypes[i] = WordType::TValue;
+      wordTypes[i] = WordType::TLiteralNumber;
     }
   } else {
     WordType* opWordTypes = (WordType*)LUTOpWordTypes[op];
@@ -73,14 +73,14 @@ void p_readInstruction() {
 
   for (int i = 1; i < wordCount; i++) {
     word = p_getAndEat();
-    if (wordTypes[i] == WordType::TValue) {
+    if (wordTypes[i] == WordType::TLiteralNumber) {
       std::cout << " " << word;
     }
     else if (wordTypes[i] == WordType::TId) {
       std::cout << " [" << word << "]";
     }
-    else if (wordTypes[i] == WordType::TChar) {
-      if (wordTypes[i - 1] != WordType::TChar) {
+    else if (wordTypes[i] == WordType::TLiteralString) {
+      if (wordTypes[i - 1] != WordType::TLiteralString) {
         std::cout << " ";
       }
 

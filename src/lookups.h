@@ -22,25 +22,31 @@ enum WordType {
   TFunctionParameterAttribute,
   TDecoration,
   TBuiltIn,
+  TSelectionControl,
   TSelectionControlShift,
   TSelectionControlMask,
+  TLoopControl,
   TLoopControlShift,
   TLoopControlMask,
+  TFunctionControl,
   TFunctionControlShift,
   TFunctionControlMask,
+  TMemorySemantics,
   TMemorySemanticsShift,
   TMemorySemanticsMask,
+  TMemoryAccess,
   TMemoryAccessShift,
   TMemoryAccessMask,
   TExecutionScope,
   TGroupOperation,
   TKernelEnqueueFlags,
+  TKernelProfilingInfo,
   TKernelProfilingInfoShift,
   TKernelProfilingInfoMask,
   TOp,
   TId,
-  TValue,
-  TChar
+  TLiteralNumber,
+  TLiteralString
 };
 
 static std::string SourceLanguageStrings[] {
@@ -284,6 +290,11 @@ static std::string BuiltInStrings[] {
   "SubgroupLocalInvocationId",
 };
 
+static std::string SelectionControlStrings[]{
+  "Flatten",
+  "DontFlatten",
+};
+
 static std::string SelectionControlShiftStrings[] {
   "FlattenShift",
   "DontFlattenShift",
@@ -295,6 +306,11 @@ static std::string SelectionControlMaskStrings[] {
   "DontFlattenMask",
 };
 
+static std::string LoopControlStrings[]{
+  "Unroll",
+  "DontUnroll",
+};
+
 static std::string LoopControlShiftStrings[] {
   "UnrollShift",
   "DontUnrollShift",
@@ -304,6 +320,13 @@ static std::string LoopControlMaskStrings[] {
   "MaskNone",
   "UnrollMask",
   "DontUnrollMask",
+};
+
+static std::string FunctionControlStrings[]{
+  "Inline",
+  "DontInline",
+  "Pure",
+  "Const",
 };
 
 static std::string FunctionControlShiftStrings[] {
@@ -319,6 +342,19 @@ static std::string FunctionControlMaskStrings[] {
   "DontInlineMask",
   "PureMask",
   "ConstMask",
+};
+
+static std::string MemorySemanticsStrings[]{
+  "Relaxed",
+  "SequentiallyConsistent",
+  "Acquire",
+  "Release",
+  "UniformMemory",
+  "SubgroupMemory",
+  "WorkgroupLocalMemory",
+  "WorkgroupGlobalMemory",
+  "AtomicCounterMemory",
+  "ImageMemory",
 };
 
 static std::string MemorySemanticsShiftStrings[] {
@@ -346,6 +382,11 @@ static std::string MemorySemanticsMaskStrings[] {
   "WorkgroupGlobalMemoryMask",
   "AtomicCounterMemoryMask",
   "ImageMemoryMask",
+};
+
+static std::string MemoryAccessStrings[]{
+  "Volatile",
+  "Aligned",
 };
 
 static std::string MemoryAccessShiftStrings[] {
@@ -376,6 +417,10 @@ static std::string KernelEnqueueFlagsStrings[] {
   "NoWait",
   "WaitKernel",
   "WaitWorkGroup",
+};
+
+static std::string KernelProfilingInfoStrings[]{
+  "CmdExecTime",
 };
 
 static std::string KernelProfilingInfoShiftStrings[] {
@@ -675,85 +720,28 @@ static void* LUTPointers[]{
   &FunctionParameterAttributeStrings,
   &DecorationStrings,
   &BuiltInStrings,
+  &SelectionControlStrings,
   &SelectionControlShiftStrings,
   &SelectionControlMaskStrings,
+  &LoopControlStrings,
   &LoopControlShiftStrings,
   &LoopControlMaskStrings,
+  &FunctionControlStrings,
   &FunctionControlShiftStrings,
   &FunctionControlMaskStrings,
+  &MemorySemanticsStrings,
   &MemorySemanticsShiftStrings,
   &MemorySemanticsMaskStrings,
+  &MemoryAccessStrings,
   &MemoryAccessShiftStrings,
   &MemoryAccessMaskStrings,
   &ExecutionScopeStrings,
   &GroupOperationStrings,
   &KernelEnqueueFlagsStrings,
+  &KernelProfilingInfoStrings,
   &KernelProfilingInfoShiftStrings,
   &KernelProfilingInfoMaskStrings,
   &OpStrings,
 };
 
-static WordType NOPWordTypes[] {
-  WordType::TOp
-};
-static uint32 NOPWordTypesCount = 1;
-
-static WordType SourceWordTypes[] {
-  WordType::TOp,
-  WordType::TSourceLanguage,
-  WordType::TValue
-};
-static uint32 SourceWordTypesCount = 3;
-
-static WordType SourceExtensionWordTypes[] {
-  WordType::TOp,
-  WordType::TChar
-};
-static uint32 SourceExtensionWordTypesCount = 2;
-
-static WordType ExtensionWordTypes[] {
-  WordType::TOp,
-  WordType::TChar
-};
-static uint32 ExtensionWordTypesCount = 2;
-
-static WordType ExtInstImportWordTypes[] {
-  WordType::TOp,
-  WordType::TId,
-  WordType::TChar
-};
-static uint32 ExtInstImportWordTypesCount = 3;
-
-static WordType MemoryModelWordTypes[]{
-  WordType::TOp,
-  WordType::TAddressingModel,
-  WordType::TMemoryModel
-};
-static uint32 MemoryModelWordTypesCount = 3;
-
-static WordType EntryPointWordTypes[]{
-  WordType::TOp,
-  WordType::TExecutionModel,
-  WordType::TId
-};
-static uint32 EntryPointWordTypesCount = 3;
-
-static void* LUTOpWordTypes[] {
-  &NOPWordTypes,
-  &SourceWordTypes,
-  &SourceExtensionWordTypes,
-  &ExtensionWordTypes,
-  &ExtInstImportWordTypes,
-  &MemoryModelWordTypes,
-  &EntryPointWordTypes,
-};
-
-static uint32 LUTOpWordTypesCount[] {
-  NOPWordTypesCount,
-  SourceWordTypesCount,
-  SourceExtensionWordTypesCount,
-  ExtensionWordTypesCount,
-  ExtInstImportWordTypesCount,
-  MemoryModelWordTypesCount,
-  EntryPointWordTypesCount,
-};
+#include "lookups_gen.h"

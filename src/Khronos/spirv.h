@@ -13,7 +13,7 @@
 **
 ** MODIFICATIONS TO THIS FILE MAY MEAN IT NO LONGER ACCURATELY REFLECTS KHRONOS
 ** STANDARDS. THE UNMODIFIED, NORMATIVE VERSIONS OF KHRONOS SPECIFICATIONS AND
-** HEADER INFORMATION ARE LOCATED AT https://www.khronos.org/registry/ 
+** HEADER INFORMATION ARE LOCATED AT https://www.khronos.org/registry/
 **
 ** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 ** OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -48,22 +48,22 @@
 
 namespace spv {
 
-const int MagicNumber = 0x07230203;
-const int Version = 99;
+  const int MagicNumber = 0x07230203;
+  const int Version = 99;
 
-typedef unsigned int Id;
+  typedef unsigned int Id;
 
-const unsigned int OpCodeMask = 0xFFFF;
-const unsigned int WordCountShift = 16;
+  const unsigned int OpCodeMask = 0xFFFF;
+  const unsigned int WordCountShift = 16;
 
-enum SourceLanguage {
+  enum SourceLanguage {
     SourceLanguageUnknown = 0,
     SourceLanguageESSL = 1,
     SourceLanguageGLSL = 2,
     SourceLanguageOpenCL = 3,
-};
+  };
 
-enum ExecutionModel {
+  enum ExecutionModel {
     ExecutionModelVertex = 0,
     ExecutionModelTessellationControl = 1,
     ExecutionModelTessellationEvaluation = 2,
@@ -71,23 +71,23 @@ enum ExecutionModel {
     ExecutionModelFragment = 4,
     ExecutionModelGLCompute = 5,
     ExecutionModelKernel = 6,
-};
+  };
 
-enum AddressingModel {
+  enum AddressingModel {
     AddressingModelLogical = 0,
     AddressingModelPhysical32 = 1,
     AddressingModelPhysical64 = 2,
-};
+  };
 
-enum MemoryModel {
+  enum MemoryModel {
     MemoryModelSimple = 0,
     MemoryModelGLSL450 = 1,
     MemoryModelOpenCL12 = 2,
     MemoryModelOpenCL20 = 3,
     MemoryModelOpenCL21 = 4,
-};
+  };
 
-enum ExecutionMode {
+  enum ExecutionMode {
     ExecutionModeInvocations = 0,
     ExecutionModeSpacingEqual = 1,
     ExecutionModeSpacingFractionalEven = 2,
@@ -119,9 +119,9 @@ enum ExecutionMode {
     ExecutionModeOutputTriangleStrip = 28,
     ExecutionModeVecTypeHint = 29,
     ExecutionModeContractionOff = 30,
-};
+  };
 
-enum StorageClass {
+  enum StorageClass {
     StorageClassUniformConstant = 0,
     StorageClassInput = 1,
     StorageClassUniform = 2,
@@ -133,66 +133,66 @@ enum StorageClass {
     StorageClassGeneric = 8,
     StorageClassPrivate = 9,
     StorageClassAtomicCounter = 10,
-};
+  };
 
-enum Dim {
+  enum Dim {
     Dim1D = 0,
     Dim2D = 1,
     Dim3D = 2,
     DimCube = 3,
     DimRect = 4,
     DimBuffer = 5,
-};
+  };
 
-enum SamplerAddressingMode {
+  enum SamplerAddressingMode {
     SamplerAddressingModeNone = 0,
     SamplerAddressingModeClampToEdge = 1,
     SamplerAddressingModeClamp = 2,
     SamplerAddressingModeRepeat = 3,
     SamplerAddressingModeRepeatMirrored = 4,
-};
+  };
 
-enum SamplerFilterMode {
+  enum SamplerFilterMode {
     SamplerFilterModeNearest = 0,
     SamplerFilterModeLinear = 1,
-};
+  };
 
-enum FPFastMathModeShift {
+  enum FPFastMathModeShift {
     FPFastMathModeNotNaNShift = 0,
     FPFastMathModeNotInfShift = 1,
     FPFastMathModeNSZShift = 2,
     FPFastMathModeAllowRecipShift = 3,
     FPFastMathModeFastShift = 4,
-};
+  };
 
-enum FPFastMathModeMask {
+  enum FPFastMathModeMask {
     FPFastMathModeMaskNone = 0,
     FPFastMathModeNotNaNMask = 0x00000001,
     FPFastMathModeNotInfMask = 0x00000002,
     FPFastMathModeNSZMask = 0x00000004,
     FPFastMathModeAllowRecipMask = 0x00000008,
     FPFastMathModeFastMask = 0x00000010,
-};
+  };
 
-enum FPRoundingMode {
+  enum FPRoundingMode {
     FPRoundingModeRTE = 0,
     FPRoundingModeRTZ = 1,
     FPRoundingModeRTP = 2,
     FPRoundingModeRTN = 3,
-};
+  };
 
-enum LinkageType {
+  enum LinkageType {
     LinkageTypeExport = 0,
     LinkageTypeImport = 1,
-};
+  };
 
-enum AccessQualifier {
+  enum AccessQualifier {
     AccessQualifierReadOnly = 0,
     AccessQualifierWriteOnly = 1,
     AccessQualifierReadWrite = 2,
-};
+  };
 
-enum FunctionParameterAttribute {
+  enum FunctionParameterAttribute {
     FunctionParameterAttributeZext = 0,
     FunctionParameterAttributeSext = 1,
     FunctionParameterAttributeByVal = 2,
@@ -202,9 +202,9 @@ enum FunctionParameterAttribute {
     FunctionParameterAttributeSVM = 6,
     FunctionParameterAttributeNoWrite = 7,
     FunctionParameterAttributeNoReadWrite = 8,
-};
+  };
 
-enum Decoration {
+  enum Decoration {
     DecorationPrecisionLow = 0,
     DecorationPrecisionMedium = 1,
     DecorationPrecisionHigh = 2,
@@ -250,9 +250,9 @@ enum Decoration {
     DecorationFPFastMathMode = 42,
     DecorationLinkageAttributes = 43,
     DecorationSpecId = 44,
-};
+  };
 
-enum BuiltIn {
+  enum BuiltIn {
     BuiltInPosition = 0,
     BuiltInPointSize = 1,
     BuiltInClipVertex = 2,
@@ -295,46 +295,76 @@ enum BuiltIn {
     BuiltInNumEnqueuedSubgroups = 39,
     BuiltInSubgroupId = 40,
     BuiltInSubgroupLocalInvocationId = 41,
-};
+  };
 
-enum SelectionControlShift {
+  enum SelectionControl {
+    SelectionControlFlatten = 0,
+    SelectionControlDontFlatten = 1,
+  };
+
+  enum SelectionControlShift {
     SelectionControlFlattenShift = 0,
     SelectionControlDontFlattenShift = 1,
-};
+  };
 
-enum SelectionControlMask {
+  enum SelectionControlMask {
     SelectionControlMaskNone = 0,
     SelectionControlFlattenMask = 0x00000001,
     SelectionControlDontFlattenMask = 0x00000002,
-};
+  };
 
-enum LoopControlShift {
+  enum LoopControl {
+    LoopControlUnroll = 0,
+    LoopControlDontUnroll = 1,
+  };
+
+  enum LoopControlShift {
     LoopControlUnrollShift = 0,
     LoopControlDontUnrollShift = 1,
-};
+  };
 
-enum LoopControlMask {
+  enum LoopControlMask {
     LoopControlMaskNone = 0,
     LoopControlUnrollMask = 0x00000001,
     LoopControlDontUnrollMask = 0x00000002,
-};
+  };
 
-enum FunctionControlShift {
+  enum FunctionControl  {
+    FunctionControlInline  = 0,
+    FunctionControlDontInline  = 1,
+    FunctionControlPure  = 2,
+    FunctionControlConst  = 3,
+  };
+
+  enum FunctionControlShift {
     FunctionControlInlineShift = 0,
     FunctionControlDontInlineShift = 1,
     FunctionControlPureShift = 2,
     FunctionControlConstShift = 3,
-};
+  };
 
-enum FunctionControlMask {
+  enum FunctionControlMask {
     FunctionControlMaskNone = 0,
     FunctionControlInlineMask = 0x00000001,
     FunctionControlDontInlineMask = 0x00000002,
     FunctionControlPureMask = 0x00000004,
     FunctionControlConstMask = 0x00000008,
-};
+  };
 
-enum MemorySemanticsShift {
+  enum MemorySemantics  {
+    MemorySemanticsRelaxed  = 0,
+    MemorySemanticsSequentiallyConsistent  = 1,
+    MemorySemanticsAcquire  = 2,
+    MemorySemanticsRelease  = 3,
+    MemorySemanticsUniformMemory  = 4,
+    MemorySemanticsSubgroupMemory  = 5,
+    MemorySemanticsWorkgroupLocalMemory  = 6,
+    MemorySemanticsWorkgroupGlobalMemory  = 7,
+    MemorySemanticsAtomicCounterMemory  = 8,
+    MemorySemanticsImageMemory  = 9,
+  };
+
+  enum MemorySemanticsShift {
     MemorySemanticsRelaxedShift = 0,
     MemorySemanticsSequentiallyConsistentShift = 1,
     MemorySemanticsAcquireShift = 2,
@@ -345,9 +375,9 @@ enum MemorySemanticsShift {
     MemorySemanticsWorkgroupGlobalMemoryShift = 7,
     MemorySemanticsAtomicCounterMemoryShift = 8,
     MemorySemanticsImageMemoryShift = 9,
-};
+  };
 
-enum MemorySemanticsMask {
+  enum MemorySemanticsMask {
     MemorySemanticsMaskNone = 0,
     MemorySemanticsRelaxedMask = 0x00000001,
     MemorySemanticsSequentiallyConsistentMask = 0x00000002,
@@ -359,48 +389,57 @@ enum MemorySemanticsMask {
     MemorySemanticsWorkgroupGlobalMemoryMask = 0x00000080,
     MemorySemanticsAtomicCounterMemoryMask = 0x00000100,
     MemorySemanticsImageMemoryMask = 0x00000200,
-};
+  };
 
-enum MemoryAccessShift {
+  enum MemoryAccess  {
+    MemoryAccessVolatile  = 0,
+    MemoryAccessAligned  = 1,
+  };
+
+  enum MemoryAccessShift {
     MemoryAccessVolatileShift = 0,
     MemoryAccessAlignedShift = 1,
-};
+  };
 
-enum MemoryAccessMask {
+  enum MemoryAccessMask {
     MemoryAccessMaskNone = 0,
     MemoryAccessVolatileMask = 0x00000001,
     MemoryAccessAlignedMask = 0x00000002,
-};
+  };
 
-enum ExecutionScope {
+  enum ExecutionScope {
     ExecutionScopeCrossDevice = 0,
     ExecutionScopeDevice = 1,
     ExecutionScopeWorkgroup = 2,
     ExecutionScopeSubgroup = 3,
-};
+  };
 
-enum GroupOperation {
+  enum GroupOperation {
     GroupOperationReduce = 0,
     GroupOperationInclusiveScan = 1,
     GroupOperationExclusiveScan = 2,
-};
+  };
 
-enum KernelEnqueueFlags {
+  enum KernelEnqueueFlags {
     KernelEnqueueFlagsNoWait = 0,
     KernelEnqueueFlagsWaitKernel = 1,
     KernelEnqueueFlagsWaitWorkGroup = 2,
-};
+  };
 
-enum KernelProfilingInfoShift {
+  enum KernelProfilingInfo  {
+    KernelProfilingInfoCmdExecTime  = 0,
+  };
+
+  enum KernelProfilingInfoShift {
     KernelProfilingInfoCmdExecTimeShift = 0,
-};
+  };
 
-enum KernelProfilingInfoMask {
+  enum KernelProfilingInfoMask {
     KernelProfilingInfoMaskNone = 0,
     KernelProfilingInfoCmdExecTimeMask = 0x00000001,
-};
+  };
 
-enum Op {
+  enum Op {
     OpNop = 0,
     OpSource = 1,
     OpSourceExtension = 2,
@@ -668,7 +707,7 @@ enum Op {
     OpSatConvertUToS = 264,
     OpAtomicIMin = 265,
     OpAtomicIMax = 266,
-};
+  };
 
 };  // end namespace spv
 
@@ -686,617 +725,617 @@ const unsigned int SpvOpCodeMask = 0xFFFF;
 const unsigned int SpvWordCountShift = 16;
 
 typedef enum SpvSourceLanguage_ {
-    SpvSourceLanguageUnknown = 0,
-    SpvSourceLanguageESSL = 1,
-    SpvSourceLanguageGLSL = 2,
-    SpvSourceLanguageOpenCL = 3,
+  SpvSourceLanguageUnknown = 0,
+  SpvSourceLanguageESSL = 1,
+  SpvSourceLanguageGLSL = 2,
+  SpvSourceLanguageOpenCL = 3,
 } SpvSourceLanguage;
 
 typedef enum SpvExecutionModel_ {
-    SpvExecutionModelVertex = 0,
-    SpvExecutionModelTessellationControl = 1,
-    SpvExecutionModelTessellationEvaluation = 2,
-    SpvExecutionModelGeometry = 3,
-    SpvExecutionModelFragment = 4,
-    SpvExecutionModelGLCompute = 5,
-    SpvExecutionModelKernel = 6,
+  SpvExecutionModelVertex = 0,
+  SpvExecutionModelTessellationControl = 1,
+  SpvExecutionModelTessellationEvaluation = 2,
+  SpvExecutionModelGeometry = 3,
+  SpvExecutionModelFragment = 4,
+  SpvExecutionModelGLCompute = 5,
+  SpvExecutionModelKernel = 6,
 } SpvExecutionModel;
 
 typedef enum SpvAddressingModel_ {
-    SpvAddressingModelLogical = 0,
-    SpvAddressingModelPhysical32 = 1,
-    SpvAddressingModelPhysical64 = 2,
+  SpvAddressingModelLogical = 0,
+  SpvAddressingModelPhysical32 = 1,
+  SpvAddressingModelPhysical64 = 2,
 } SpvAddressingModel;
 
 typedef enum SpvMemoryModel_ {
-    SpvMemoryModelSimple = 0,
-    SpvMemoryModelGLSL450 = 1,
-    SpvMemoryModelOpenCL12 = 2,
-    SpvMemoryModelOpenCL20 = 3,
-    SpvMemoryModelOpenCL21 = 4,
+  SpvMemoryModelSimple = 0,
+  SpvMemoryModelGLSL450 = 1,
+  SpvMemoryModelOpenCL12 = 2,
+  SpvMemoryModelOpenCL20 = 3,
+  SpvMemoryModelOpenCL21 = 4,
 } SpvMemoryModel;
 
 typedef enum SpvExecutionMode_ {
-    SpvExecutionModeInvocations = 0,
-    SpvExecutionModeSpacingEqual = 1,
-    SpvExecutionModeSpacingFractionalEven = 2,
-    SpvExecutionModeSpacingFractionalOdd = 3,
-    SpvExecutionModeVertexOrderCw = 4,
-    SpvExecutionModeVertexOrderCcw = 5,
-    SpvExecutionModePixelCenterInteger = 6,
-    SpvExecutionModeOriginUpperLeft = 7,
-    SpvExecutionModeEarlyFragmentTests = 8,
-    SpvExecutionModePointMode = 9,
-    SpvExecutionModeXfb = 10,
-    SpvExecutionModeDepthReplacing = 11,
-    SpvExecutionModeDepthAny = 12,
-    SpvExecutionModeDepthGreater = 13,
-    SpvExecutionModeDepthLess = 14,
-    SpvExecutionModeDepthUnchanged = 15,
-    SpvExecutionModeLocalSize = 16,
-    SpvExecutionModeLocalSizeHint = 17,
-    SpvExecutionModeInputPoints = 18,
-    SpvExecutionModeInputLines = 19,
-    SpvExecutionModeInputLinesAdjacency = 20,
-    SpvExecutionModeInputTriangles = 21,
-    SpvExecutionModeInputTrianglesAdjacency = 22,
-    SpvExecutionModeInputQuads = 23,
-    SpvExecutionModeInputIsolines = 24,
-    SpvExecutionModeOutputVertices = 25,
-    SpvExecutionModeOutputPoints = 26,
-    SpvExecutionModeOutputLineStrip = 27,
-    SpvExecutionModeOutputTriangleStrip = 28,
-    SpvExecutionModeVecTypeHint = 29,
-    SpvExecutionModeContractionOff = 30,
+  SpvExecutionModeInvocations = 0,
+  SpvExecutionModeSpacingEqual = 1,
+  SpvExecutionModeSpacingFractionalEven = 2,
+  SpvExecutionModeSpacingFractionalOdd = 3,
+  SpvExecutionModeVertexOrderCw = 4,
+  SpvExecutionModeVertexOrderCcw = 5,
+  SpvExecutionModePixelCenterInteger = 6,
+  SpvExecutionModeOriginUpperLeft = 7,
+  SpvExecutionModeEarlyFragmentTests = 8,
+  SpvExecutionModePointMode = 9,
+  SpvExecutionModeXfb = 10,
+  SpvExecutionModeDepthReplacing = 11,
+  SpvExecutionModeDepthAny = 12,
+  SpvExecutionModeDepthGreater = 13,
+  SpvExecutionModeDepthLess = 14,
+  SpvExecutionModeDepthUnchanged = 15,
+  SpvExecutionModeLocalSize = 16,
+  SpvExecutionModeLocalSizeHint = 17,
+  SpvExecutionModeInputPoints = 18,
+  SpvExecutionModeInputLines = 19,
+  SpvExecutionModeInputLinesAdjacency = 20,
+  SpvExecutionModeInputTriangles = 21,
+  SpvExecutionModeInputTrianglesAdjacency = 22,
+  SpvExecutionModeInputQuads = 23,
+  SpvExecutionModeInputIsolines = 24,
+  SpvExecutionModeOutputVertices = 25,
+  SpvExecutionModeOutputPoints = 26,
+  SpvExecutionModeOutputLineStrip = 27,
+  SpvExecutionModeOutputTriangleStrip = 28,
+  SpvExecutionModeVecTypeHint = 29,
+  SpvExecutionModeContractionOff = 30,
 } SpvExecutionMode;
 
 typedef enum SpvStorageClass_ {
-    SpvStorageClassUniformConstant = 0,
-    SpvStorageClassInput = 1,
-    SpvStorageClassUniform = 2,
-    SpvStorageClassOutput = 3,
-    SpvStorageClassWorkgroupLocal = 4,
-    SpvStorageClassWorkgroupGlobal = 5,
-    SpvStorageClassPrivateGlobal = 6,
-    SpvStorageClassFunction = 7,
-    SpvStorageClassGeneric = 8,
-    SpvStorageClassPrivate = 9,
-    SpvStorageClassAtomicCounter = 10,
+  SpvStorageClassUniformConstant = 0,
+  SpvStorageClassInput = 1,
+  SpvStorageClassUniform = 2,
+  SpvStorageClassOutput = 3,
+  SpvStorageClassWorkgroupLocal = 4,
+  SpvStorageClassWorkgroupGlobal = 5,
+  SpvStorageClassPrivateGlobal = 6,
+  SpvStorageClassFunction = 7,
+  SpvStorageClassGeneric = 8,
+  SpvStorageClassPrivate = 9,
+  SpvStorageClassAtomicCounter = 10,
 } SpvStorageClass;
 
 typedef enum SpvDim_ {
-    SpvDim1D = 0,
-    SpvDim2D = 1,
-    SpvDim3D = 2,
-    SpvDimCube = 3,
-    SpvDimRect = 4,
-    SpvDimBuffer = 5,
+  SpvDim1D = 0,
+  SpvDim2D = 1,
+  SpvDim3D = 2,
+  SpvDimCube = 3,
+  SpvDimRect = 4,
+  SpvDimBuffer = 5,
 } SpvDim;
 
 typedef enum SpvSamplerAddressingMode_ {
-    SpvSamplerAddressingModeNone = 0,
-    SpvSamplerAddressingModeClampToEdge = 1,
-    SpvSamplerAddressingModeClamp = 2,
-    SpvSamplerAddressingModeRepeat = 3,
-    SpvSamplerAddressingModeRepeatMirrored = 4,
+  SpvSamplerAddressingModeNone = 0,
+  SpvSamplerAddressingModeClampToEdge = 1,
+  SpvSamplerAddressingModeClamp = 2,
+  SpvSamplerAddressingModeRepeat = 3,
+  SpvSamplerAddressingModeRepeatMirrored = 4,
 } SpvSamplerAddressingMode;
 
 typedef enum SpvSamplerFilterMode_ {
-    SpvSamplerFilterModeNearest = 0,
-    SpvSamplerFilterModeLinear = 1,
+  SpvSamplerFilterModeNearest = 0,
+  SpvSamplerFilterModeLinear = 1,
 } SpvSamplerFilterMode;
 
 typedef enum SpvFPFastMathModeShift_ {
-    SpvFPFastMathModeNotNaNShift = 0,
-    SpvFPFastMathModeNotInfShift = 1,
-    SpvFPFastMathModeNSZShift = 2,
-    SpvFPFastMathModeAllowRecipShift = 3,
-    SpvFPFastMathModeFastShift = 4,
+  SpvFPFastMathModeNotNaNShift = 0,
+  SpvFPFastMathModeNotInfShift = 1,
+  SpvFPFastMathModeNSZShift = 2,
+  SpvFPFastMathModeAllowRecipShift = 3,
+  SpvFPFastMathModeFastShift = 4,
 } SpvFPFastMathModeShift;
 
 typedef enum SpvFPFastMathModeMask_ {
-    SpvFPFastMathModeMaskNone = 0,
-    SpvFPFastMathModeNotNaNMask = 0x00000001,
-    SpvFPFastMathModeNotInfMask = 0x00000002,
-    SpvFPFastMathModeNSZMask = 0x00000004,
-    SpvFPFastMathModeAllowRecipMask = 0x00000008,
-    SpvFPFastMathModeFastMask = 0x00000010,
+  SpvFPFastMathModeMaskNone = 0,
+  SpvFPFastMathModeNotNaNMask = 0x00000001,
+  SpvFPFastMathModeNotInfMask = 0x00000002,
+  SpvFPFastMathModeNSZMask = 0x00000004,
+  SpvFPFastMathModeAllowRecipMask = 0x00000008,
+  SpvFPFastMathModeFastMask = 0x00000010,
 } SpvFPFastMathModeMask;
 
 typedef enum SpvFPRoundingMode_ {
-    SpvFPRoundingModeRTE = 0,
-    SpvFPRoundingModeRTZ = 1,
-    SpvFPRoundingModeRTP = 2,
-    SpvFPRoundingModeRTN = 3,
+  SpvFPRoundingModeRTE = 0,
+  SpvFPRoundingModeRTZ = 1,
+  SpvFPRoundingModeRTP = 2,
+  SpvFPRoundingModeRTN = 3,
 } SpvFPRoundingMode;
 
 typedef enum SpvLinkageType_ {
-    SpvLinkageTypeExport = 0,
-    SpvLinkageTypeImport = 1,
+  SpvLinkageTypeExport = 0,
+  SpvLinkageTypeImport = 1,
 } SpvLinkageType;
 
 typedef enum SpvAccessQualifier_ {
-    SpvAccessQualifierReadOnly = 0,
-    SpvAccessQualifierWriteOnly = 1,
-    SpvAccessQualifierReadWrite = 2,
+  SpvAccessQualifierReadOnly = 0,
+  SpvAccessQualifierWriteOnly = 1,
+  SpvAccessQualifierReadWrite = 2,
 } SpvAccessQualifier;
 
 typedef enum SpvFunctionParameterAttribute_ {
-    SpvFunctionParameterAttributeZext = 0,
-    SpvFunctionParameterAttributeSext = 1,
-    SpvFunctionParameterAttributeByVal = 2,
-    SpvFunctionParameterAttributeSret = 3,
-    SpvFunctionParameterAttributeNoAlias = 4,
-    SpvFunctionParameterAttributeNoCapture = 5,
-    SpvFunctionParameterAttributeSVM = 6,
-    SpvFunctionParameterAttributeNoWrite = 7,
-    SpvFunctionParameterAttributeNoReadWrite = 8,
+  SpvFunctionParameterAttributeZext = 0,
+  SpvFunctionParameterAttributeSext = 1,
+  SpvFunctionParameterAttributeByVal = 2,
+  SpvFunctionParameterAttributeSret = 3,
+  SpvFunctionParameterAttributeNoAlias = 4,
+  SpvFunctionParameterAttributeNoCapture = 5,
+  SpvFunctionParameterAttributeSVM = 6,
+  SpvFunctionParameterAttributeNoWrite = 7,
+  SpvFunctionParameterAttributeNoReadWrite = 8,
 } SpvFunctionParameterAttribute;
 
 typedef enum SpvDecoration_ {
-    SpvDecorationPrecisionLow = 0,
-    SpvDecorationPrecisionMedium = 1,
-    SpvDecorationPrecisionHigh = 2,
-    SpvDecorationBlock = 3,
-    SpvDecorationBufferBlock = 4,
-    SpvDecorationRowMajor = 5,
-    SpvDecorationColMajor = 6,
-    SpvDecorationGLSLShared = 7,
-    SpvDecorationGLSLStd140 = 8,
-    SpvDecorationGLSLStd430 = 9,
-    SpvDecorationGLSLPacked = 10,
-    SpvDecorationSmooth = 11,
-    SpvDecorationNoperspective = 12,
-    SpvDecorationFlat = 13,
-    SpvDecorationPatch = 14,
-    SpvDecorationCentroid = 15,
-    SpvDecorationSample = 16,
-    SpvDecorationInvariant = 17,
-    SpvDecorationRestrict = 18,
-    SpvDecorationAliased = 19,
-    SpvDecorationVolatile = 20,
-    SpvDecorationConstant = 21,
-    SpvDecorationCoherent = 22,
-    SpvDecorationNonwritable = 23,
-    SpvDecorationNonreadable = 24,
-    SpvDecorationUniform = 25,
-    SpvDecorationNoStaticUse = 26,
-    SpvDecorationCPacked = 27,
-    SpvDecorationSaturatedConversion = 28,
-    SpvDecorationStream = 29,
-    SpvDecorationLocation = 30,
-    SpvDecorationComponent = 31,
-    SpvDecorationIndex = 32,
-    SpvDecorationBinding = 33,
-    SpvDecorationDescriptorSet = 34,
-    SpvDecorationOffset = 35,
-    SpvDecorationAlignment = 36,
-    SpvDecorationXfbBuffer = 37,
-    SpvDecorationStride = 38,
-    SpvDecorationBuiltIn = 39,
-    SpvDecorationFuncParamAttr = 40,
-    SpvDecorationFPRoundingMode = 41,
-    SpvDecorationFPFastMathMode = 42,
-    SpvDecorationLinkageAttributes = 43,
-    SpvDecorationSpecId = 44,
+  SpvDecorationPrecisionLow = 0,
+  SpvDecorationPrecisionMedium = 1,
+  SpvDecorationPrecisionHigh = 2,
+  SpvDecorationBlock = 3,
+  SpvDecorationBufferBlock = 4,
+  SpvDecorationRowMajor = 5,
+  SpvDecorationColMajor = 6,
+  SpvDecorationGLSLShared = 7,
+  SpvDecorationGLSLStd140 = 8,
+  SpvDecorationGLSLStd430 = 9,
+  SpvDecorationGLSLPacked = 10,
+  SpvDecorationSmooth = 11,
+  SpvDecorationNoperspective = 12,
+  SpvDecorationFlat = 13,
+  SpvDecorationPatch = 14,
+  SpvDecorationCentroid = 15,
+  SpvDecorationSample = 16,
+  SpvDecorationInvariant = 17,
+  SpvDecorationRestrict = 18,
+  SpvDecorationAliased = 19,
+  SpvDecorationVolatile = 20,
+  SpvDecorationConstant = 21,
+  SpvDecorationCoherent = 22,
+  SpvDecorationNonwritable = 23,
+  SpvDecorationNonreadable = 24,
+  SpvDecorationUniform = 25,
+  SpvDecorationNoStaticUse = 26,
+  SpvDecorationCPacked = 27,
+  SpvDecorationSaturatedConversion = 28,
+  SpvDecorationStream = 29,
+  SpvDecorationLocation = 30,
+  SpvDecorationComponent = 31,
+  SpvDecorationIndex = 32,
+  SpvDecorationBinding = 33,
+  SpvDecorationDescriptorSet = 34,
+  SpvDecorationOffset = 35,
+  SpvDecorationAlignment = 36,
+  SpvDecorationXfbBuffer = 37,
+  SpvDecorationStride = 38,
+  SpvDecorationBuiltIn = 39,
+  SpvDecorationFuncParamAttr = 40,
+  SpvDecorationFPRoundingMode = 41,
+  SpvDecorationFPFastMathMode = 42,
+  SpvDecorationLinkageAttributes = 43,
+  SpvDecorationSpecId = 44,
 } SpvDecoration;
 
 typedef enum SpvBuiltIn_ {
-    SpvBuiltInPosition = 0,
-    SpvBuiltInPointSize = 1,
-    SpvBuiltInClipVertex = 2,
-    SpvBuiltInClipDistance = 3,
-    SpvBuiltInCullDistance = 4,
-    SpvBuiltInVertexId = 5,
-    SpvBuiltInInstanceId = 6,
-    SpvBuiltInPrimitiveId = 7,
-    SpvBuiltInInvocationId = 8,
-    SpvBuiltInLayer = 9,
-    SpvBuiltInViewportIndex = 10,
-    SpvBuiltInTessLevelOuter = 11,
-    SpvBuiltInTessLevelInner = 12,
-    SpvBuiltInTessCoord = 13,
-    SpvBuiltInPatchVertices = 14,
-    SpvBuiltInFragCoord = 15,
-    SpvBuiltInPointCoord = 16,
-    SpvBuiltInFrontFacing = 17,
-    SpvBuiltInSampleId = 18,
-    SpvBuiltInSamplePosition = 19,
-    SpvBuiltInSampleMask = 20,
-    SpvBuiltInFragColor = 21,
-    SpvBuiltInFragDepth = 22,
-    SpvBuiltInHelperInvocation = 23,
-    SpvBuiltInNumWorkgroups = 24,
-    SpvBuiltInWorkgroupSize = 25,
-    SpvBuiltInWorkgroupId = 26,
-    SpvBuiltInLocalInvocationId = 27,
-    SpvBuiltInGlobalInvocationId = 28,
-    SpvBuiltInLocalInvocationIndex = 29,
-    SpvBuiltInWorkDim = 30,
-    SpvBuiltInGlobalSize = 31,
-    SpvBuiltInEnqueuedWorkgroupSize = 32,
-    SpvBuiltInGlobalOffset = 33,
-    SpvBuiltInGlobalLinearId = 34,
-    SpvBuiltInWorkgroupLinearId = 35,
-    SpvBuiltInSubgroupSize = 36,
-    SpvBuiltInSubgroupMaxSize = 37,
-    SpvBuiltInNumSubgroups = 38,
-    SpvBuiltInNumEnqueuedSubgroups = 39,
-    SpvBuiltInSubgroupId = 40,
-    SpvBuiltInSubgroupLocalInvocationId = 41,
+  SpvBuiltInPosition = 0,
+  SpvBuiltInPointSize = 1,
+  SpvBuiltInClipVertex = 2,
+  SpvBuiltInClipDistance = 3,
+  SpvBuiltInCullDistance = 4,
+  SpvBuiltInVertexId = 5,
+  SpvBuiltInInstanceId = 6,
+  SpvBuiltInPrimitiveId = 7,
+  SpvBuiltInInvocationId = 8,
+  SpvBuiltInLayer = 9,
+  SpvBuiltInViewportIndex = 10,
+  SpvBuiltInTessLevelOuter = 11,
+  SpvBuiltInTessLevelInner = 12,
+  SpvBuiltInTessCoord = 13,
+  SpvBuiltInPatchVertices = 14,
+  SpvBuiltInFragCoord = 15,
+  SpvBuiltInPointCoord = 16,
+  SpvBuiltInFrontFacing = 17,
+  SpvBuiltInSampleId = 18,
+  SpvBuiltInSamplePosition = 19,
+  SpvBuiltInSampleMask = 20,
+  SpvBuiltInFragColor = 21,
+  SpvBuiltInFragDepth = 22,
+  SpvBuiltInHelperInvocation = 23,
+  SpvBuiltInNumWorkgroups = 24,
+  SpvBuiltInWorkgroupSize = 25,
+  SpvBuiltInWorkgroupId = 26,
+  SpvBuiltInLocalInvocationId = 27,
+  SpvBuiltInGlobalInvocationId = 28,
+  SpvBuiltInLocalInvocationIndex = 29,
+  SpvBuiltInWorkDim = 30,
+  SpvBuiltInGlobalSize = 31,
+  SpvBuiltInEnqueuedWorkgroupSize = 32,
+  SpvBuiltInGlobalOffset = 33,
+  SpvBuiltInGlobalLinearId = 34,
+  SpvBuiltInWorkgroupLinearId = 35,
+  SpvBuiltInSubgroupSize = 36,
+  SpvBuiltInSubgroupMaxSize = 37,
+  SpvBuiltInNumSubgroups = 38,
+  SpvBuiltInNumEnqueuedSubgroups = 39,
+  SpvBuiltInSubgroupId = 40,
+  SpvBuiltInSubgroupLocalInvocationId = 41,
 } SpvBuiltIn;
 
 typedef enum SpvSelectionControlShift_ {
-    SpvSelectionControlFlattenShift = 0,
-    SpvSelectionControlDontFlattenShift = 1,
+  SpvSelectionControlFlattenShift = 0,
+  SpvSelectionControlDontFlattenShift = 1,
 } SpvSelectionControlShift;
 
 typedef enum SpvSelectionControlMask_ {
-    SpvSelectionControlMaskNone = 0,
-    SpvSelectionControlFlattenMask = 0x00000001,
-    SpvSelectionControlDontFlattenMask = 0x00000002,
+  SpvSelectionControlMaskNone = 0,
+  SpvSelectionControlFlattenMask = 0x00000001,
+  SpvSelectionControlDontFlattenMask = 0x00000002,
 } SpvSelectionControlMask;
 
 typedef enum SpvLoopControlShift_ {
-    SpvLoopControlUnrollShift = 0,
-    SpvLoopControlDontUnrollShift = 1,
+  SpvLoopControlUnrollShift = 0,
+  SpvLoopControlDontUnrollShift = 1,
 } SpvLoopControlShift;
 
 typedef enum SpvLoopControlMask_ {
-    SpvLoopControlMaskNone = 0,
-    SpvLoopControlUnrollMask = 0x00000001,
-    SpvLoopControlDontUnrollMask = 0x00000002,
+  SpvLoopControlMaskNone = 0,
+  SpvLoopControlUnrollMask = 0x00000001,
+  SpvLoopControlDontUnrollMask = 0x00000002,
 } SpvLoopControlMask;
 
 typedef enum SpvFunctionControlShift_ {
-    SpvFunctionControlInlineShift = 0,
-    SpvFunctionControlDontInlineShift = 1,
-    SpvFunctionControlPureShift = 2,
-    SpvFunctionControlConstShift = 3,
+  SpvFunctionControlInlineShift = 0,
+  SpvFunctionControlDontInlineShift = 1,
+  SpvFunctionControlPureShift = 2,
+  SpvFunctionControlConstShift = 3,
 } SpvFunctionControlShift;
 
 typedef enum SpvFunctionControlMask_ {
-    SpvFunctionControlMaskNone = 0,
-    SpvFunctionControlInlineMask = 0x00000001,
-    SpvFunctionControlDontInlineMask = 0x00000002,
-    SpvFunctionControlPureMask = 0x00000004,
-    SpvFunctionControlConstMask = 0x00000008,
+  SpvFunctionControlMaskNone = 0,
+  SpvFunctionControlInlineMask = 0x00000001,
+  SpvFunctionControlDontInlineMask = 0x00000002,
+  SpvFunctionControlPureMask = 0x00000004,
+  SpvFunctionControlConstMask = 0x00000008,
 } SpvFunctionControlMask;
 
 typedef enum SpvMemorySemanticsShift_ {
-    SpvMemorySemanticsRelaxedShift = 0,
-    SpvMemorySemanticsSequentiallyConsistentShift = 1,
-    SpvMemorySemanticsAcquireShift = 2,
-    SpvMemorySemanticsReleaseShift = 3,
-    SpvMemorySemanticsUniformMemoryShift = 4,
-    SpvMemorySemanticsSubgroupMemoryShift = 5,
-    SpvMemorySemanticsWorkgroupLocalMemoryShift = 6,
-    SpvMemorySemanticsWorkgroupGlobalMemoryShift = 7,
-    SpvMemorySemanticsAtomicCounterMemoryShift = 8,
-    SpvMemorySemanticsImageMemoryShift = 9,
+  SpvMemorySemanticsRelaxedShift = 0,
+  SpvMemorySemanticsSequentiallyConsistentShift = 1,
+  SpvMemorySemanticsAcquireShift = 2,
+  SpvMemorySemanticsReleaseShift = 3,
+  SpvMemorySemanticsUniformMemoryShift = 4,
+  SpvMemorySemanticsSubgroupMemoryShift = 5,
+  SpvMemorySemanticsWorkgroupLocalMemoryShift = 6,
+  SpvMemorySemanticsWorkgroupGlobalMemoryShift = 7,
+  SpvMemorySemanticsAtomicCounterMemoryShift = 8,
+  SpvMemorySemanticsImageMemoryShift = 9,
 } SpvMemorySemanticsShift;
 
 typedef enum SpvMemorySemanticsMask_ {
-    SpvMemorySemanticsMaskNone = 0,
-    SpvMemorySemanticsRelaxedMask = 0x00000001,
-    SpvMemorySemanticsSequentiallyConsistentMask = 0x00000002,
-    SpvMemorySemanticsAcquireMask = 0x00000004,
-    SpvMemorySemanticsReleaseMask = 0x00000008,
-    SpvMemorySemanticsUniformMemoryMask = 0x00000010,
-    SpvMemorySemanticsSubgroupMemoryMask = 0x00000020,
-    SpvMemorySemanticsWorkgroupLocalMemoryMask = 0x00000040,
-    SpvMemorySemanticsWorkgroupGlobalMemoryMask = 0x00000080,
-    SpvMemorySemanticsAtomicCounterMemoryMask = 0x00000100,
-    SpvMemorySemanticsImageMemoryMask = 0x00000200,
+  SpvMemorySemanticsMaskNone = 0,
+  SpvMemorySemanticsRelaxedMask = 0x00000001,
+  SpvMemorySemanticsSequentiallyConsistentMask = 0x00000002,
+  SpvMemorySemanticsAcquireMask = 0x00000004,
+  SpvMemorySemanticsReleaseMask = 0x00000008,
+  SpvMemorySemanticsUniformMemoryMask = 0x00000010,
+  SpvMemorySemanticsSubgroupMemoryMask = 0x00000020,
+  SpvMemorySemanticsWorkgroupLocalMemoryMask = 0x00000040,
+  SpvMemorySemanticsWorkgroupGlobalMemoryMask = 0x00000080,
+  SpvMemorySemanticsAtomicCounterMemoryMask = 0x00000100,
+  SpvMemorySemanticsImageMemoryMask = 0x00000200,
 } SpvMemorySemanticsMask;
 
 typedef enum SpvMemoryAccessShift_ {
-    SpvMemoryAccessVolatileShift = 0,
-    SpvMemoryAccessAlignedShift = 1,
+  SpvMemoryAccessVolatileShift = 0,
+  SpvMemoryAccessAlignedShift = 1,
 } SpvMemoryAccessShift;
 
 typedef enum SpvMemoryAccessMask_ {
-    SpvMemoryAccessMaskNone = 0,
-    SpvMemoryAccessVolatileMask = 0x00000001,
-    SpvMemoryAccessAlignedMask = 0x00000002,
+  SpvMemoryAccessMaskNone = 0,
+  SpvMemoryAccessVolatileMask = 0x00000001,
+  SpvMemoryAccessAlignedMask = 0x00000002,
 } SpvMemoryAccessMask;
 
 typedef enum SpvExecutionScope_ {
-    SpvExecutionScopeCrossDevice = 0,
-    SpvExecutionScopeDevice = 1,
-    SpvExecutionScopeWorkgroup = 2,
-    SpvExecutionScopeSubgroup = 3,
+  SpvExecutionScopeCrossDevice = 0,
+  SpvExecutionScopeDevice = 1,
+  SpvExecutionScopeWorkgroup = 2,
+  SpvExecutionScopeSubgroup = 3,
 } SpvExecutionScope;
 
 typedef enum SpvGroupOperation_ {
-    SpvGroupOperationReduce = 0,
-    SpvGroupOperationInclusiveScan = 1,
-    SpvGroupOperationExclusiveScan = 2,
+  SpvGroupOperationReduce = 0,
+  SpvGroupOperationInclusiveScan = 1,
+  SpvGroupOperationExclusiveScan = 2,
 } SpvGroupOperation;
 
 typedef enum SpvKernelEnqueueFlags_ {
-    SpvKernelEnqueueFlagsNoWait = 0,
-    SpvKernelEnqueueFlagsWaitKernel = 1,
-    SpvKernelEnqueueFlagsWaitWorkGroup = 2,
+  SpvKernelEnqueueFlagsNoWait = 0,
+  SpvKernelEnqueueFlagsWaitKernel = 1,
+  SpvKernelEnqueueFlagsWaitWorkGroup = 2,
 } SpvKernelEnqueueFlags;
 
 typedef enum SpvKernelProfilingInfoShift_ {
-    SpvKernelProfilingInfoCmdExecTimeShift = 0,
+  SpvKernelProfilingInfoCmdExecTimeShift = 0,
 } SpvKernelProfilingInfoShift;
 
 typedef enum SpvKernelProfilingInfoMask_ {
-    SpvKernelProfilingInfoMaskNone = 0,
-    SpvKernelProfilingInfoCmdExecTimeMask = 0x00000001,
+  SpvKernelProfilingInfoMaskNone = 0,
+  SpvKernelProfilingInfoCmdExecTimeMask = 0x00000001,
 } SpvKernelProfilingInfoMask;
 
 typedef enum SpvOp_ {
-    SpvOpNop = 0,
-    SpvOpSource = 1,
-    SpvOpSourceExtension = 2,
-    SpvOpExtension = 3,
-    SpvOpExtInstImport = 4,
-    SpvOpMemoryModel = 5,
-    SpvOpEntryPoint = 6,
-    SpvOpExecutionMode = 7,
-    SpvOpTypeVoid = 8,
-    SpvOpTypeBool = 9,
-    SpvOpTypeInt = 10,
-    SpvOpTypeFloat = 11,
-    SpvOpTypeVector = 12,
-    SpvOpTypeMatrix = 13,
-    SpvOpTypeSampler = 14,
-    SpvOpTypeFilter = 15,
-    SpvOpTypeArray = 16,
-    SpvOpTypeRuntimeArray = 17,
-    SpvOpTypeStruct = 18,
-    SpvOpTypeOpaque = 19,
-    SpvOpTypePointer = 20,
-    SpvOpTypeFunction = 21,
-    SpvOpTypeEvent = 22,
-    SpvOpTypeDeviceEvent = 23,
-    SpvOpTypeReserveId = 24,
-    SpvOpTypeQueue = 25,
-    SpvOpTypePipe = 26,
-    SpvOpConstantTrue = 27,
-    SpvOpConstantFalse = 28,
-    SpvOpConstant = 29,
-    SpvOpConstantComposite = 30,
-    SpvOpConstantSampler = 31,
-    SpvOpConstantNullPointer = 32,
-    SpvOpConstantNullObject = 33,
-    SpvOpSpecConstantTrue = 34,
-    SpvOpSpecConstantFalse = 35,
-    SpvOpSpecConstant = 36,
-    SpvOpSpecConstantComposite = 37,
-    SpvOpVariable = 38,
-    SpvOpVariableArray = 39,
-    SpvOpFunction = 40,
-    SpvOpFunctionParameter = 41,
-    SpvOpFunctionEnd = 42,
-    SpvOpFunctionCall = 43,
-    SpvOpExtInst = 44,
-    SpvOpUndef = 45,
-    SpvOpLoad = 46,
-    SpvOpStore = 47,
-    SpvOpPhi = 48,
-    SpvOpDecorationGroup = 49,
-    SpvOpDecorate = 50,
-    SpvOpMemberDecorate = 51,
-    SpvOpGroupDecorate = 52,
-    SpvOpGroupMemberDecorate = 53,
-    SpvOpName = 54,
-    SpvOpMemberName = 55,
-    SpvOpString = 56,
-    SpvOpLine = 57,
-    SpvOpVectorExtractDynamic = 58,
-    SpvOpVectorInsertDynamic = 59,
-    SpvOpVectorShuffle = 60,
-    SpvOpCompositeConstruct = 61,
-    SpvOpCompositeExtract = 62,
-    SpvOpCompositeInsert = 63,
-    SpvOpCopyObject = 64,
-    SpvOpCopyMemory = 65,
-    SpvOpCopyMemorySized = 66,
-    SpvOpSampler = 67,
-    SpvOpTextureSample = 68,
-    SpvOpTextureSampleDref = 69,
-    SpvOpTextureSampleLod = 70,
-    SpvOpTextureSampleProj = 71,
-    SpvOpTextureSampleGrad = 72,
-    SpvOpTextureSampleOffset = 73,
-    SpvOpTextureSampleProjLod = 74,
-    SpvOpTextureSampleProjGrad = 75,
-    SpvOpTextureSampleLodOffset = 76,
-    SpvOpTextureSampleProjOffset = 77,
-    SpvOpTextureSampleGradOffset = 78,
-    SpvOpTextureSampleProjLodOffset = 79,
-    SpvOpTextureSampleProjGradOffset = 80,
-    SpvOpTextureFetchTexelLod = 81,
-    SpvOpTextureFetchTexelOffset = 82,
-    SpvOpTextureFetchSample = 83,
-    SpvOpTextureFetchTexel = 84,
-    SpvOpTextureGather = 85,
-    SpvOpTextureGatherOffset = 86,
-    SpvOpTextureGatherOffsets = 87,
-    SpvOpTextureQuerySizeLod = 88,
-    SpvOpTextureQuerySize = 89,
-    SpvOpTextureQueryLod = 90,
-    SpvOpTextureQueryLevels = 91,
-    SpvOpTextureQuerySamples = 92,
-    SpvOpAccessChain = 93,
-    SpvOpInBoundsAccessChain = 94,
-    SpvOpSNegate = 95,
-    SpvOpFNegate = 96,
-    SpvOpNot = 97,
-    SpvOpAny = 98,
-    SpvOpAll = 99,
-    SpvOpConvertFToU = 100,
-    SpvOpConvertFToS = 101,
-    SpvOpConvertSToF = 102,
-    SpvOpConvertUToF = 103,
-    SpvOpUConvert = 104,
-    SpvOpSConvert = 105,
-    SpvOpFConvert = 106,
-    SpvOpConvertPtrToU = 107,
-    SpvOpConvertUToPtr = 108,
-    SpvOpPtrCastToGeneric = 109,
-    SpvOpGenericCastToPtr = 110,
-    SpvOpBitcast = 111,
-    SpvOpTranspose = 112,
-    SpvOpIsNan = 113,
-    SpvOpIsInf = 114,
-    SpvOpIsFinite = 115,
-    SpvOpIsNormal = 116,
-    SpvOpSignBitSet = 117,
-    SpvOpLessOrGreater = 118,
-    SpvOpOrdered = 119,
-    SpvOpUnordered = 120,
-    SpvOpArrayLength = 121,
-    SpvOpIAdd = 122,
-    SpvOpFAdd = 123,
-    SpvOpISub = 124,
-    SpvOpFSub = 125,
-    SpvOpIMul = 126,
-    SpvOpFMul = 127,
-    SpvOpUDiv = 128,
-    SpvOpSDiv = 129,
-    SpvOpFDiv = 130,
-    SpvOpUMod = 131,
-    SpvOpSRem = 132,
-    SpvOpSMod = 133,
-    SpvOpFRem = 134,
-    SpvOpFMod = 135,
-    SpvOpVectorTimesScalar = 136,
-    SpvOpMatrixTimesScalar = 137,
-    SpvOpVectorTimesMatrix = 138,
-    SpvOpMatrixTimesVector = 139,
-    SpvOpMatrixTimesMatrix = 140,
-    SpvOpOuterProduct = 141,
-    SpvOpDot = 142,
-    SpvOpShiftRightLogical = 143,
-    SpvOpShiftRightArithmetic = 144,
-    SpvOpShiftLeftLogical = 145,
-    SpvOpLogicalOr = 146,
-    SpvOpLogicalXor = 147,
-    SpvOpLogicalAnd = 148,
-    SpvOpBitwiseOr = 149,
-    SpvOpBitwiseXor = 150,
-    SpvOpBitwiseAnd = 151,
-    SpvOpSelect = 152,
-    SpvOpIEqual = 153,
-    SpvOpFOrdEqual = 154,
-    SpvOpFUnordEqual = 155,
-    SpvOpINotEqual = 156,
-    SpvOpFOrdNotEqual = 157,
-    SpvOpFUnordNotEqual = 158,
-    SpvOpULessThan = 159,
-    SpvOpSLessThan = 160,
-    SpvOpFOrdLessThan = 161,
-    SpvOpFUnordLessThan = 162,
-    SpvOpUGreaterThan = 163,
-    SpvOpSGreaterThan = 164,
-    SpvOpFOrdGreaterThan = 165,
-    SpvOpFUnordGreaterThan = 166,
-    SpvOpULessThanEqual = 167,
-    SpvOpSLessThanEqual = 168,
-    SpvOpFOrdLessThanEqual = 169,
-    SpvOpFUnordLessThanEqual = 170,
-    SpvOpUGreaterThanEqual = 171,
-    SpvOpSGreaterThanEqual = 172,
-    SpvOpFOrdGreaterThanEqual = 173,
-    SpvOpFUnordGreaterThanEqual = 174,
-    SpvOpDPdx = 175,
-    SpvOpDPdy = 176,
-    SpvOpFwidth = 177,
-    SpvOpDPdxFine = 178,
-    SpvOpDPdyFine = 179,
-    SpvOpFwidthFine = 180,
-    SpvOpDPdxCoarse = 181,
-    SpvOpDPdyCoarse = 182,
-    SpvOpFwidthCoarse = 183,
-    SpvOpEmitVertex = 184,
-    SpvOpEndPrimitive = 185,
-    SpvOpEmitStreamVertex = 186,
-    SpvOpEndStreamPrimitive = 187,
-    SpvOpControlBarrier = 188,
-    SpvOpMemoryBarrier = 189,
-    SpvOpImagePointer = 190,
-    SpvOpAtomicInit = 191,
-    SpvOpAtomicLoad = 192,
-    SpvOpAtomicStore = 193,
-    SpvOpAtomicExchange = 194,
-    SpvOpAtomicCompareExchange = 195,
-    SpvOpAtomicCompareExchangeWeak = 196,
-    SpvOpAtomicIIncrement = 197,
-    SpvOpAtomicIDecrement = 198,
-    SpvOpAtomicIAdd = 199,
-    SpvOpAtomicISub = 200,
-    SpvOpAtomicUMin = 201,
-    SpvOpAtomicUMax = 202,
-    SpvOpAtomicAnd = 203,
-    SpvOpAtomicOr = 204,
-    SpvOpAtomicXor = 205,
-    SpvOpLoopMerge = 206,
-    SpvOpSelectionMerge = 207,
-    SpvOpLabel = 208,
-    SpvOpBranch = 209,
-    SpvOpBranchConditional = 210,
-    SpvOpSwitch = 211,
-    SpvOpKill = 212,
-    SpvOpReturn = 213,
-    SpvOpReturnValue = 214,
-    SpvOpUnreachable = 215,
-    SpvOpLifetimeStart = 216,
-    SpvOpLifetimeStop = 217,
-    SpvOpCompileFlag = 218,
-    SpvOpAsyncGroupCopy = 219,
-    SpvOpWaitGroupEvents = 220,
-    SpvOpGroupAll = 221,
-    SpvOpGroupAny = 222,
-    SpvOpGroupBroadcast = 223,
-    SpvOpGroupIAdd = 224,
-    SpvOpGroupFAdd = 225,
-    SpvOpGroupFMin = 226,
-    SpvOpGroupUMin = 227,
-    SpvOpGroupSMin = 228,
-    SpvOpGroupFMax = 229,
-    SpvOpGroupUMax = 230,
-    SpvOpGroupSMax = 231,
-    SpvOpGenericCastToPtrExplicit = 232,
-    SpvOpGenericPtrMemSemantics = 233,
-    SpvOpReadPipe = 234,
-    SpvOpWritePipe = 235,
-    SpvOpReservedReadPipe = 236,
-    SpvOpReservedWritePipe = 237,
-    SpvOpReserveReadPipePackets = 238,
-    SpvOpReserveWritePipePackets = 239,
-    SpvOpCommitReadPipe = 240,
-    SpvOpCommitWritePipe = 241,
-    SpvOpIsValidReserveId = 242,
-    SpvOpGetNumPipePackets = 243,
-    SpvOpGetMaxPipePackets = 244,
-    SpvOpGroupReserveReadPipePackets = 245,
-    SpvOpGroupReserveWritePipePackets = 246,
-    SpvOpGroupCommitReadPipe = 247,
-    SpvOpGroupCommitWritePipe = 248,
-    SpvOpEnqueueMarker = 249,
-    SpvOpEnqueueKernel = 250,
-    SpvOpGetKernelNDrangeSubGroupCount = 251,
-    SpvOpGetKernelNDrangeMaxSubGroupSize = 252,
-    SpvOpGetKernelWorkGroupSize = 253,
-    SpvOpGetKernelPreferredWorkGroupSizeMultiple = 254,
-    SpvOpRetainEvent = 255,
-    SpvOpReleaseEvent = 256,
-    SpvOpCreateUserEvent = 257,
-    SpvOpIsValidEvent = 258,
-    SpvOpSetUserEventStatus = 259,
-    SpvOpCaptureEventProfilingInfo = 260,
-    SpvOpGetDefaultQueue = 261,
-    SpvOpBuildNDRange = 262,
-    SpvOpSatConvertSToU = 263,
-    SpvOpSatConvertUToS = 264,
-    SpvOpAtomicIMin = 265,
-    SpvOpAtomicIMax = 266,
+  SpvOpNop = 0,
+  SpvOpSource = 1,
+  SpvOpSourceExtension = 2,
+  SpvOpExtension = 3,
+  SpvOpExtInstImport = 4,
+  SpvOpMemoryModel = 5,
+  SpvOpEntryPoint = 6,
+  SpvOpExecutionMode = 7,
+  SpvOpTypeVoid = 8,
+  SpvOpTypeBool = 9,
+  SpvOpTypeInt = 10,
+  SpvOpTypeFloat = 11,
+  SpvOpTypeVector = 12,
+  SpvOpTypeMatrix = 13,
+  SpvOpTypeSampler = 14,
+  SpvOpTypeFilter = 15,
+  SpvOpTypeArray = 16,
+  SpvOpTypeRuntimeArray = 17,
+  SpvOpTypeStruct = 18,
+  SpvOpTypeOpaque = 19,
+  SpvOpTypePointer = 20,
+  SpvOpTypeFunction = 21,
+  SpvOpTypeEvent = 22,
+  SpvOpTypeDeviceEvent = 23,
+  SpvOpTypeReserveId = 24,
+  SpvOpTypeQueue = 25,
+  SpvOpTypePipe = 26,
+  SpvOpConstantTrue = 27,
+  SpvOpConstantFalse = 28,
+  SpvOpConstant = 29,
+  SpvOpConstantComposite = 30,
+  SpvOpConstantSampler = 31,
+  SpvOpConstantNullPointer = 32,
+  SpvOpConstantNullObject = 33,
+  SpvOpSpecConstantTrue = 34,
+  SpvOpSpecConstantFalse = 35,
+  SpvOpSpecConstant = 36,
+  SpvOpSpecConstantComposite = 37,
+  SpvOpVariable = 38,
+  SpvOpVariableArray = 39,
+  SpvOpFunction = 40,
+  SpvOpFunctionParameter = 41,
+  SpvOpFunctionEnd = 42,
+  SpvOpFunctionCall = 43,
+  SpvOpExtInst = 44,
+  SpvOpUndef = 45,
+  SpvOpLoad = 46,
+  SpvOpStore = 47,
+  SpvOpPhi = 48,
+  SpvOpDecorationGroup = 49,
+  SpvOpDecorate = 50,
+  SpvOpMemberDecorate = 51,
+  SpvOpGroupDecorate = 52,
+  SpvOpGroupMemberDecorate = 53,
+  SpvOpName = 54,
+  SpvOpMemberName = 55,
+  SpvOpString = 56,
+  SpvOpLine = 57,
+  SpvOpVectorExtractDynamic = 58,
+  SpvOpVectorInsertDynamic = 59,
+  SpvOpVectorShuffle = 60,
+  SpvOpCompositeConstruct = 61,
+  SpvOpCompositeExtract = 62,
+  SpvOpCompositeInsert = 63,
+  SpvOpCopyObject = 64,
+  SpvOpCopyMemory = 65,
+  SpvOpCopyMemorySized = 66,
+  SpvOpSampler = 67,
+  SpvOpTextureSample = 68,
+  SpvOpTextureSampleDref = 69,
+  SpvOpTextureSampleLod = 70,
+  SpvOpTextureSampleProj = 71,
+  SpvOpTextureSampleGrad = 72,
+  SpvOpTextureSampleOffset = 73,
+  SpvOpTextureSampleProjLod = 74,
+  SpvOpTextureSampleProjGrad = 75,
+  SpvOpTextureSampleLodOffset = 76,
+  SpvOpTextureSampleProjOffset = 77,
+  SpvOpTextureSampleGradOffset = 78,
+  SpvOpTextureSampleProjLodOffset = 79,
+  SpvOpTextureSampleProjGradOffset = 80,
+  SpvOpTextureFetchTexelLod = 81,
+  SpvOpTextureFetchTexelOffset = 82,
+  SpvOpTextureFetchSample = 83,
+  SpvOpTextureFetchTexel = 84,
+  SpvOpTextureGather = 85,
+  SpvOpTextureGatherOffset = 86,
+  SpvOpTextureGatherOffsets = 87,
+  SpvOpTextureQuerySizeLod = 88,
+  SpvOpTextureQuerySize = 89,
+  SpvOpTextureQueryLod = 90,
+  SpvOpTextureQueryLevels = 91,
+  SpvOpTextureQuerySamples = 92,
+  SpvOpAccessChain = 93,
+  SpvOpInBoundsAccessChain = 94,
+  SpvOpSNegate = 95,
+  SpvOpFNegate = 96,
+  SpvOpNot = 97,
+  SpvOpAny = 98,
+  SpvOpAll = 99,
+  SpvOpConvertFToU = 100,
+  SpvOpConvertFToS = 101,
+  SpvOpConvertSToF = 102,
+  SpvOpConvertUToF = 103,
+  SpvOpUConvert = 104,
+  SpvOpSConvert = 105,
+  SpvOpFConvert = 106,
+  SpvOpConvertPtrToU = 107,
+  SpvOpConvertUToPtr = 108,
+  SpvOpPtrCastToGeneric = 109,
+  SpvOpGenericCastToPtr = 110,
+  SpvOpBitcast = 111,
+  SpvOpTranspose = 112,
+  SpvOpIsNan = 113,
+  SpvOpIsInf = 114,
+  SpvOpIsFinite = 115,
+  SpvOpIsNormal = 116,
+  SpvOpSignBitSet = 117,
+  SpvOpLessOrGreater = 118,
+  SpvOpOrdered = 119,
+  SpvOpUnordered = 120,
+  SpvOpArrayLength = 121,
+  SpvOpIAdd = 122,
+  SpvOpFAdd = 123,
+  SpvOpISub = 124,
+  SpvOpFSub = 125,
+  SpvOpIMul = 126,
+  SpvOpFMul = 127,
+  SpvOpUDiv = 128,
+  SpvOpSDiv = 129,
+  SpvOpFDiv = 130,
+  SpvOpUMod = 131,
+  SpvOpSRem = 132,
+  SpvOpSMod = 133,
+  SpvOpFRem = 134,
+  SpvOpFMod = 135,
+  SpvOpVectorTimesScalar = 136,
+  SpvOpMatrixTimesScalar = 137,
+  SpvOpVectorTimesMatrix = 138,
+  SpvOpMatrixTimesVector = 139,
+  SpvOpMatrixTimesMatrix = 140,
+  SpvOpOuterProduct = 141,
+  SpvOpDot = 142,
+  SpvOpShiftRightLogical = 143,
+  SpvOpShiftRightArithmetic = 144,
+  SpvOpShiftLeftLogical = 145,
+  SpvOpLogicalOr = 146,
+  SpvOpLogicalXor = 147,
+  SpvOpLogicalAnd = 148,
+  SpvOpBitwiseOr = 149,
+  SpvOpBitwiseXor = 150,
+  SpvOpBitwiseAnd = 151,
+  SpvOpSelect = 152,
+  SpvOpIEqual = 153,
+  SpvOpFOrdEqual = 154,
+  SpvOpFUnordEqual = 155,
+  SpvOpINotEqual = 156,
+  SpvOpFOrdNotEqual = 157,
+  SpvOpFUnordNotEqual = 158,
+  SpvOpULessThan = 159,
+  SpvOpSLessThan = 160,
+  SpvOpFOrdLessThan = 161,
+  SpvOpFUnordLessThan = 162,
+  SpvOpUGreaterThan = 163,
+  SpvOpSGreaterThan = 164,
+  SpvOpFOrdGreaterThan = 165,
+  SpvOpFUnordGreaterThan = 166,
+  SpvOpULessThanEqual = 167,
+  SpvOpSLessThanEqual = 168,
+  SpvOpFOrdLessThanEqual = 169,
+  SpvOpFUnordLessThanEqual = 170,
+  SpvOpUGreaterThanEqual = 171,
+  SpvOpSGreaterThanEqual = 172,
+  SpvOpFOrdGreaterThanEqual = 173,
+  SpvOpFUnordGreaterThanEqual = 174,
+  SpvOpDPdx = 175,
+  SpvOpDPdy = 176,
+  SpvOpFwidth = 177,
+  SpvOpDPdxFine = 178,
+  SpvOpDPdyFine = 179,
+  SpvOpFwidthFine = 180,
+  SpvOpDPdxCoarse = 181,
+  SpvOpDPdyCoarse = 182,
+  SpvOpFwidthCoarse = 183,
+  SpvOpEmitVertex = 184,
+  SpvOpEndPrimitive = 185,
+  SpvOpEmitStreamVertex = 186,
+  SpvOpEndStreamPrimitive = 187,
+  SpvOpControlBarrier = 188,
+  SpvOpMemoryBarrier = 189,
+  SpvOpImagePointer = 190,
+  SpvOpAtomicInit = 191,
+  SpvOpAtomicLoad = 192,
+  SpvOpAtomicStore = 193,
+  SpvOpAtomicExchange = 194,
+  SpvOpAtomicCompareExchange = 195,
+  SpvOpAtomicCompareExchangeWeak = 196,
+  SpvOpAtomicIIncrement = 197,
+  SpvOpAtomicIDecrement = 198,
+  SpvOpAtomicIAdd = 199,
+  SpvOpAtomicISub = 200,
+  SpvOpAtomicUMin = 201,
+  SpvOpAtomicUMax = 202,
+  SpvOpAtomicAnd = 203,
+  SpvOpAtomicOr = 204,
+  SpvOpAtomicXor = 205,
+  SpvOpLoopMerge = 206,
+  SpvOpSelectionMerge = 207,
+  SpvOpLabel = 208,
+  SpvOpBranch = 209,
+  SpvOpBranchConditional = 210,
+  SpvOpSwitch = 211,
+  SpvOpKill = 212,
+  SpvOpReturn = 213,
+  SpvOpReturnValue = 214,
+  SpvOpUnreachable = 215,
+  SpvOpLifetimeStart = 216,
+  SpvOpLifetimeStop = 217,
+  SpvOpCompileFlag = 218,
+  SpvOpAsyncGroupCopy = 219,
+  SpvOpWaitGroupEvents = 220,
+  SpvOpGroupAll = 221,
+  SpvOpGroupAny = 222,
+  SpvOpGroupBroadcast = 223,
+  SpvOpGroupIAdd = 224,
+  SpvOpGroupFAdd = 225,
+  SpvOpGroupFMin = 226,
+  SpvOpGroupUMin = 227,
+  SpvOpGroupSMin = 228,
+  SpvOpGroupFMax = 229,
+  SpvOpGroupUMax = 230,
+  SpvOpGroupSMax = 231,
+  SpvOpGenericCastToPtrExplicit = 232,
+  SpvOpGenericPtrMemSemantics = 233,
+  SpvOpReadPipe = 234,
+  SpvOpWritePipe = 235,
+  SpvOpReservedReadPipe = 236,
+  SpvOpReservedWritePipe = 237,
+  SpvOpReserveReadPipePackets = 238,
+  SpvOpReserveWritePipePackets = 239,
+  SpvOpCommitReadPipe = 240,
+  SpvOpCommitWritePipe = 241,
+  SpvOpIsValidReserveId = 242,
+  SpvOpGetNumPipePackets = 243,
+  SpvOpGetMaxPipePackets = 244,
+  SpvOpGroupReserveReadPipePackets = 245,
+  SpvOpGroupReserveWritePipePackets = 246,
+  SpvOpGroupCommitReadPipe = 247,
+  SpvOpGroupCommitWritePipe = 248,
+  SpvOpEnqueueMarker = 249,
+  SpvOpEnqueueKernel = 250,
+  SpvOpGetKernelNDrangeSubGroupCount = 251,
+  SpvOpGetKernelNDrangeMaxSubGroupSize = 252,
+  SpvOpGetKernelWorkGroupSize = 253,
+  SpvOpGetKernelPreferredWorkGroupSizeMultiple = 254,
+  SpvOpRetainEvent = 255,
+  SpvOpReleaseEvent = 256,
+  SpvOpCreateUserEvent = 257,
+  SpvOpIsValidEvent = 258,
+  SpvOpSetUserEventStatus = 259,
+  SpvOpCaptureEventProfilingInfo = 260,
+  SpvOpGetDefaultQueue = 261,
+  SpvOpBuildNDRange = 262,
+  SpvOpSatConvertSToU = 263,
+  SpvOpSatConvertUToS = 264,
+  SpvOpAtomicIMin = 265,
+  SpvOpAtomicIMax = 266,
 } SpvOp;
 
 #endif  // #ifndef __cplusplus
