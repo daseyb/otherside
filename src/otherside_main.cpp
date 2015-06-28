@@ -8,7 +8,7 @@
 #include "parser_definitions.h"
 #include "lookups_gen.cpp"
 
-std::string USAGE = "-i <input file>";
+std::string USAGE = "-i <input file> -o <outputFile>";
 
 static uint32* buffer;
 static int length;
@@ -153,13 +153,150 @@ bool p_parseProgram(Program* prog) {
   return true;
 }
 
+void startComment(std::stringstream* ss) {
+  *ss << "/*" << std::endl;
+}
 
-bool genCode(std::stringstream* buffer, const Program& prog) {
-  return false;
+void endComment(std::stringstream* ss) {
+  *ss << "*/" << std::endl;
+}
+
+bool g_header(std::stringstream* ss, const Program& prog) {
+  startComment(ss);
+  *ss << "Version: " << prog.Version << std::endl;
+  *ss << "Generator Magic: " << prog.GeneratorMagic << std::endl;
+  *ss << "ID Bound: " << prog.IDBound << std::endl;
+  *ss << "Instruction Schema: " << prog.InstructionSchema << std::endl;
+  *ss << "=================================================" << std::endl;
+  endComment(ss);
+  return true;
+}
+
+std::map<uint32, std::string> typeIds;
+
+bool g_imports(std::stringstream* ss, const Program& prog) {
+  *ss << std::endl;
+  *ss << "#include <stdint.h>" << std::endl;
+  *ss << "#include <vector>" << std::endl;
+  *ss << "#include <string>" << std::endl;
+
+  for (auto inc : prog.ExtensionImports) {
+    *ss << "#include \"" << inc.second.Name << ".h\"" << std::endl;
+  }
+
+  return true;
+}
+
+bool g_compileflags(std::stringstream* ss, const Program& prog) {
+  *ss << std::endl;
+
+  for (auto flag : prog.CompileFlags) {
+    *ss << "#define " << flag << std::endl;
+  }
+
+  return true;
+}
+
+bool g_types(std::stringstream* ss, const Program& prog) {
+  *ss << std::endl;
+  *ss << "// Predefined types: " << std::endl;
+  *ss << "// =================================================" << std::endl;
+  *ss << "typedef double float64;" << std::endl;
+  *ss << "typedef float float32;" << std::endl;
+  *ss << "typedef uint8_t uint8;" << std::endl;
+  *ss << "typedef uint16_t uint16;" << std::endl;
+  *ss << "typedef uint32_t uint32;" << std::endl;
+  *ss << "typedef uint64_t uint64;" << std::endl;
+  *ss << "typedef int8_t int8;" << std::endl;
+  *ss << "typedef int16_t int16;" << std::endl;
+  *ss << "typedef int32_t int32;" << std::endl;
+  *ss << "typedef int64_t int64;" << std::endl;
+  *ss << "// =================================================" << std::endl;
+  *ss << std::endl;
+
+  for (auto type : prog.DefinedTypes) {
+    std::stringstream idName;
+
+    switch (type.second.Op)
+    {
+    case Op::OpTypeFloat:
+    {
+      STypeFloat* opFloat = (STypeFloat*)type.second.Memory;
+      idName << "float_" << opFloat->ResultId;
+      *ss << "typedef float" << opFloat->Width << " " << idName.str() << ";" << std::endl;
+      break;
+    }
+    case Op::OpTypeBool:
+    {
+      STypeBool* opBool = (STypeBool*)type.second.Memory;
+      idName << "bool_" << opBool->ResultId;
+      *ss << "typedef bool " << idName.str() << ";" << std::endl;
+      break;
+    }
+    case Op::OpTypeInt:
+    {
+      STypeInt* opInt = (STypeInt*)type.second.Memory;
+      idName << "int_" << opInt->ResultId;
+      std::stringstream baseType;
+      if (opInt->Signedness == 0) baseType << "u";
+      baseType << "int" << opInt->Width;
+      *ss << "typedef " << baseType.str() << " " << idName.str() << ";" << std::endl;
+      break;
+    }
+    case Op::OpTypeVoid:
+    {
+      STypeVoid* opBool = (STypeVoid*)type.second.Memory;
+      idName << "void_" << opBool->ResultId;
+      *ss << "typedef void " << idName.str() << ";" << std::endl;
+      break;
+    }
+    case Op::OpTypePointer:
+    {
+      STypePointer* opPointer = (STypePointer*)type.second.Memory;
+      idName << "p_" << typeIds[opPointer->TypeId] << "_" << opPointer->ResultId;
+      *ss << "typedef " << typeIds[opPointer->TypeId] << "* " << idName.str() << ";" << std::endl;
+      break;
+    }
+    case Op::OpTypeVector:
+    {
+      STypeVector* opVector = (STypeVector*)type.second.Memory;
+      idName << "v_" << typeIds[opVector->ComponenttypeId] << "_" << opVector->Componentcount << "_" << opVector->ResultId;
+      *ss << "typedef " << typeIds[opVector->ComponenttypeId] << "[" << opVector->Componentcount << "] " << idName.str() << ";" << std::endl;
+      break;
+    }
+    default:
+      break;
+    }
+
+    typeIds.insert(std::pair<uint32, std::string>(type.first, idName.str()));
+  }
+
+  return true;
+}
+
+bool genCode(std::stringstream* ss, const Program& prog) {
+  if (!g_header(ss, prog)) {
+    return false;
+  }
+
+  if (!g_imports(ss, prog)) {
+    return false;
+  }
+
+  if (!g_compileflags(ss, prog)) {
+    return false;
+  }
+
+  if (!g_types(ss, prog)) {
+    return false;
+  }
+
+  return true;
 }
 
 struct CmdArgs {
   const char* InputFile;
+  const char* OutputFile;
 };
 
 bool ParseArgs(int argc, const char** argv, CmdArgs* args) {
@@ -172,6 +309,12 @@ bool ParseArgs(int argc, const char** argv, CmdArgs* args) {
         return false;
       }
       args->InputFile = argv[i];
+    } else if (strcmp(arg, "-o") == 0) {
+      i++;
+      if (i == argc) {
+        return false;
+      }
+      args->OutputFile = argv[i];
     }
   }
   return true;
@@ -215,6 +358,11 @@ int main(int argc, const char** argv) {
   if (!genCode(&out, prog)) {
     std::cout << "Could not generate code for program." << std::endl;
   }
+
+  std::ofstream outFile;
+  outFile.open(args.OutputFile, std::ofstream::out);
+  outFile << out.str();
+  outFile.close();
 
   getchar();
   

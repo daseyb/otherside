@@ -5,3 +5,10 @@
 /build/intermediate
 /build/output
 *.user
+/FFTs/Debug
+/bcryptprimitives.pdb/D2918AA6339744EDA39204642A7D65E71
+/msvcrt.pdb/E4A7E37FD2E545B3B369E4DFE67957CE1
+/packages/HtmlAgilityPack.1.4.9
+/SpecParser/bin/Debug
+/SpecParser/obj/Debug
+/System.Data.DataSetExtensions.pdb/74804A74014B4184B3C124DCE2A693A11
