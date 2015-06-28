@@ -13,7 +13,6 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{97067868-238F-4DE8-AE90-B4D203270C81}</ProjectGuid>
     <RootNamespace>otherside</RootNamespace>
-    <TargetPlatformVersion>8.1</TargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -76,6 +75,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="lookups_gen.cpp" />
     <ClCompile Include="otherside_main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +83,7 @@
     <ClInclude Include="Khronos\spirv.h" />
     <ClInclude Include="lookups.h" />
     <ClInclude Include="lookups_gen.h" />
+    <ClInclude Include="parser_definitions.h" />
   </ItemGroup>
   <ItemGroup>
     <Copy Include="data\sample.frag.spv">
@@ -90,6 +91,7 @@
     </Copy>
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\complex.frag.spv" />
     <None Include="data\sample.frag.spv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

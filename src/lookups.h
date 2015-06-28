@@ -743,5 +743,3 @@ static void* LUTPointers[]{
   &KernelProfilingInfoMaskStrings,
   &OpStrings,
 };
-
-#include "lookups_gen.h"

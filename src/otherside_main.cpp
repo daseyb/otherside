@@ -1,14 +1,12 @@
-typedef unsigned char byte;
-typedef unsigned int uint32;
-typedef unsigned short uint16;
-
 #include <iostream>
 #include <iomanip>
 #include <string>
 #include <fstream>
 #include <assert.h>
-#include "Khronos\spirv.h"
-#include "lookups.h"
+#include <vector>
+#include <sstream>
+#include "parser_definitions.h"
+#include "lookups_gen.cpp"
 
 std::string USAGE = "-i <input file>";
 
@@ -46,7 +44,7 @@ bool p_expect(uint32 e) {
   return true;
 }
 
-void p_readInstruction() {
+SOp p_readInstruction() {
   uint32* opData = buffer;
   uint32 word = p_getAndEat();
   spv::Op op = (spv::Op)(word & spv::OpCodeMask);
@@ -56,32 +54,49 @@ void p_readInstruction() {
 
   WordType wordTypes[255];
 
+  uint16 opWordCount = wordCount;
+
   if (sizeof(LUTOpWordTypes) / sizeof(void*) <= op) {
     wordTypes[0] = WordType::TOp;
     for (int i = 1; i < wordCount; i++) {
       wordTypes[i] = WordType::TLiteralNumber;
     }
-  } else {
+  }
+  else {
     WordType* opWordTypes = (WordType*)LUTOpWordTypes[op];
-    uint32 opWordTypeCount = LUTOpWordTypesCount[op];
+    opWordCount = LUTOpWordTypesCount[op];
 
     for (int i = 0; i < wordCount; i++) {
-      wordTypes[i] = opWordTypes[i > opWordTypeCount - 1 ? opWordTypeCount - 1 : i];
+      wordTypes[i] = opWordTypes[i > opWordCount - 1 ? opWordCount - 1 : i];
     }
   }
-  
+
+  uint32* opMem = new uint32[opWordCount + 1];
+  memset(opMem, 0, sizeof(uint32) * (opWordCount + 1));
+  SOp Result = { op, opMem};
 
   for (int i = 1; i < wordCount; i++) {
     word = p_getAndEat();
+    uint32* currMem = opMem + i - 1;
+
     if (wordTypes[i] == WordType::TLiteralNumber) {
       std::cout << " " << word;
+      *currMem = word;
     }
     else if (wordTypes[i] == WordType::TId) {
+      if (i + 1 == opWordCount && opWordCount != wordCount) {
+        *(currMem++) = (uint32)(wordCount - opWordCount + 1);
+        *(uint32**)currMem = (uint32*)(buffer - 1);
+      } else if(i < opWordCount) {
+        *currMem = word;
+      }
+
       std::cout << " [" << word << "]";
     }
     else if (wordTypes[i] == WordType::TLiteralString) {
       if (wordTypes[i - 1] != WordType::TLiteralString) {
         std::cout << " ";
+        *(char**)currMem = (char*)(buffer - 1);
       }
 
       char* cbuff = (char*)&word;
@@ -94,10 +109,53 @@ void p_readInstruction() {
       std::string* lutPointer = *((std::string**)LUTPointers + (uint32)wordTypes[i]);
       std::string name = lutPointer[word];
       std::cout << " " << name;
+      *currMem = word;
     }
   }
 
   std::cout << std::endl;
+
+  return Result;
+}
+
+bool p_parseProgram(Program* prog) {
+  if (!p_expectAndEat(spv::MagicNumber)) {
+    return false;
+  }
+
+  prog->Version = p_getAndEat();
+  std::cout << "Version: " << prog->Version << std::endl;
+
+  prog->GeneratorMagic = p_getAndEat();
+  std::cout << "Generator Magic: " << prog->GeneratorMagic << std::endl;
+
+  prog->IDBound = p_getAndEat();
+  std::cout << "ID Bound: " << prog->IDBound << std::endl;
+
+  prog->InstructionSchema = p_getAndEat();
+  std::cout << "Instruction Schema: " << prog->InstructionSchema << std::endl;
+  std::cout << "=================================================" << std::endl;
+
+  int instructionIndex = 0;
+
+  while (!p_End()) {
+    std::cout << std::setw(3) << instructionIndex << ": ";
+    SOp op = p_readInstruction();
+    LUTHandlerMethods[op.Op]((void*)op.Memory, prog);
+
+    if (prog->InFunction && prog->CurrentFunction.InBlock) {
+      addOp(prog, op);
+    }
+
+    instructionIndex++;
+  }
+
+  return true;
+}
+
+
+bool genCode(std::stringstream* buffer, const Program& prog) {
+  return false;
 }
 
 struct CmdArgs {
@@ -147,28 +205,15 @@ int main(int argc, const char** argv) {
   
   inputFile.close();
 
-  p_expectAndEat(spv::MagicNumber);
+  Program prog;
 
-  uint32 versionNumber = p_getAndEat();
-  std::cout << "Version: " << versionNumber << std::endl;
-  
-  uint32 genMagic = p_getAndEat();
-  std::cout << "Generator Magic: " << genMagic << std::endl;
+  if (!p_parseProgram(&prog)) {
+    std::cout << "Could not parse program." << std::endl;
+  }
 
-  uint32 bound = p_getAndEat();
-  std::cout << "ID Bound: " << bound << std::endl;
-
-  uint32 instructionSchema = p_getAndEat();
-  std::cout << "Instruction Schema: " << instructionSchema << std::endl;
-
-  std::cout << "=================================================" << std::endl;
-
-  int instructionIndex = 0;
-
-  while (!p_End()) {
-    std::cout << std::setw(3) << instructionIndex << ": ";
-    p_readInstruction();
-    instructionIndex++;
+  std::stringstream out;
+  if (!genCode(&out, prog)) {
+    std::cout << "Could not generate code for program." << std::endl;
   }
 
   getchar();
