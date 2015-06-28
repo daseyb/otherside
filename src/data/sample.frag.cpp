@@ -32,3 +32,9 @@ typedef float_7[4] v_float_7_4_8;
 typedef v_float_7_4_8* p_v_float_7_4_8_9;
 typedef float_7[3] v_float_7_3_11;
 typedef v_float_7_3_11* p_v_float_7_3_11_12;
+
+static p_v_float_7_4_8_9 gl_FragColor;
+static p_v_float_7_3_11_12 color;
+
+static void_2 main() {
+}

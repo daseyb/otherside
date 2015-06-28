@@ -84,7 +84,7 @@ SOp p_readInstruction() {
       *currMem = word;
     }
     else if (wordTypes[i] == WordType::TId) {
-      if (i + 1 == opWordCount && opWordCount != wordCount) {
+      if (i + 1 == opWordCount) {
         *(currMem++) = (uint32)(wordCount - opWordCount + 1);
         *(uint32**)currMem = (uint32*)(buffer - 1);
       } else if(i < opWordCount) {
@@ -172,7 +172,7 @@ bool g_header(std::stringstream* ss, const Program& prog) {
   return true;
 }
 
-std::map<uint32, std::string> typeIds;
+std::map<uint32, std::string> ids;
 
 bool g_imports(std::stringstream* ss, const Program& prog) {
   *ss << std::endl;
@@ -253,22 +253,115 @@ bool g_types(std::stringstream* ss, const Program& prog) {
     case Op::OpTypePointer:
     {
       STypePointer* opPointer = (STypePointer*)type.second.Memory;
-      idName << "p_" << typeIds[opPointer->TypeId] << "_" << opPointer->ResultId;
-      *ss << "typedef " << typeIds[opPointer->TypeId] << "* " << idName.str() << ";" << std::endl;
+      idName << "p_" << ids[opPointer->TypeId] << "_" << opPointer->ResultId;
+      *ss << "typedef " << ids[opPointer->TypeId] << "* " << idName.str() << ";" << std::endl;
       break;
     }
     case Op::OpTypeVector:
     {
       STypeVector* opVector = (STypeVector*)type.second.Memory;
-      idName << "v_" << typeIds[opVector->ComponenttypeId] << "_" << opVector->Componentcount << "_" << opVector->ResultId;
-      *ss << "typedef " << typeIds[opVector->ComponenttypeId] << "[" << opVector->Componentcount << "] " << idName.str() << ";" << std::endl;
+      idName << "v_" << ids[opVector->ComponenttypeId] << "_" << opVector->Componentcount << "_" << opVector->ResultId;
+      *ss << "struct " << idName.str() << " {" << std::endl;
+      *ss << "  " << ids[opVector->ComponenttypeId] << " " << "v[" << opVector->Componentcount << "];" << std::endl;
+      *ss << "};" << std::endl;
+      break;
+    }
+    case Op::OpTypeStruct:
+    {
+      STypeStruct* opStruct = (STypeStruct*)type.second.Memory;
+      idName << "s_" << opStruct->ResultId;
+      *ss << "struct " << idName.str() << " {" << std::endl;
+      for (int i = 0; i < opStruct->MembertypeIdsCount; i++) {
+        *ss << "  " << ids[opStruct->MembertypeIds[i]] << " " << "m_" << i << ";" << std::endl;
+      }
+      *ss << "};" << std::endl;
       break;
     }
     default:
       break;
     }
 
-    typeIds.insert(std::pair<uint32, std::string>(type.first, idName.str()));
+    ids.insert(std::pair<uint32, std::string>(type.first, idName.str()));
+  }
+
+  return true;
+}
+
+bool g_variables(std::stringstream* ss, const Program& prog) {
+  *ss << std::endl;
+
+  for (auto var : prog.Variables) {
+    std::stringstream idName;
+    if (prog.Names.find(var.first) != prog.Names.end())
+    {
+      idName << prog.Names.at(var.first).Name;
+    }
+    else
+    {
+      idName << "var" << var.first;
+    }
+  
+    *ss << "static " << ids[var.second.ResultTypeId] << " " << idName.str() << ";" << std::endl;
+
+    ids.insert(std::pair<uint32, std::string>(var.first, idName.str()));
+  }
+
+  return true;
+}
+
+bool g_function(std::stringstream* ss, const Program& prog, const Function& func) {
+  std::stringstream idName;
+  if (prog.Names.find(func.Info.ResultId) != prog.Names.end())
+  {
+    idName << prog.Names.at(func.Info.ResultId).Name;
+  }
+  else
+  {
+    idName << "fun" << func.Info.ResultId;
+  }
+
+  *ss << "static " << ids[func.Info.ResultTypeId] << " " << idName.str() << "(";
+
+  int paramIndex = 0;
+  for (auto param : func.Parameters) {
+    std::stringstream paramName;
+    if (prog.Names.find(param.ResultId) != prog.Names.end())
+    {
+      paramName << prog.Names.at(param.ResultId).Name;
+    }
+    else
+    {
+      paramName << "param" << param.ResultId;
+    }
+
+    *ss << ids[param.ResultTypeId] << " " << paramName.str();
+    if (paramIndex + 1 < func.Parameters.size()) {
+      *ss << ", ";
+    }
+
+    paramIndex++;
+  }
+
+  *ss << ")" << (func.Blocks.size() == 0 ? ";" : " {") << std::endl;
+
+  if (func.Blocks.size() > 0) {
+
+    *ss << "}" << std::endl;
+  }
+
+  ids.insert(std::pair<uint32, std::string>(func.Info.ResultId, idName.str()));
+  return true;
+}
+
+bool g_functions(std::stringstream* ss, const Program& prog) {
+  *ss << std::endl;
+
+  for (auto var : prog.FunctionDeclarations) {
+    g_function(ss, prog, var.second);
+  }
+
+  for (auto var : prog.FunctionDefinitions) {
+    g_function(ss, prog, var.second);
   }
 
   return true;
@@ -290,6 +383,15 @@ bool genCode(std::stringstream* ss, const Program& prog) {
   if (!g_types(ss, prog)) {
     return false;
   }
+
+  if (!g_variables(ss, prog)) {
+    return false;
+  }
+
+  if (!g_functions(ss, prog)) {
+    return false;
+  }
+
 
   return true;
 }

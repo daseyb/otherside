@@ -3,15 +3,22 @@ uniform int iterations;
 uniform bool loopFlag;
 varying vec3 color;
 
-int lerp(vec3 a, vec3 b, float t) {
- return a + (b - a) * t;
+struct lerp_res {
+  vec3 val;
+};
+
+lerp_res mlerp(vec3 a, vec3 b, float t) {
+ lerp_res Result = lerp_res(a + (b - a) * t);
+ return Result;
 }
 
 void main() {
+  lerp_res res;
   vec3 currColor = color;
   if(loopFlag) {
     for(int i = 0; i < iterations; i++) {
-      currColor += lerp(currColor, color, (float)i/10);
+      res = mlerp(currColor, color, float(i)/2.0); 
+      currColor += res.val;
     }
   }
   gl_FragColor = vec4(color, 1.0);
