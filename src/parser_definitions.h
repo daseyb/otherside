@@ -20,15 +20,19 @@ struct SOp {
 };
 
 struct Block {
+  uint32 Id;
   std::vector<SOp> Ops;
 };
 
 struct Function {
   SFunction Info;
   std::vector<SFunctionParameter> Parameters;
-  std::vector<Block> Blocks;
+  std::map<uint32, Block> Blocks;
+  std::map<uint32, SVariable> Variables;
+  std::map<uint32, SVariableArray> Arrays;
+
   Block CurrentBlock;
-  bool InBlock;
+  bool InBlock = false;
 };
 
 struct Program {
@@ -51,25 +55,53 @@ struct Program {
   std::map<uint32, SExecutionMode> ExecutionModes;
   std::map<uint32, SExtInstImport> ExtensionImports;
   std::map<uint32, SOp> DefinedTypes;
+  std::map<uint32, SOp> Constants;
+  std::map<uint32, SVariable> Variables;
+  std::map<uint32, SVariableArray> Arrays;
 
   std::map<uint32, Function> FunctionDeclarations;
   std::map<uint32, Function> FunctionDefinitions;
 
   Function CurrentFunction;
-  bool InFunction;
+  bool InFunction = false;
 };
 
-static void startNewBlock(Function* func) {
-  func->CurrentBlock.Ops.clear();
-  func->InBlock = true;
+static void addVariable(Program* prog, SVariable var) {
+  if (prog->InFunction) {
+    prog->CurrentFunction.Variables.insert(std::pair<uint32, SVariable>(var.ResultId, var));
+  }
+  else {
+    prog->Variables.insert(std::pair<uint32, SVariable>(var.ResultId, var));
+  }
 }
 
-static void endBlock(Function* func) {
-  func->Blocks.push_back(func->CurrentBlock);
-  func->InBlock = false;
+static void addArray(Program* prog, SVariableArray var) {
+  if (prog->InFunction) {
+    prog->CurrentFunction.Arrays.insert(std::pair<uint32, SVariableArray>(var.ResultId, var));
+  }
+  else {
+    prog->Arrays.insert(std::pair<uint32, SVariableArray>(var.ResultId, var));
+  }
+}
+
+static void startNewBlock(Program* prog, SLabel label) {
+  assert(prog->InFunction && !prog->CurrentFunction.InBlock);
+
+  prog->CurrentFunction.CurrentBlock.Ops.clear();
+  prog->CurrentFunction.CurrentBlock.Id = label.ResultId;
+  prog->CurrentFunction.InBlock = true;
+}
+
+static void endBlock(Program* prog) {
+  assert(prog->InFunction && prog->CurrentFunction.InBlock);
+
+  prog->CurrentFunction.Blocks.insert(std::pair<uint32, Block>(prog->CurrentFunction.CurrentBlock.Id, prog->CurrentFunction.CurrentBlock));
+  prog->CurrentFunction.InBlock = false;
 }
 
 static void startFunction(Program* prog, SFunction func) {
+  assert(!prog->InFunction);
+
   prog->CurrentFunction.Info = func;
   prog->CurrentFunction.Blocks.clear();
   prog->CurrentFunction.Parameters.clear();
@@ -77,9 +109,10 @@ static void startFunction(Program* prog, SFunction func) {
 }
 
 static void endFunction(Program* prog) {
+  assert(prog->InFunction);
 
   if (prog->CurrentFunction.InBlock) {
-    endBlock(&prog->CurrentFunction);
+    endBlock(prog);
   }
 
   if (prog->CurrentFunction.Blocks.size() == 0) {

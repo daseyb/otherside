@@ -140,30 +140,37 @@ static void HandleTypePipe(void* op, Program* prog) {
 
 static void HandleConstantTrue(void* op, Program* prog) {
   SConstantTrue* opConstantTrue = (SConstantTrue*)op;
+  prog->Constants.insert(std::pair<uint32, SOp>(opConstantTrue->ResultId, SOp{ Op::OpConstantTrue, op }));
 }
 
 static void HandleConstantFalse(void* op, Program* prog) {
   SConstantFalse* opConstantFalse = (SConstantFalse*)op;
+  prog->Constants.insert(std::pair<uint32, SOp>(opConstantFalse->ResultId, SOp{ Op::OpConstantFalse, op }));
 }
 
 static void HandleConstant(void* op, Program* prog) {
   SConstant* opConstant = (SConstant*)op;
+  prog->Constants.insert(std::pair<uint32, SOp>(opConstant->ResultId, SOp{ Op::OpConstant, op }));
 }
 
 static void HandleConstantComposite(void* op, Program* prog) {
   SConstantComposite* opConstantComposite = (SConstantComposite*)op;
+  prog->Constants.insert(std::pair<uint32, SOp>(opConstantComposite->ResultId, SOp{ Op::OpConstantComposite, op }));
 }
 
 static void HandleConstantSampler(void* op, Program* prog) {
   SConstantSampler* opConstantSampler = (SConstantSampler*)op;
+  prog->Constants.insert(std::pair<uint32, SOp>(opConstantSampler->ResultId, SOp{ Op::OpConstantSampler, op }));
 }
 
 static void HandleConstantNullPointer(void* op, Program* prog) {
   SConstantNullPointer* opConstantNullPointer = (SConstantNullPointer*)op;
+  prog->Constants.insert(std::pair<uint32, SOp>(opConstantNullPointer->ResultId, SOp{ Op::OpConstantNullPointer, op }));
 }
 
 static void HandleConstantNullObject(void* op, Program* prog) {
   SConstantNullObject* opConstantNullObject = (SConstantNullObject*)op;
+  prog->Constants.insert(std::pair<uint32, SOp>(opConstantNullObject->ResultId, SOp{ Op::OpConstantNullObject, op }));
 }
 
 static void HandleSpecConstantTrue(void* op, Program* prog) {
@@ -184,10 +191,12 @@ static void HandleSpecConstantComposite(void* op, Program* prog) {
 
 static void HandleVariable(void* op, Program* prog) {
   SVariable* opVariable = (SVariable*)op;
+  addVariable(prog, *opVariable);
 }
 
 static void HandleVariableArray(void* op, Program* prog) {
   SVariableArray* opVariableArray = (SVariableArray*)op;
+  addArray(prog, *opVariableArray);
 }
 
 static void HandleFunction(void* op, Program* prog) {
@@ -871,37 +880,49 @@ static void HandleSelectionMerge(void* op, Program* prog) {
 
 static void HandleLabel(void* op, Program* prog) {
   SLabel* opLabel = (SLabel*)op;
-  startNewBlock(&prog->CurrentFunction);
+  startNewBlock(prog, *opLabel);
 }
 
 static void HandleBranch(void* op, Program* prog) {
   SBranch* opBranch = (SBranch*)op;
   addOp(prog, SOp{ Op::OpBranch, opBranch });
-  endBlock(&prog->CurrentFunction);
+  endBlock(prog);
 }
 
 static void HandleBranchConditional(void* op, Program* prog) {
   SBranchConditional* opBranchConditional = (SBranchConditional*)op;
+  addOp(prog, SOp{ Op::OpBranchConditional, opBranchConditional });
+  endBlock(prog);
 }
 
 static void HandleSwitch(void* op, Program* prog) {
   SSwitch* opSwitch = (SSwitch*)op;
+  addOp(prog, SOp{ Op::OpSwitch, opSwitch });
+  endBlock(prog);
 }
 
 static void HandleKill(void* op, Program* prog) {
   SKill* opKill = (SKill*)op;
+  addOp(prog, SOp{ Op::OpKill, opKill });
+  endBlock(prog);
 }
 
 static void HandleReturn(void* op, Program* prog) {
   SReturn* opReturn = (SReturn*)op;
+  addOp(prog, SOp{ Op::OpReturn, opReturn });
+  endBlock(prog);
 }
 
 static void HandleReturnValue(void* op, Program* prog) {
   SReturnValue* opReturnValue = (SReturnValue*)op;
+  addOp(prog, SOp{ Op::OpReturnValue, opReturnValue });
+  endBlock(prog);
 }
 
 static void HandleUnreachable(void* op, Program* prog) {
   SUnreachable* opUnreachable = (SUnreachable*)op;
+  addOp(prog, SOp{ Op::OpUnreachable, opUnreachable });
+  endBlock(prog);
 }
 
 static void HandleLifetimeStart(void* op, Program* prog) {
@@ -914,6 +935,7 @@ static void HandleLifetimeStop(void* op, Program* prog) {
 
 static void HandleCompileFlag(void* op, Program* prog) {
   SCompileFlag* opCompileFlag = (SCompileFlag*)op;
+  prog->CompileFlags.push_back(opCompileFlag->Flag);
 }
 
 static void HandleAsyncGroupCopy(void* op, Program* prog) {
