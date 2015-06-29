@@ -83,7 +83,7 @@ namespace SpecParser
         string paramList = "";
         foreach (var param in Parameters)
         {
-          paramList += String.Format("\n  WordType::T{0},", param.Type);
+          paramList += String.Format("\n  WordType::T{0},", param.Type + (param.IsList ? "List" : ""));
         }
 
         return string.Format("static WordType {0}WordTypes[] {{\n  WordType::TOp,{1}\n}};\nstatic uint32 {2}WordTypesCount = {3};\n", Name, paramList, Name, Parameters.Count + 1);

@@ -82,18 +82,31 @@ SOp p_readInstruction() {
     if (wordTypes[i] == WordType::TLiteralNumber) {
       std::cout << " " << word;
       *currMem = word;
-    }
-    else if (wordTypes[i] == WordType::TId) {
+    } else if (wordTypes[i] == WordType::TId) {
+      std::cout << " [" << word << "]";
+      *currMem = word;
+    } else if (wordTypes[i] == WordType::TIdList) {
       if (i + 1 == opWordCount) {
         *(currMem++) = (uint32)(wordCount - opWordCount + 1);
         *(uint32**)currMem = (uint32*)(buffer - 1);
-      } else if(i < opWordCount) {
+      }
+      else if (i < opWordCount) {
         *currMem = word;
       }
 
       std::cout << " [" << word << "]";
-    }
-    else if (wordTypes[i] == WordType::TLiteralString) {
+    } else if (wordTypes[i] == WordType::TLiteralNumberList) {
+      if (i + 1 == opWordCount) {
+        *(currMem++) = (uint32)(wordCount - opWordCount + 1);
+        *(uint32**)currMem = (uint32*)(buffer - 1);
+      }
+      else if (i < opWordCount) {
+        *currMem = word;
+      }
+
+      std::cout << " " << word;
+
+    } else if (wordTypes[i] == WordType::TLiteralString) {
       if (wordTypes[i - 1] != WordType::TLiteralString) {
         std::cout << " ";
         *(char**)currMem = (char*)(buffer - 1);
@@ -269,10 +282,24 @@ bool g_types(std::stringstream* ss, const Program& prog) {
     case Op::OpTypeStruct:
     {
       STypeStruct* opStruct = (STypeStruct*)type.second.Memory;
-      idName << "s_" << opStruct->ResultId;
+      if (prog.Names.find(opStruct->ResultId) != prog.Names.end()) {
+        idName << prog.Names.at(opStruct->ResultId).Name;
+      } else {
+        idName << "s_" << opStruct->ResultId;
+      }
+
       *ss << "struct " << idName.str() << " {" << std::endl;
       for (int i = 0; i < opStruct->MembertypeIdsCount; i++) {
-        *ss << "  " << ids[opStruct->MembertypeIds[i]] << " " << "m_" << i << ";" << std::endl;
+        std::stringstream memberName;
+        uint32 key = (opStruct->ResultId << 16) & i;
+        if (prog.MemberNames.find(key) != prog.MemberNames.end()) {
+          memberName << prog.MemberNames.at(key).Name;
+        }
+        else {
+          memberName << "m_" << i;
+        }
+
+        *ss << "  " << ids[opStruct->MembertypeIds[i]] << " " << memberName.str() << ";" << std::endl;
       }
       *ss << "};" << std::endl;
       break;

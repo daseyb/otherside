@@ -265,7 +265,9 @@ static void HandleName(void* op, Program* prog) {
 
 static void HandleMemberName(void* op, Program* prog) {
   SMemberName* opMemberName = (SMemberName*)op;
-  prog->MemberNames.insert(std::pair<uint32, SMemberName>(opMemberName->Member, *opMemberName));
+  uint32 key = (opMemberName->TypeId << 16) & opMemberName->TypeId;
+
+  prog->MemberNames.insert(std::pair<uint32, SMemberName>(key, *opMemberName));
 }
 
 static void HandleString(void* op, Program* prog) {

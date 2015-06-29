@@ -46,7 +46,9 @@ enum WordType {
   TOp,
   TId,
   TLiteralNumber,
-  TLiteralString
+  TLiteralString,
+  TIdList,
+  TLiteralNumberList
 };
 
 static std::string SourceLanguageStrings[] {

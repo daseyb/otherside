@@ -2104,7 +2104,7 @@ static WordType ExecutionModeWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TExecutionMode,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 ExecutionModeWordTypesCount = 4;
 
@@ -2188,7 +2188,7 @@ static uint32 TypeRuntimeArrayWordTypesCount = 3;
 static WordType TypeStructWordTypes[]{
   WordType::TOp,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 TypeStructWordTypesCount = 3;
 
@@ -2211,7 +2211,7 @@ static WordType TypeFunctionWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 TypeFunctionWordTypesCount = 4;
 
@@ -2265,7 +2265,7 @@ static WordType ConstantWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TId,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 ConstantWordTypesCount = 4;
 
@@ -2273,7 +2273,7 @@ static WordType ConstantCompositeWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 ConstantCompositeWordTypesCount = 4;
 
@@ -2319,7 +2319,7 @@ static WordType SpecConstantWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TId,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 SpecConstantWordTypesCount = 4;
 
@@ -2327,7 +2327,7 @@ static WordType SpecConstantCompositeWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 SpecConstantCompositeWordTypesCount = 4;
 
@@ -2375,7 +2375,7 @@ static WordType FunctionCallWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 FunctionCallWordTypesCount = 5;
 
@@ -2385,7 +2385,7 @@ static WordType ExtInstWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TLiteralNumber,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 ExtInstWordTypesCount = 6;
 
@@ -2401,7 +2401,7 @@ static WordType LoadWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TId,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 LoadWordTypesCount = 5;
 
@@ -2409,7 +2409,7 @@ static WordType StoreWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TId,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 StoreWordTypesCount = 4;
 
@@ -2417,7 +2417,7 @@ static WordType PhiWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 PhiWordTypesCount = 4;
 
@@ -2431,7 +2431,7 @@ static WordType DecorateWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TDecoration,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 DecorateWordTypesCount = 4;
 
@@ -2440,21 +2440,21 @@ static WordType MemberDecorateWordTypes[]{
   WordType::TId,
   WordType::TLiteralNumber,
   WordType::TDecoration,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 MemberDecorateWordTypesCount = 5;
 
 static WordType GroupDecorateWordTypes[]{
   WordType::TOp,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 GroupDecorateWordTypesCount = 3;
 
 static WordType GroupMemberDecorateWordTypes[]{
   WordType::TOp,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 GroupMemberDecorateWordTypesCount = 3;
 
@@ -2514,7 +2514,7 @@ static WordType VectorShuffleWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TId,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 VectorShuffleWordTypesCount = 6;
 
@@ -2522,7 +2522,7 @@ static WordType CompositeConstructWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 CompositeConstructWordTypesCount = 4;
 
@@ -2531,7 +2531,7 @@ static WordType CompositeExtractWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TId,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 CompositeExtractWordTypesCount = 5;
 
@@ -2541,7 +2541,7 @@ static WordType CompositeInsertWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TId,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 CompositeInsertWordTypesCount = 6;
 
@@ -2557,7 +2557,7 @@ static WordType CopyMemoryWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TId,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 CopyMemoryWordTypesCount = 4;
 
@@ -2566,7 +2566,7 @@ static WordType CopyMemorySizedWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TId,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 CopyMemorySizedWordTypesCount = 5;
 
@@ -2837,7 +2837,7 @@ static WordType AccessChainWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 AccessChainWordTypesCount = 5;
 
@@ -2846,7 +2846,7 @@ static WordType InBoundsAccessChainWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 InBoundsAccessChainWordTypesCount = 5;
 
@@ -3854,7 +3854,7 @@ static WordType BranchConditionalWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TId,
-  WordType::TLiteralNumber,
+  WordType::TLiteralNumberList,
 };
 static uint32 BranchConditionalWordTypesCount = 5;
 
@@ -3862,7 +3862,7 @@ static WordType SwitchWordTypes[]{
   WordType::TOp,
   WordType::TId,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 SwitchWordTypesCount = 4;
 
@@ -4212,7 +4212,7 @@ static WordType EnqueueKernelWordTypes[]{
   WordType::TId,
   WordType::TId,
   WordType::TId,
-  WordType::TId,
+  WordType::TIdList,
 };
 static uint32 EnqueueKernelWordTypesCount = 14;
 
