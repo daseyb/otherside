@@ -380,6 +380,22 @@ bool g_types(std::stringstream* ss, const Program& prog) {
   return true;
 }
 
+bool g_constants(std::stringstream* ss, const Program& prog) {
+  *ss << std::endl;
+  for (auto constant : prog.Constants) {
+    switch (constant.second.Op)
+    {
+    case Op::OpConstant:
+    {
+      auto opConst = (SConstant*)constant.second.Memory;
+      break;
+    }
+    }
+  }
+
+  return true;
+}
+
 bool g_variables(std::stringstream* ss, const Program& prog) {
   *ss << std::endl;
 

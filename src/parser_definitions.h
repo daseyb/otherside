@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <map>
+#include <stack>
 #include "Khronos\spirv.h"
 
 
@@ -20,8 +21,42 @@ struct SOp {
 };
 
 struct Block {
+  SOp MergeInfo;
+  SOp BranchInfo;
   uint32 Id;
   std::vector<SOp> Ops;
+  std::map<uint32, Block*> Children;
+};
+
+enum CFGNodeType {
+  Base,
+  Loop,
+  If,
+  Switch
+};
+
+struct CFGNode {
+  CFGNodeType Type;
+};
+
+struct CFGNodeBase : CFGNode {
+  Block* Block;
+};
+
+struct CFGNodeLoop : CFGNode {
+  CFGNode* LoopNode;
+  std::vector<int> BreakInstructions;
+  std::vector<int> ContinueInstructions;
+};
+
+struct CFGNodeIf : CFGNode {
+  CFGNode* ThenNode;
+  CFGNode* ElseNode;
+};
+
+struct CFGNodeSwitch : CFGNode {
+  std::map<uint32, CFGNode*> SwitchNodes;
+
 };
 
 struct Function {
@@ -30,9 +65,12 @@ struct Function {
   std::map<uint32, Block> Blocks;
   std::map<uint32, SVariable> Variables;
   std::map<uint32, SVariableArray> Arrays;
+  uint32 EntryBlock = 0;
 
-  Block CurrentBlock;
+  std::stack<Block*> BlockStack;
+  Block* CurrentBlock;
   bool InBlock = false;
+  SOp NextBlockInfo = SOp{ Op::OpLabel, nullptr };
 };
 
 struct Program {
@@ -86,16 +124,41 @@ static void addArray(Program* prog, SVariableArray var) {
 
 static void startNewBlock(Program* prog, SLabel label) {
   assert(prog->InFunction && !prog->CurrentFunction.InBlock);
+  prog->CurrentFunction.Blocks.insert(std::pair<uint32, Block>(label.ResultId, Block()));
+  Block* newBlockPtr = &prog->CurrentFunction.Blocks.at(label.ResultId);
 
-  prog->CurrentFunction.CurrentBlock.Ops.clear();
-  prog->CurrentFunction.CurrentBlock.Id = label.ResultId;
+  prog->CurrentFunction.CurrentBlock->Children.insert(std::pair<uint32, Block*>(label.ResultId, newBlockPtr));
+  prog->CurrentFunction.CurrentBlock = newBlockPtr;
+  prog->CurrentFunction.BlockStack.push(newBlockPtr);
+
+  newBlockPtr->Ops.clear();
+  newBlockPtr->Id = label.ResultId;
+  newBlockPtr->BranchInfo = prog->CurrentFunction.NextBranchInfo;
+  newBlockPtr->MergeInfo = prog->CurrentFunction.NextMergeInfo;
   prog->CurrentFunction.InBlock = true;
+
+  if (prog->CurrentFunction.EntryBlock == 0) {
+    prog->CurrentFunction.EntryBlock = label.ResultId;
+  }
+}
+
+static void startLoop(Program* prog, SLoopMerge* loop) {
+  assert(prog->InFunction && !prog->CurrentFunction.InBlock);
+  prog->CurrentFunction.NextBlockInfo = SOp{ Op::OpLoopMerge, loop };
+}
+
+static void startSelection(Program* prog, SSelectionMerge* selection) {
+  assert(prog->InFunction && !prog->CurrentFunction.InBlock);
+  prog->CurrentFunction.NextBlockInfo = SOp{ Op::OpSelectionMerge, selection};
+}
+
+static void buildCFG(Program* prog, Function* func) {
+  assert(!prog->InFunction);
 }
 
 static void endBlock(Program* prog) {
   assert(prog->InFunction && prog->CurrentFunction.InBlock);
-
-  prog->CurrentFunction.Blocks.insert(std::pair<uint32, Block>(prog->CurrentFunction.CurrentBlock.Id, prog->CurrentFunction.CurrentBlock));
+  prog->C
   prog->CurrentFunction.InBlock = false;
 }
 

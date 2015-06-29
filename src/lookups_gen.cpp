@@ -874,10 +874,12 @@ static void HandleAtomicXor(void* op, Program* prog) {
 
 static void HandleLoopMerge(void* op, Program* prog) {
   SLoopMerge* opLoopMerge = (SLoopMerge*)op;
+  startLoop(prog, opLoopMerge);
 }
 
 static void HandleSelectionMerge(void* op, Program* prog) {
   SSelectionMerge* opSelectionMerge = (SSelectionMerge*)op;
+  startSelection(prog, opSelectionMerge);
 }
 
 static void HandleLabel(void* op, Program* prog) {

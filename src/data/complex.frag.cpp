@@ -73,10 +73,10 @@ static void_2 main() {
 // Branch [44]
 // Label [39]
 // Load [8] [73] [32]
-// CompositeExtract [7] [75] [73] 12549260
-// CompositeExtract [7] [76] [73] 12549280
-// CompositeExtract [7] [77] [73] 12549300
-// CompositeConstruct [70] [78] [12549316] [0] [4261281277] [1518345164]
+// CompositeExtract [7] [75] [73] 17726636
+// CompositeExtract [7] [76] [73] 17726656
+// CompositeExtract [7] [77] [73] 17726676
+// CompositeConstruct [70] [78] [17726692] [0] [4261281277] [1448823656]
 // Store [72] [78]
 // Branch [6]
 // Label [44]
@@ -96,9 +96,9 @@ static void_2 main() {
 // Load [8] [60] [32]
 // Store [59] [60]
 // Store [61] [56]
-// FunctionCall [11] [62] [16] [12549040] [0] [4261281277]
+// FunctionCall [11] [62] [16] [17726416] [0] [4261281277]
 // Store [52] [62]
-// AccessChain [9] [63] [52] [12549080]
+// AccessChain [9] [63] [52] [17726456]
 // Load [8] [64] [63]
 // Load [8] [65] [30]
 // FAdd [8] [66] [65] [64]
@@ -119,7 +119,7 @@ static lerp_res mlerp(vf3;vf3;f1;(p_v_float_7_3_8_9 a, p_v_float_7_3_8_9 b, p_fl
 // Load [7] [24] [15]
 // VectorTimesScalar [8] [25] [23] [24]
 // FAdd [8] [26] [20] [25]
-// CompositeConstruct [11] [27] [12549584]
+// CompositeConstruct [11] [27] [17726960]
 // Store [19] [27]
 // Load [11] [28] [19]
 // ReturnValue [28]
