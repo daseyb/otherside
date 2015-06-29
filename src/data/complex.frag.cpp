@@ -54,6 +54,74 @@ static p_int_40_47 iterations;
 static p_v_float_7_4_70_71 gl_FragColor;
 
 static void_2 main() {
+// Label [5]
+// Variable [9] [30] Function [0]
+// Variable [41] [42] Function [0]
+// Variable [18] [52] Function [0]
+// Variable [9] [57] Function [0]
+// Variable [9] [59] Function [0]
+// Variable [10] [61] Function [0]
+// Load [8] [33] [32]
+// Store [30] [33]
+// Load [34] [37] [36]
+// SelectionMerge [39] Flatten
+// BranchConditional [37] [38] [39]
+// Label [6]
+// Return
+// Label [38]
+// Store [42] [43]
+// Branch [44]
+// Label [39]
+// Load [8] [73] [32]
+// CompositeExtract [7] [75] [73] 12549260
+// CompositeExtract [7] [76] [73] 12549280
+// CompositeExtract [7] [77] [73] 12549300
+// CompositeConstruct [70] [78] [12549316] [0] [4261281277] [1518345164]
+// Store [72] [78]
+// Branch [6]
+// Label [44]
+// Load [40] [46] [42]
+// Load [40] [49] [48]
+// SLessThan [34] [50] [46] [49]
+// LoopMerge [45] Unroll
+// BranchConditional [50] [51] [45]
+// Label [45]
+// Branch [39]
+// Label [51]
+// Load [40] [53] [42]
+// ConvertSToF [7] [54] [53]
+// FDiv [7] [56] [54] [55]
+// Load [8] [58] [30]
+// Store [57] [58]
+// Load [8] [60] [32]
+// Store [59] [60]
+// Store [61] [56]
+// FunctionCall [11] [62] [16] [12549040] [0] [4261281277]
+// Store [52] [62]
+// AccessChain [9] [63] [52] [12549080]
+// Load [8] [64] [63]
+// Load [8] [65] [30]
+// FAdd [8] [66] [65] [64]
+// Store [30] [66]
+// Load [40] [67] [42]
+// IAdd [40] [69] [67] [68]
+// Store [42] [69]
+// Branch [44]
 }
+
 static lerp_res mlerp(vf3;vf3;f1;(p_v_float_7_3_8_9 a, p_v_float_7_3_8_9 b, p_float_7_10 t) {
+// Label [17]
+// Variable [18] [19] Function [0]
+// Load [8] [20] [13]
+// Load [8] [21] [14]
+// Load [8] [22] [13]
+// FSub [8] [23] [21] [22]
+// Load [7] [24] [15]
+// VectorTimesScalar [8] [25] [23] [24]
+// FAdd [8] [26] [20] [25]
+// CompositeConstruct [11] [27] [12549584]
+// Store [19] [27]
+// Load [11] [28] [19]
+// ReturnValue [28]
 }
+

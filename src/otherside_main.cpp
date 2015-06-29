@@ -44,6 +44,72 @@ bool p_expect(uint32 e) {
   return true;
 }
 
+std::string writeOp(SOp op) {
+  std::stringstream opline;
+
+  opline << OpStrings[op.Op];
+
+  WordType wordTypes[255];
+
+  uint32 opWordCount = 0;
+
+  if (sizeof(LUTOpWordTypes) / sizeof(void*) <= op.Op) {
+    return "";
+  }
+  else {
+    WordType* opWordTypes = (WordType*)LUTOpWordTypes[op.Op];
+    opWordCount = LUTOpWordTypesCount[op.Op];
+
+    for (int i = 0; i < opWordCount; i++) {
+      wordTypes[i] = opWordTypes[i];
+    }
+  }
+
+  for (int i = 1; i < opWordCount; i++) {
+    uint32 word = *((uint32*)op.Memory + i - 1);
+
+    if (wordTypes[i] == WordType::TLiteralNumber) {
+      opline << " " << word;
+    }
+    else if (wordTypes[i] == WordType::TId) {
+      opline << " [" << word << "]";
+    }
+    else if (wordTypes[i] == WordType::TIdList) {
+      uint32 count = word;
+
+      for (int j = 0; j < count; j++) {
+        word = *((uint32*)op.Memory + i + j);
+        opline << " [" << word << "]";
+      }
+
+      break;
+    }
+    else if (wordTypes[i] == WordType::TLiteralNumberList) {
+      uint32 count = word;
+
+      for (int j = 0; j < count; j++) {
+        word = *((uint32*)op.Memory + i + j);
+        opline << " " << word;
+      }
+
+      break;
+    }
+    else if (wordTypes[i] == WordType::TLiteralString) {
+      if (wordTypes[i - 1] != WordType::TLiteralString) {
+        opline << " " << (char*)word;
+      }
+    }
+    else {
+      std::string* lutPointer = *((std::string**)LUTPointers + (uint32)wordTypes[i]);
+      std::string name = lutPointer[word];
+      opline << " " << name;
+    }
+  }
+
+  opline << std::endl;
+  return opline.str();
+}
+
 SOp p_readInstruction() {
   uint32* opData = buffer;
   uint32 word = p_getAndEat();
@@ -336,6 +402,14 @@ bool g_variables(std::stringstream* ss, const Program& prog) {
   return true;
 }
 
+bool g_block(std::stringstream* ss, const Program& prog, const Function& func, const Block& block) {
+  for (auto op : block.Ops) {
+    *ss << "// " << writeOp(op);
+  }
+  
+  return true;
+}
+
 bool g_function(std::stringstream* ss, const Program& prog, const Function& func) {
   std::stringstream idName;
   if (prog.Names.find(func.Info.ResultId) != prog.Names.end())
@@ -372,9 +446,15 @@ bool g_function(std::stringstream* ss, const Program& prog, const Function& func
   *ss << ")" << (func.Blocks.size() == 0 ? ";" : " {") << std::endl;
 
   if (func.Blocks.size() > 0) {
+    for (auto block : func.Blocks) {
+      g_block(ss, prog, func, block.second);
+    }
 
     *ss << "}" << std::endl;
   }
+
+  *ss << std::endl;
+
 
   ids.insert(std::pair<uint32, std::string>(func.Info.ResultId, idName.str()));
   return true;
