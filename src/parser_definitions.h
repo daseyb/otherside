@@ -25,7 +25,7 @@ struct Block {
   SOp BranchInfo;
   uint32 Id;
   std::vector<SOp> Ops;
-  std::map<uint32, Block*> Children;
+  std::vector<uint32> Children;
 };
 
 enum CFGNodeType {
@@ -65,12 +65,12 @@ struct Function {
   std::map<uint32, Block> Blocks;
   std::map<uint32, SVariable> Variables;
   std::map<uint32, SVariableArray> Arrays;
-  uint32 EntryBlock = 0;
 
-  std::stack<Block*> BlockStack;
+  std::stack<uint32> BlockStack;
   Block* CurrentBlock;
   bool InBlock = false;
-  SOp NextBlockInfo = SOp{ Op::OpLabel, nullptr };
+  SOp NextBranchInfo = SOp{ Op::OpNop, nullptr };
+  SOp NextMergeInfo = SOp{ Op::OpNop, nullptr };
 };
 
 struct Program {
@@ -100,6 +100,7 @@ struct Program {
   std::map<uint32, Function> FunctionDeclarations;
   std::map<uint32, Function> FunctionDefinitions;
 
+  SOp NextOp;
   Function CurrentFunction;
   bool InFunction = false;
 };
@@ -122,61 +123,85 @@ static void addArray(Program* prog, SVariableArray var) {
   }
 }
 
+static Block* getBlock(Program* prog, uint32 id) {
+  return &prog->CurrentFunction.Blocks.find(id)->second;
+}
+
 static void startNewBlock(Program* prog, SLabel label) {
   assert(prog->InFunction && !prog->CurrentFunction.InBlock);
   prog->CurrentFunction.Blocks.insert(std::pair<uint32, Block>(label.ResultId, Block()));
-  Block* newBlockPtr = &prog->CurrentFunction.Blocks.at(label.ResultId);
+  Block* newBlockPtr = getBlock(prog, label.ResultId);
 
-  prog->CurrentFunction.CurrentBlock->Children.insert(std::pair<uint32, Block*>(label.ResultId, newBlockPtr));
-  prog->CurrentFunction.CurrentBlock = newBlockPtr;
-  prog->CurrentFunction.BlockStack.push(newBlockPtr);
+  getBlock(prog, prog->CurrentFunction.BlockStack.top())->Children.push_back(label.ResultId);
 
   newBlockPtr->Ops.clear();
   newBlockPtr->Id = label.ResultId;
   newBlockPtr->BranchInfo = prog->CurrentFunction.NextBranchInfo;
+  prog->CurrentFunction.NextBranchInfo = SOp{ Op::OpNop, nullptr };
   newBlockPtr->MergeInfo = prog->CurrentFunction.NextMergeInfo;
+  prog->CurrentFunction.NextMergeInfo = SOp{ Op::OpNop, nullptr };
   prog->CurrentFunction.InBlock = true;
 
-  if (prog->CurrentFunction.EntryBlock == 0) {
-    prog->CurrentFunction.EntryBlock = label.ResultId;
+  if (newBlockPtr->MergeInfo.Memory != nullptr) {
+    prog->CurrentFunction.BlockStack.push(label.ResultId);
   }
+
+  prog->CurrentFunction.CurrentBlock = newBlockPtr;
 }
 
 static void startLoop(Program* prog, SLoopMerge* loop) {
-  assert(prog->InFunction && !prog->CurrentFunction.InBlock);
-  prog->CurrentFunction.NextBlockInfo = SOp{ Op::OpLoopMerge, loop };
+  assert(prog->InFunction && prog->CurrentFunction.InBlock);
+  prog->CurrentFunction.NextMergeInfo = SOp{ Op::OpLoopMerge, loop };
 }
 
 static void startSelection(Program* prog, SSelectionMerge* selection) {
-  assert(prog->InFunction && !prog->CurrentFunction.InBlock);
-  prog->CurrentFunction.NextBlockInfo = SOp{ Op::OpSelectionMerge, selection};
+  assert(prog->InFunction && prog->CurrentFunction.InBlock);
+  prog->CurrentFunction.NextMergeInfo = SOp{ Op::OpSelectionMerge, selection};
 }
 
 static void buildCFG(Program* prog, Function* func) {
   assert(!prog->InFunction);
 }
 
-static void endBlock(Program* prog) {
+static void endBlock(Program* prog, SOp branchInfo) {
   assert(prog->InFunction && prog->CurrentFunction.InBlock);
-  prog->C
+
+  prog->CurrentFunction.NextBranchInfo = branchInfo;
   prog->CurrentFunction.InBlock = false;
+
+  prog->CurrentFunction.CurrentBlock = getBlock(prog, prog->CurrentFunction.BlockStack.top());
+
+  if (prog->CurrentFunction.CurrentBlock->MergeInfo.Memory == nullptr) {
+    return;
+  }
+
+  int mergeId = *((uint32*)prog->CurrentFunction.CurrentBlock->MergeInfo.Memory);
+  assert(prog->NextOp.Op == Op::OpLabel);
+  int labelId = *((uint32*)prog->NextOp.Memory);
+
+  if (labelId == mergeId) {
+    prog->CurrentFunction.CurrentBlock = getBlock(prog, prog->CurrentFunction.BlockStack.top());
+    prog->CurrentFunction.BlockStack.pop();
+  }
 }
 
 static void startFunction(Program* prog, SFunction func) {
   assert(!prog->InFunction);
 
+  prog->CurrentFunction = Function();
   prog->CurrentFunction.Info = func;
-  prog->CurrentFunction.Blocks.clear();
-  prog->CurrentFunction.Parameters.clear();
   prog->InFunction = true;
+  prog->CurrentFunction.Blocks.insert(std::pair<uint32, Block>(0, Block()));
+  prog->CurrentFunction.CurrentBlock = getBlock(prog, 0);
+  prog->CurrentFunction.BlockStack.push(0);
 }
 
 static void endFunction(Program* prog) {
-  assert(prog->InFunction);
-
-  if (prog->CurrentFunction.InBlock) {
-    endBlock(prog);
-  }
+  assert(prog->InFunction && !prog->CurrentFunction.InBlock);
+  assert(prog->CurrentFunction.BlockStack.top() == 0);
+  
+  prog->CurrentFunction.BlockStack.pop();
+  assert(prog->CurrentFunction.BlockStack.size() == 0);
 
   if (prog->CurrentFunction.Blocks.size() == 0) {
     prog->FunctionDeclarations.insert(std::pair<uint32, Function>(prog->CurrentFunction.Info.ResultId, prog->CurrentFunction));
@@ -188,5 +213,5 @@ static void endFunction(Program* prog) {
 
 
 static void addOp(Program* prog, SOp op) {
-  prog->CurrentFunction.CurrentBlock.Ops.push_back(op);
+  prog->CurrentFunction.CurrentBlock->Ops.push_back(op);
 }

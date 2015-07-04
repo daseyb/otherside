@@ -217,9 +217,20 @@ bool p_parseProgram(Program* prog) {
 
   int instructionIndex = 0;
 
-  while (!p_End()) {
-    std::cout << std::setw(3) << instructionIndex << ": ";
-    SOp op = p_readInstruction();
+  std::cout << std::setw(3) << instructionIndex << ": ";
+  prog->NextOp = p_readInstruction();
+  instructionIndex++;
+
+  do {
+    SOp op = prog->NextOp;
+    
+    if (!p_End()) {
+      std::cout << std::setw(3) << instructionIndex << ": ";
+      prog->NextOp = p_readInstruction();
+    } else {
+      prog->NextOp = SOp{ Op::OpNop, nullptr };
+    }
+
     LUTHandlerMethods[op.Op]((void*)op.Memory, prog);
 
     if (prog->InFunction && prog->CurrentFunction.InBlock) {
@@ -227,7 +238,7 @@ bool p_parseProgram(Program* prog) {
     }
 
     instructionIndex++;
-  }
+  } while (prog->NextOp.Op != Op::OpNop);
 
   return true;
 }
@@ -418,11 +429,37 @@ bool g_variables(std::stringstream* ss, const Program& prog) {
   return true;
 }
 
-bool g_block(std::stringstream* ss, const Program& prog, const Function& func, const Block& block) {
-  for (auto op : block.Ops) {
-    *ss << "// " << writeOp(op);
+void indent(char* indentStr) {
+  int len = strlen(indentStr);
+  indentStr[len] = ' ';
+  indentStr[len+1] = ' ';
+}
+
+
+void unindent(char* indentStr) {
+  int len = strlen(indentStr);
+  indentStr[len-2] = 0;
+}
+
+bool g_block(std::stringstream* ss, const Program& prog, const Function& func, const Block& block, char* indentStr) {
+
+  bool doIndent = block.MergeInfo.Memory != nullptr;
+  if (doIndent) {
+    indent(indentStr);
   }
-  
+
+  for (auto op : block.Ops) {
+    *ss << "//" << indentStr << writeOp(op);
+  }
+
+  for (auto child : block.Children) {
+    g_block(ss, prog, func, func.Blocks.at(child), indentStr);
+  }
+
+  if (doIndent) {
+    unindent(indentStr);
+  }
+
   return true;
 }
 
@@ -461,10 +498,11 @@ bool g_function(std::stringstream* ss, const Program& prog, const Function& func
 
   *ss << ")" << (func.Blocks.size() == 0 ? ";" : " {") << std::endl;
 
+
+
   if (func.Blocks.size() > 0) {
-    for (auto block : func.Blocks) {
-      g_block(ss, prog, func, block.second);
-    }
+    char indentBuff[255] = {};
+    g_block(ss, prog, func, func.Blocks.at(0), indentBuff);
 
     *ss << "}" << std::endl;
   }

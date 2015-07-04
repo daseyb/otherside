@@ -15,11 +15,19 @@ lerp_res mlerp(vec3 a, vec3 b, float t) {
 void main() {
   lerp_res res;
   vec3 currColor = color;
+  
   if(loopFlag) {
     for(int i = 0; i < iterations; i++) {
       res = mlerp(currColor, color, float(i)/2.0); 
       currColor += res.val;
     }
   }
+  
+  if(iterations > 0) {
+	currColor = vec3(0, 0, 0);
+  } else {
+	currColor = vec3(1, 0, 1);
+  }
+  
   gl_FragColor = vec4(color, 1.0);
 }

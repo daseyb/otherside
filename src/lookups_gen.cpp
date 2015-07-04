@@ -890,43 +890,43 @@ static void HandleLabel(void* op, Program* prog) {
 static void HandleBranch(void* op, Program* prog) {
   SBranch* opBranch = (SBranch*)op;
   addOp(prog, SOp{ Op::OpBranch, opBranch });
-  endBlock(prog);
+  endBlock(prog, SOp{ Op::OpBranch, opBranch });
 }
 
 static void HandleBranchConditional(void* op, Program* prog) {
   SBranchConditional* opBranchConditional = (SBranchConditional*)op;
   addOp(prog, SOp{ Op::OpBranchConditional, opBranchConditional });
-  endBlock(prog);
+  endBlock(prog, SOp{ Op::OpBranchConditional, opBranchConditional });
 }
 
 static void HandleSwitch(void* op, Program* prog) {
   SSwitch* opSwitch = (SSwitch*)op;
   addOp(prog, SOp{ Op::OpSwitch, opSwitch });
-  endBlock(prog);
+  endBlock(prog, SOp{ Op::OpSwitch, opSwitch });
 }
 
 static void HandleKill(void* op, Program* prog) {
   SKill* opKill = (SKill*)op;
   addOp(prog, SOp{ Op::OpKill, opKill });
-  endBlock(prog);
+  endBlock(prog, SOp{ Op::OpKill, opKill });
 }
 
 static void HandleReturn(void* op, Program* prog) {
   SReturn* opReturn = (SReturn*)op;
   addOp(prog, SOp{ Op::OpReturn, opReturn });
-  endBlock(prog);
+  endBlock(prog, SOp{ Op::OpReturn, opReturn });
 }
 
 static void HandleReturnValue(void* op, Program* prog) {
   SReturnValue* opReturnValue = (SReturnValue*)op;
   addOp(prog, SOp{ Op::OpReturnValue, opReturnValue });
-  endBlock(prog);
+  endBlock(prog, SOp{ Op::OpReturnValue, opReturnValue });
 }
 
 static void HandleUnreachable(void* op, Program* prog) {
   SUnreachable* opUnreachable = (SUnreachable*)op;
   addOp(prog, SOp{ Op::OpUnreachable, opUnreachable });
-  endBlock(prog);
+  endBlock(prog, SOp{ Op::OpUnreachable, opUnreachable });
 }
 
 static void HandleLifetimeStart(void* op, Program* prog) {
