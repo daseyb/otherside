@@ -1,9 +1,12 @@
 #include "codegen.h"
 #include <string>
+#include <iomanip>
 
 #include "parser_definitions.h"
 #include "lookups_gen.h"
 #include "parser.h"
+
+std::map<uint32, std::string> ids;
 
 void startComment(std::stringstream* ss) {
   *ss << "/*" << std::endl;
@@ -23,8 +26,6 @@ bool g_header(std::stringstream* ss, const Program& prog) {
   endComment(ss);
   return true;
 }
-
-std::map<uint32, std::string> ids;
 
 bool g_imports(std::stringstream* ss, const Program& prog) {
   *ss << std::endl;
@@ -123,8 +124,7 @@ bool g_types(std::stringstream* ss, const Program& prog) {
       STypeStruct* opStruct = (STypeStruct*)type.second.Memory;
       if (prog.Names.find(opStruct->ResultId) != prog.Names.end()) {
         idName << prog.Names.at(opStruct->ResultId).Name;
-      }
-      else {
+      } else {
         idName << "s_" << opStruct->ResultId;
       }
 
@@ -154,17 +154,64 @@ bool g_types(std::stringstream* ss, const Program& prog) {
   return true;
 }
 
+void writeName(std::stringstream* name, const Program& prog, int id, const std::string& prefix) {
+  if (prog.Names.find(id) != prog.Names.end()) {
+    *name << prog.Names.at(id).Name;
+  }
+  else {
+    *name << prefix << id;
+  }
+}
+
+bool g_literal(std::stringstream* ss, const Program& prog, int typeId, int valuesCount, uint32* values) {
+  auto type = prog.DefinedTypes.at(typeId);
+
+  switch (type.Op)
+  {
+  case Op::OpTypeFloat:
+    assert(valuesCount == 1 || valuesCount == 2);
+    if (valuesCount == 1) {
+      *ss << *(float*)values;
+    } else if (valuesCount == 2) {
+      *ss << *(double*)values;
+    }
+    break;
+  case Op::OpTypeInt:
+    assert(valuesCount == 1 || valuesCount == 2);
+    if (valuesCount == 1) {
+      *ss << *(uint32*)values;
+    }
+    else if (valuesCount == 2) {
+      *ss << *(uint64*)values;
+    }
+    break;
+  case Op::OpTypeStruct:
+  case Op::OpTypeVector:
+  }
+
+  return true;
+}
+
 bool g_constants(std::stringstream* ss, const Program& prog) {
   *ss << std::endl;
   for (auto constant : prog.Constants) {
-    switch (constant.second.Op)
-    {
-    case Op::OpConstant:
-    {
-      auto opConst = (SConstant*)constant.second.Memory;
-      break;
+    std::stringstream idName;
+
+    switch (constant.second.Op) {
+      case Op::OpConstant: {
+        auto opConst = (SConstant*)constant.second.Memory;
+        writeName(&idName, prog, opConst->ResultId, "c_");
+        *ss << ids[opConst->ResultTypeId] << " " << idName.str() << " = ";
+        if (!g_literal(ss, prog, opConst->ResultTypeId, opConst->ValuesCount, opConst->Values)) {
+          return false;
+        }
+
+        *ss << ";" << std::endl;
+        break;
+      }
     }
-    }
+
+    ids.insert(std::pair<uint32, std::string>(constant.first, idName.str()));
   }
 
   return true;
@@ -216,7 +263,9 @@ bool g_block(std::stringstream* ss, const Program& prog, const Function& func, c
   }
 
   for (auto child : block.Children) {
-    g_block(ss, prog, func, func.Blocks.at(child), indentStr);
+    if (!g_block(ss, prog, func, func.Blocks.at(child), indentStr)) {
+      return false;
+    }
   }
 
   if (doIndent) {
@@ -265,7 +314,9 @@ bool g_function(std::stringstream* ss, const Program& prog, const Function& func
 
   if (func.Blocks.size() > 0) {
     char indentBuff[255] = {};
-    g_block(ss, prog, func, func.Blocks.at(0), indentBuff);
+    if (!g_block(ss, prog, func, func.Blocks.at(0), indentBuff)) {
+      return false;
+    }
 
     *ss << "}" << std::endl;
   }
@@ -281,11 +332,15 @@ bool g_functions(std::stringstream* ss, const Program& prog) {
   *ss << std::endl;
 
   for (auto var : prog.FunctionDeclarations) {
-    g_function(ss, prog, var.second);
+    if (!g_function(ss, prog, var.second)) {
+      return false;
+    }
   }
 
   for (auto var : prog.FunctionDefinitions) {
-    g_function(ss, prog, var.second);
+    if (!g_function(ss, prog, var.second)) {
+      return false;
+    }
   }
 
   return true;
@@ -309,6 +364,10 @@ bool genCode(std::stringstream* ss, const Program& prog) {
   }
 
   if (!g_variables(ss, prog)) {
+    return false;
+  }
+
+  if (!g_constants(ss, prog)) {
     return false;
   }
 
