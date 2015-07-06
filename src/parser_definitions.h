@@ -2,16 +2,10 @@
 #include <vector>
 #include <map>
 #include <stack>
-#include "Khronos\spirv.h"
+#include <string>
+#include <assert.h>
 
-
-using namespace spv;
-
-typedef uint8_t byte;
-typedef uint16_t uint16;
-typedef uint32_t uint32;
-typedef uint64_t uint64;
-
+#include "types.h"
 #include "lookups.h"
 #include "lookups_gen.h"
 
@@ -210,7 +204,6 @@ static void endFunction(Program* prog) {
   }
   prog->InFunction = false;
 }
-
 
 static void addOp(Program* prog, SOp op) {
   prog->CurrentFunction.CurrentBlock->Ops.push_back(op);

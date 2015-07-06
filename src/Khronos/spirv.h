@@ -707,6 +707,8 @@ namespace spv {
     OpSatConvertUToS = 264,
     OpAtomicIMin = 265,
     OpAtomicIMax = 266,
+
+    Count
   };
 
 };  // end namespace spv

@@ -1,46 +1,48 @@
 #pragma once
+#include "types.h"
+#include "lookups.h"
 
 struct Program;
 
-static void HandleNop(void* op, Program* prog);
+void HandleNop(void* op, Program* prog);
 struct SNop {
 };
 
-static void HandleSource(void* op, Program* prog);
+void HandleSource(void* op, Program* prog);
 struct SSource {
   SourceLanguage SourceLanguage;
   uint32 Version;
 };
 
-static void HandleSourceExtension(void* op, Program* prog);
+void HandleSourceExtension(void* op, Program* prog);
 struct SSourceExtension {
   char* Extension;
 };
 
-static void HandleExtension(void* op, Program* prog);
+void HandleExtension(void* op, Program* prog);
 struct SExtension {
   char* Name;
 };
 
-static void HandleExtInstImport(void* op, Program* prog);
+void HandleExtInstImport(void* op, Program* prog);
 struct SExtInstImport {
   uint32 ResultId;
   char* Name;
 };
 
-static void HandleMemoryModel(void* op, Program* prog);
+void HandleMemoryModel(void* op, Program* prog);
 struct SMemoryModel {
   AddressingModel AddressingModel;
   MemoryModel MemoryModel;
 };
 
-static void HandleEntryPoint(void* op, Program* prog);
+void HandleEntryPoint(void* op, Program* prog);
 struct SEntryPoint {
   ExecutionModel ExecutionModel;
   uint32 EntryPointId;
 };
 
-static void HandleExecutionMode(void* op, Program* prog);
+void HandleExecutionMode(void* op, Program* prog);
 struct SExecutionMode {
   uint32 EntryPointId;
   ExecutionMode Mode;
@@ -48,44 +50,44 @@ struct SExecutionMode {
   uint32* ExecutionModes;
 };
 
-static void HandleTypeVoid(void* op, Program* prog);
+void HandleTypeVoid(void* op, Program* prog);
 struct STypeVoid {
   uint32 ResultId;
 };
 
-static void HandleTypeBool(void* op, Program* prog);
+void HandleTypeBool(void* op, Program* prog);
 struct STypeBool {
   uint32 ResultId;
 };
 
-static void HandleTypeInt(void* op, Program* prog);
+void HandleTypeInt(void* op, Program* prog);
 struct STypeInt {
   uint32 ResultId;
   uint32 Width;
   uint32 Signedness;
 };
 
-static void HandleTypeFloat(void* op, Program* prog);
+void HandleTypeFloat(void* op, Program* prog);
 struct STypeFloat {
   uint32 ResultId;
   uint32 Width;
 };
 
-static void HandleTypeVector(void* op, Program* prog);
+void HandleTypeVector(void* op, Program* prog);
 struct STypeVector {
   uint32 ResultId;
   uint32 ComponenttypeId;
   uint32 Componentcount;
 };
 
-static void HandleTypeMatrix(void* op, Program* prog);
+void HandleTypeMatrix(void* op, Program* prog);
 struct STypeMatrix {
   uint32 ResultId;
   uint32 ColumntypeId;
   uint32 Columncount;
 };
 
-static void HandleTypeSampler(void* op, Program* prog);
+void HandleTypeSampler(void* op, Program* prog);
 struct STypeSampler {
   uint32 ResultId;
   uint32 SampledTypeId;
@@ -97,45 +99,45 @@ struct STypeSampler {
   uint32 QualifierId;
 };
 
-static void HandleTypeFilter(void* op, Program* prog);
+void HandleTypeFilter(void* op, Program* prog);
 struct STypeFilter {
   uint32 ResultId;
 };
 
-static void HandleTypeArray(void* op, Program* prog);
+void HandleTypeArray(void* op, Program* prog);
 struct STypeArray {
   uint32 ResultId;
   uint32 ElementtypeId;
   uint32 LengthId;
 };
 
-static void HandleTypeRuntimeArray(void* op, Program* prog);
+void HandleTypeRuntimeArray(void* op, Program* prog);
 struct STypeRuntimeArray {
   uint32 ResultId;
   uint32 ElementtypeId;
 };
 
-static void HandleTypeStruct(void* op, Program* prog);
+void HandleTypeStruct(void* op, Program* prog);
 struct STypeStruct {
   uint32 ResultId;
   uint32 MembertypeIdsCount;
   uint32* MembertypeIds;
 };
 
-static void HandleTypeOpaque(void* op, Program* prog);
+void HandleTypeOpaque(void* op, Program* prog);
 struct STypeOpaque {
   uint32 ResultId;
   char* OpaqueTypeName;
 };
 
-static void HandleTypePointer(void* op, Program* prog);
+void HandleTypePointer(void* op, Program* prog);
 struct STypePointer {
   uint32 ResultId;
   StorageClass StorageClass;
   uint32 TypeId;
 };
 
-static void HandleTypeFunction(void* op, Program* prog);
+void HandleTypeFunction(void* op, Program* prog);
 struct STypeFunction {
   uint32 ResultId;
   uint32 ReturnTypeId;
@@ -143,46 +145,46 @@ struct STypeFunction {
   uint32* ParameterTypeIds;
 };
 
-static void HandleTypeEvent(void* op, Program* prog);
+void HandleTypeEvent(void* op, Program* prog);
 struct STypeEvent {
   uint32 ResultId;
 };
 
-static void HandleTypeDeviceEvent(void* op, Program* prog);
+void HandleTypeDeviceEvent(void* op, Program* prog);
 struct STypeDeviceEvent {
   uint32 ResultId;
 };
 
-static void HandleTypeReserveId(void* op, Program* prog);
+void HandleTypeReserveId(void* op, Program* prog);
 struct STypeReserveId {
   uint32 ResultId;
 };
 
-static void HandleTypeQueue(void* op, Program* prog);
+void HandleTypeQueue(void* op, Program* prog);
 struct STypeQueue {
   uint32 ResultId;
 };
 
-static void HandleTypePipe(void* op, Program* prog);
+void HandleTypePipe(void* op, Program* prog);
 struct STypePipe {
   uint32 ResultId;
   uint32 TypeId;
   AccessQualifier Qualifier;
 };
 
-static void HandleConstantTrue(void* op, Program* prog);
+void HandleConstantTrue(void* op, Program* prog);
 struct SConstantTrue {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-static void HandleConstantFalse(void* op, Program* prog);
+void HandleConstantFalse(void* op, Program* prog);
 struct SConstantFalse {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-static void HandleConstant(void* op, Program* prog);
+void HandleConstant(void* op, Program* prog);
 struct SConstant {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -190,7 +192,7 @@ struct SConstant {
   uint32* Values;
 };
 
-static void HandleConstantComposite(void* op, Program* prog);
+void HandleConstantComposite(void* op, Program* prog);
 struct SConstantComposite {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -198,7 +200,7 @@ struct SConstantComposite {
   uint32* ConstituentsIds;
 };
 
-static void HandleConstantSampler(void* op, Program* prog);
+void HandleConstantSampler(void* op, Program* prog);
 struct SConstantSampler {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -207,31 +209,31 @@ struct SConstantSampler {
   uint32 Filter;
 };
 
-static void HandleConstantNullPointer(void* op, Program* prog);
+void HandleConstantNullPointer(void* op, Program* prog);
 struct SConstantNullPointer {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-static void HandleConstantNullObject(void* op, Program* prog);
+void HandleConstantNullObject(void* op, Program* prog);
 struct SConstantNullObject {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-static void HandleSpecConstantTrue(void* op, Program* prog);
+void HandleSpecConstantTrue(void* op, Program* prog);
 struct SSpecConstantTrue {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-static void HandleSpecConstantFalse(void* op, Program* prog);
+void HandleSpecConstantFalse(void* op, Program* prog);
 struct SSpecConstantFalse {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-static void HandleSpecConstant(void* op, Program* prog);
+void HandleSpecConstant(void* op, Program* prog);
 struct SSpecConstant {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -239,7 +241,7 @@ struct SSpecConstant {
   uint32* Values;
 };
 
-static void HandleSpecConstantComposite(void* op, Program* prog);
+void HandleSpecConstantComposite(void* op, Program* prog);
 struct SSpecConstantComposite {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -247,7 +249,7 @@ struct SSpecConstantComposite {
   uint32* ConstituentsIds;
 };
 
-static void HandleVariable(void* op, Program* prog);
+void HandleVariable(void* op, Program* prog);
 struct SVariable {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -255,7 +257,7 @@ struct SVariable {
   uint32 InitializerId;
 };
 
-static void HandleVariableArray(void* op, Program* prog);
+void HandleVariableArray(void* op, Program* prog);
 struct SVariableArray {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -263,7 +265,7 @@ struct SVariableArray {
   uint32 NId;
 };
 
-static void HandleFunction(void* op, Program* prog);
+void HandleFunction(void* op, Program* prog);
 struct SFunction {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -271,17 +273,17 @@ struct SFunction {
   uint32 FunctionTypeId;
 };
 
-static void HandleFunctionParameter(void* op, Program* prog);
+void HandleFunctionParameter(void* op, Program* prog);
 struct SFunctionParameter {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-static void HandleFunctionEnd(void* op, Program* prog);
+void HandleFunctionEnd(void* op, Program* prog);
 struct SFunctionEnd {
 };
 
-static void HandleFunctionCall(void* op, Program* prog);
+void HandleFunctionCall(void* op, Program* prog);
 struct SFunctionCall {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -290,7 +292,7 @@ struct SFunctionCall {
   uint32* ArgumentIds;
 };
 
-static void HandleExtInst(void* op, Program* prog);
+void HandleExtInst(void* op, Program* prog);
 struct SExtInst {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -300,13 +302,13 @@ struct SExtInst {
   uint32* OperandIds;
 };
 
-static void HandleUndef(void* op, Program* prog);
+void HandleUndef(void* op, Program* prog);
 struct SUndef {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-static void HandleLoad(void* op, Program* prog);
+void HandleLoad(void* op, Program* prog);
 struct SLoad {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -315,7 +317,7 @@ struct SLoad {
   uint32* MemoryAccess;
 };
 
-static void HandleStore(void* op, Program* prog);
+void HandleStore(void* op, Program* prog);
 struct SStore {
   uint32 PointerId;
   uint32 ObjectId;
@@ -323,7 +325,7 @@ struct SStore {
   uint32* MemoryAccess;
 };
 
-static void HandlePhi(void* op, Program* prog);
+void HandlePhi(void* op, Program* prog);
 struct SPhi {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -331,12 +333,12 @@ struct SPhi {
   uint32* Id2s;
 };
 
-static void HandleDecorationGroup(void* op, Program* prog);
+void HandleDecorationGroup(void* op, Program* prog);
 struct SDecorationGroup {
   uint32 ResultId;
 };
 
-static void HandleDecorate(void* op, Program* prog);
+void HandleDecorate(void* op, Program* prog);
 struct SDecorate {
   uint32 TargetId;
   Decoration Decoration;
@@ -344,7 +346,7 @@ struct SDecorate {
   uint32* Decorations;
 };
 
-static void HandleMemberDecorate(void* op, Program* prog);
+void HandleMemberDecorate(void* op, Program* prog);
 struct SMemberDecorate {
   uint32 StructuretypeId;
   uint32 Member;
@@ -353,40 +355,40 @@ struct SMemberDecorate {
   uint32* Decorations;
 };
 
-static void HandleGroupDecorate(void* op, Program* prog);
+void HandleGroupDecorate(void* op, Program* prog);
 struct SGroupDecorate {
   uint32 DecorationgroupId;
   uint32 TargetIdsCount;
   uint32* TargetIds;
 };
 
-static void HandleGroupMemberDecorate(void* op, Program* prog);
+void HandleGroupMemberDecorate(void* op, Program* prog);
 struct SGroupMemberDecorate {
   uint32 DecorationgroupId;
   uint32 TargetIdsCount;
   uint32* TargetIds;
 };
 
-static void HandleName(void* op, Program* prog);
+void HandleName(void* op, Program* prog);
 struct SName {
   uint32 TargetId;
   char* Name;
 };
 
-static void HandleMemberName(void* op, Program* prog);
+void HandleMemberName(void* op, Program* prog);
 struct SMemberName {
   uint32 TypeId;
   uint32 Member;
   char* Name;
 };
 
-static void HandleString(void* op, Program* prog);
+void HandleString(void* op, Program* prog);
 struct SString {
   uint32 ResultId;
   char* String;
 };
 
-static void HandleLine(void* op, Program* prog);
+void HandleLine(void* op, Program* prog);
 struct SLine {
   uint32 TargetId;
   uint32 FileId;
@@ -394,7 +396,7 @@ struct SLine {
   uint32 Column;
 };
 
-static void HandleVectorExtractDynamic(void* op, Program* prog);
+void HandleVectorExtractDynamic(void* op, Program* prog);
 struct SVectorExtractDynamic {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -402,7 +404,7 @@ struct SVectorExtractDynamic {
   uint32 IndexId;
 };
 
-static void HandleVectorInsertDynamic(void* op, Program* prog);
+void HandleVectorInsertDynamic(void* op, Program* prog);
 struct SVectorInsertDynamic {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -411,7 +413,7 @@ struct SVectorInsertDynamic {
   uint32 IndexId;
 };
 
-static void HandleVectorShuffle(void* op, Program* prog);
+void HandleVectorShuffle(void* op, Program* prog);
 struct SVectorShuffle {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -421,7 +423,7 @@ struct SVectorShuffle {
   uint32* Components;
 };
 
-static void HandleCompositeConstruct(void* op, Program* prog);
+void HandleCompositeConstruct(void* op, Program* prog);
 struct SCompositeConstruct {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -429,7 +431,7 @@ struct SCompositeConstruct {
   uint32* ConstituentsIds;
 };
 
-static void HandleCompositeExtract(void* op, Program* prog);
+void HandleCompositeExtract(void* op, Program* prog);
 struct SCompositeExtract {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -438,7 +440,7 @@ struct SCompositeExtract {
   uint32* Indexes;
 };
 
-static void HandleCompositeInsert(void* op, Program* prog);
+void HandleCompositeInsert(void* op, Program* prog);
 struct SCompositeInsert {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -448,14 +450,14 @@ struct SCompositeInsert {
   uint32* Indexes;
 };
 
-static void HandleCopyObject(void* op, Program* prog);
+void HandleCopyObject(void* op, Program* prog);
 struct SCopyObject {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-static void HandleCopyMemory(void* op, Program* prog);
+void HandleCopyMemory(void* op, Program* prog);
 struct SCopyMemory {
   uint32 TargetId;
   uint32 SourceId;
@@ -463,7 +465,7 @@ struct SCopyMemory {
   uint32* MemoryAccess;
 };
 
-static void HandleCopyMemorySized(void* op, Program* prog);
+void HandleCopyMemorySized(void* op, Program* prog);
 struct SCopyMemorySized {
   uint32 TargetId;
   uint32 SourceId;
@@ -472,7 +474,7 @@ struct SCopyMemorySized {
   uint32* MemoryAccess;
 };
 
-static void HandleSampler(void* op, Program* prog);
+void HandleSampler(void* op, Program* prog);
 struct SSampler {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -480,7 +482,7 @@ struct SSampler {
   uint32 FilterId;
 };
 
-static void HandleTextureSample(void* op, Program* prog);
+void HandleTextureSample(void* op, Program* prog);
 struct STextureSample {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -489,7 +491,7 @@ struct STextureSample {
   uint32 BiasId;
 };
 
-static void HandleTextureSampleDref(void* op, Program* prog);
+void HandleTextureSampleDref(void* op, Program* prog);
 struct STextureSampleDref {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -498,7 +500,7 @@ struct STextureSampleDref {
   uint32 DrefId;
 };
 
-static void HandleTextureSampleLod(void* op, Program* prog);
+void HandleTextureSampleLod(void* op, Program* prog);
 struct STextureSampleLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -507,7 +509,7 @@ struct STextureSampleLod {
   uint32 LevelofDetailId;
 };
 
-static void HandleTextureSampleProj(void* op, Program* prog);
+void HandleTextureSampleProj(void* op, Program* prog);
 struct STextureSampleProj {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -516,7 +518,7 @@ struct STextureSampleProj {
   uint32 BiasId;
 };
 
-static void HandleTextureSampleGrad(void* op, Program* prog);
+void HandleTextureSampleGrad(void* op, Program* prog);
 struct STextureSampleGrad {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -526,7 +528,7 @@ struct STextureSampleGrad {
   uint32 dyId;
 };
 
-static void HandleTextureSampleOffset(void* op, Program* prog);
+void HandleTextureSampleOffset(void* op, Program* prog);
 struct STextureSampleOffset {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -536,7 +538,7 @@ struct STextureSampleOffset {
   uint32 BiasId;
 };
 
-static void HandleTextureSampleProjLod(void* op, Program* prog);
+void HandleTextureSampleProjLod(void* op, Program* prog);
 struct STextureSampleProjLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -545,7 +547,7 @@ struct STextureSampleProjLod {
   uint32 LevelofDetailId;
 };
 
-static void HandleTextureSampleProjGrad(void* op, Program* prog);
+void HandleTextureSampleProjGrad(void* op, Program* prog);
 struct STextureSampleProjGrad {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -555,7 +557,7 @@ struct STextureSampleProjGrad {
   uint32 dyId;
 };
 
-static void HandleTextureSampleLodOffset(void* op, Program* prog);
+void HandleTextureSampleLodOffset(void* op, Program* prog);
 struct STextureSampleLodOffset {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -565,7 +567,7 @@ struct STextureSampleLodOffset {
   uint32 OffsetId;
 };
 
-static void HandleTextureSampleProjOffset(void* op, Program* prog);
+void HandleTextureSampleProjOffset(void* op, Program* prog);
 struct STextureSampleProjOffset {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -575,7 +577,7 @@ struct STextureSampleProjOffset {
   uint32 BiasId;
 };
 
-static void HandleTextureSampleGradOffset(void* op, Program* prog);
+void HandleTextureSampleGradOffset(void* op, Program* prog);
 struct STextureSampleGradOffset {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -586,7 +588,7 @@ struct STextureSampleGradOffset {
   uint32 OffsetId;
 };
 
-static void HandleTextureSampleProjLodOffset(void* op, Program* prog);
+void HandleTextureSampleProjLodOffset(void* op, Program* prog);
 struct STextureSampleProjLodOffset {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -596,7 +598,7 @@ struct STextureSampleProjLodOffset {
   uint32 OffsetId;
 };
 
-static void HandleTextureSampleProjGradOffset(void* op, Program* prog);
+void HandleTextureSampleProjGradOffset(void* op, Program* prog);
 struct STextureSampleProjGradOffset {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -607,7 +609,7 @@ struct STextureSampleProjGradOffset {
   uint32 OffsetId;
 };
 
-static void HandleTextureFetchTexelLod(void* op, Program* prog);
+void HandleTextureFetchTexelLod(void* op, Program* prog);
 struct STextureFetchTexelLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -616,7 +618,7 @@ struct STextureFetchTexelLod {
   uint32 LevelofDetailId;
 };
 
-static void HandleTextureFetchTexelOffset(void* op, Program* prog);
+void HandleTextureFetchTexelOffset(void* op, Program* prog);
 struct STextureFetchTexelOffset {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -625,7 +627,7 @@ struct STextureFetchTexelOffset {
   uint32 OffsetId;
 };
 
-static void HandleTextureFetchSample(void* op, Program* prog);
+void HandleTextureFetchSample(void* op, Program* prog);
 struct STextureFetchSample {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -634,7 +636,7 @@ struct STextureFetchSample {
   uint32 SampleId;
 };
 
-static void HandleTextureFetchTexel(void* op, Program* prog);
+void HandleTextureFetchTexel(void* op, Program* prog);
 struct STextureFetchTexel {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -642,7 +644,7 @@ struct STextureFetchTexel {
   uint32 ElementId;
 };
 
-static void HandleTextureGather(void* op, Program* prog);
+void HandleTextureGather(void* op, Program* prog);
 struct STextureGather {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -651,7 +653,7 @@ struct STextureGather {
   uint32 ComponentId;
 };
 
-static void HandleTextureGatherOffset(void* op, Program* prog);
+void HandleTextureGatherOffset(void* op, Program* prog);
 struct STextureGatherOffset {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -661,7 +663,7 @@ struct STextureGatherOffset {
   uint32 OffsetId;
 };
 
-static void HandleTextureGatherOffsets(void* op, Program* prog);
+void HandleTextureGatherOffsets(void* op, Program* prog);
 struct STextureGatherOffsets {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -671,7 +673,7 @@ struct STextureGatherOffsets {
   uint32 OffsetsId;
 };
 
-static void HandleTextureQuerySizeLod(void* op, Program* prog);
+void HandleTextureQuerySizeLod(void* op, Program* prog);
 struct STextureQuerySizeLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -679,14 +681,14 @@ struct STextureQuerySizeLod {
   uint32 LevelofDetailId;
 };
 
-static void HandleTextureQuerySize(void* op, Program* prog);
+void HandleTextureQuerySize(void* op, Program* prog);
 struct STextureQuerySize {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SamplerId;
 };
 
-static void HandleTextureQueryLod(void* op, Program* prog);
+void HandleTextureQueryLod(void* op, Program* prog);
 struct STextureQueryLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -694,21 +696,21 @@ struct STextureQueryLod {
   uint32 CoordinateId;
 };
 
-static void HandleTextureQueryLevels(void* op, Program* prog);
+void HandleTextureQueryLevels(void* op, Program* prog);
 struct STextureQueryLevels {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SamplerId;
 };
 
-static void HandleTextureQuerySamples(void* op, Program* prog);
+void HandleTextureQuerySamples(void* op, Program* prog);
 struct STextureQuerySamples {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SamplerId;
 };
 
-static void HandleAccessChain(void* op, Program* prog);
+void HandleAccessChain(void* op, Program* prog);
 struct SAccessChain {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -717,7 +719,7 @@ struct SAccessChain {
   uint32* IndexesIds;
 };
 
-static void HandleInBoundsAccessChain(void* op, Program* prog);
+void HandleInBoundsAccessChain(void* op, Program* prog);
 struct SInBoundsAccessChain {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -726,168 +728,168 @@ struct SInBoundsAccessChain {
   uint32* IndexesIds;
 };
 
-static void HandleSNegate(void* op, Program* prog);
+void HandleSNegate(void* op, Program* prog);
 struct SSNegate {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-static void HandleFNegate(void* op, Program* prog);
+void HandleFNegate(void* op, Program* prog);
 struct SFNegate {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-static void HandleNot(void* op, Program* prog);
+void HandleNot(void* op, Program* prog);
 struct SNot {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-static void HandleAny(void* op, Program* prog);
+void HandleAny(void* op, Program* prog);
 struct SAny {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 VectorId;
 };
 
-static void HandleAll(void* op, Program* prog);
+void HandleAll(void* op, Program* prog);
 struct SAll {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 VectorId;
 };
 
-static void HandleConvertFToU(void* op, Program* prog);
+void HandleConvertFToU(void* op, Program* prog);
 struct SConvertFToU {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 FloatValueId;
 };
 
-static void HandleConvertFToS(void* op, Program* prog);
+void HandleConvertFToS(void* op, Program* prog);
 struct SConvertFToS {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 FloatValueId;
 };
 
-static void HandleConvertSToF(void* op, Program* prog);
+void HandleConvertSToF(void* op, Program* prog);
 struct SConvertSToF {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SignedValueId;
 };
 
-static void HandleConvertUToF(void* op, Program* prog);
+void HandleConvertUToF(void* op, Program* prog);
 struct SConvertUToF {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 UnsignedvalueId;
 };
 
-static void HandleUConvert(void* op, Program* prog);
+void HandleUConvert(void* op, Program* prog);
 struct SUConvert {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 UnsignedvalueId;
 };
 
-static void HandleSConvert(void* op, Program* prog);
+void HandleSConvert(void* op, Program* prog);
 struct SSConvert {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SignedValueId;
 };
 
-static void HandleFConvert(void* op, Program* prog);
+void HandleFConvert(void* op, Program* prog);
 struct SFConvert {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 FloatValueId;
 };
 
-static void HandleConvertPtrToU(void* op, Program* prog);
+void HandleConvertPtrToU(void* op, Program* prog);
 struct SConvertPtrToU {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
 };
 
-static void HandleConvertUToPtr(void* op, Program* prog);
+void HandleConvertUToPtr(void* op, Program* prog);
 struct SConvertUToPtr {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 IntegervalueId;
 };
 
-static void HandlePtrCastToGeneric(void* op, Program* prog);
+void HandlePtrCastToGeneric(void* op, Program* prog);
 struct SPtrCastToGeneric {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SourcepointerId;
 };
 
-static void HandleGenericCastToPtr(void* op, Program* prog);
+void HandleGenericCastToPtr(void* op, Program* prog);
 struct SGenericCastToPtr {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SourcepointerId;
 };
 
-static void HandleBitcast(void* op, Program* prog);
+void HandleBitcast(void* op, Program* prog);
 struct SBitcast {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-static void HandleTranspose(void* op, Program* prog);
+void HandleTranspose(void* op, Program* prog);
 struct STranspose {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 MatrixId;
 };
 
-static void HandleIsNan(void* op, Program* prog);
+void HandleIsNan(void* op, Program* prog);
 struct SIsNan {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 xId;
 };
 
-static void HandleIsInf(void* op, Program* prog);
+void HandleIsInf(void* op, Program* prog);
 struct SIsInf {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 xId;
 };
 
-static void HandleIsFinite(void* op, Program* prog);
+void HandleIsFinite(void* op, Program* prog);
 struct SIsFinite {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 xId;
 };
 
-static void HandleIsNormal(void* op, Program* prog);
+void HandleIsNormal(void* op, Program* prog);
 struct SIsNormal {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 xId;
 };
 
-static void HandleSignBitSet(void* op, Program* prog);
+void HandleSignBitSet(void* op, Program* prog);
 struct SSignBitSet {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 xId;
 };
 
-static void HandleLessOrGreater(void* op, Program* prog);
+void HandleLessOrGreater(void* op, Program* prog);
 struct SLessOrGreater {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -895,7 +897,7 @@ struct SLessOrGreater {
   uint32 yId;
 };
 
-static void HandleOrdered(void* op, Program* prog);
+void HandleOrdered(void* op, Program* prog);
 struct SOrdered {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -903,7 +905,7 @@ struct SOrdered {
   uint32 yId;
 };
 
-static void HandleUnordered(void* op, Program* prog);
+void HandleUnordered(void* op, Program* prog);
 struct SUnordered {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -911,7 +913,7 @@ struct SUnordered {
   uint32 yId;
 };
 
-static void HandleArrayLength(void* op, Program* prog);
+void HandleArrayLength(void* op, Program* prog);
 struct SArrayLength {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -919,7 +921,7 @@ struct SArrayLength {
   uint32 Arraymember;
 };
 
-static void HandleIAdd(void* op, Program* prog);
+void HandleIAdd(void* op, Program* prog);
 struct SIAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -927,7 +929,7 @@ struct SIAdd {
   uint32 Operand2Id;
 };
 
-static void HandleFAdd(void* op, Program* prog);
+void HandleFAdd(void* op, Program* prog);
 struct SFAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -935,7 +937,7 @@ struct SFAdd {
   uint32 Operand2Id;
 };
 
-static void HandleISub(void* op, Program* prog);
+void HandleISub(void* op, Program* prog);
 struct SISub {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -943,7 +945,7 @@ struct SISub {
   uint32 Operand2Id;
 };
 
-static void HandleFSub(void* op, Program* prog);
+void HandleFSub(void* op, Program* prog);
 struct SFSub {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -951,7 +953,7 @@ struct SFSub {
   uint32 Operand2Id;
 };
 
-static void HandleIMul(void* op, Program* prog);
+void HandleIMul(void* op, Program* prog);
 struct SIMul {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -959,7 +961,7 @@ struct SIMul {
   uint32 Operand2Id;
 };
 
-static void HandleFMul(void* op, Program* prog);
+void HandleFMul(void* op, Program* prog);
 struct SFMul {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -967,7 +969,7 @@ struct SFMul {
   uint32 Operand2Id;
 };
 
-static void HandleUDiv(void* op, Program* prog);
+void HandleUDiv(void* op, Program* prog);
 struct SUDiv {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -975,7 +977,7 @@ struct SUDiv {
   uint32 Operand2Id;
 };
 
-static void HandleSDiv(void* op, Program* prog);
+void HandleSDiv(void* op, Program* prog);
 struct SSDiv {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -983,7 +985,7 @@ struct SSDiv {
   uint32 Operand2Id;
 };
 
-static void HandleFDiv(void* op, Program* prog);
+void HandleFDiv(void* op, Program* prog);
 struct SFDiv {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -991,7 +993,7 @@ struct SFDiv {
   uint32 Operand2Id;
 };
 
-static void HandleUMod(void* op, Program* prog);
+void HandleUMod(void* op, Program* prog);
 struct SUMod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -999,7 +1001,7 @@ struct SUMod {
   uint32 Operand2Id;
 };
 
-static void HandleSRem(void* op, Program* prog);
+void HandleSRem(void* op, Program* prog);
 struct SSRem {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1007,7 +1009,7 @@ struct SSRem {
   uint32 Operand2Id;
 };
 
-static void HandleSMod(void* op, Program* prog);
+void HandleSMod(void* op, Program* prog);
 struct SSMod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1015,7 +1017,7 @@ struct SSMod {
   uint32 Operand2Id;
 };
 
-static void HandleFRem(void* op, Program* prog);
+void HandleFRem(void* op, Program* prog);
 struct SFRem {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1023,7 +1025,7 @@ struct SFRem {
   uint32 Operand2Id;
 };
 
-static void HandleFMod(void* op, Program* prog);
+void HandleFMod(void* op, Program* prog);
 struct SFMod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1031,7 +1033,7 @@ struct SFMod {
   uint32 Operand2Id;
 };
 
-static void HandleVectorTimesScalar(void* op, Program* prog);
+void HandleVectorTimesScalar(void* op, Program* prog);
 struct SVectorTimesScalar {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1039,7 +1041,7 @@ struct SVectorTimesScalar {
   uint32 ScalarId;
 };
 
-static void HandleMatrixTimesScalar(void* op, Program* prog);
+void HandleMatrixTimesScalar(void* op, Program* prog);
 struct SMatrixTimesScalar {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1047,7 +1049,7 @@ struct SMatrixTimesScalar {
   uint32 ScalarId;
 };
 
-static void HandleVectorTimesMatrix(void* op, Program* prog);
+void HandleVectorTimesMatrix(void* op, Program* prog);
 struct SVectorTimesMatrix {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1055,7 +1057,7 @@ struct SVectorTimesMatrix {
   uint32 MatrixId;
 };
 
-static void HandleMatrixTimesVector(void* op, Program* prog);
+void HandleMatrixTimesVector(void* op, Program* prog);
 struct SMatrixTimesVector {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1063,7 +1065,7 @@ struct SMatrixTimesVector {
   uint32 VectorId;
 };
 
-static void HandleMatrixTimesMatrix(void* op, Program* prog);
+void HandleMatrixTimesMatrix(void* op, Program* prog);
 struct SMatrixTimesMatrix {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1071,7 +1073,7 @@ struct SMatrixTimesMatrix {
   uint32 RightMatrixId;
 };
 
-static void HandleOuterProduct(void* op, Program* prog);
+void HandleOuterProduct(void* op, Program* prog);
 struct SOuterProduct {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1079,7 +1081,7 @@ struct SOuterProduct {
   uint32 Vector2Id;
 };
 
-static void HandleDot(void* op, Program* prog);
+void HandleDot(void* op, Program* prog);
 struct SDot {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1087,7 +1089,7 @@ struct SDot {
   uint32 Vector2Id;
 };
 
-static void HandleShiftRightLogical(void* op, Program* prog);
+void HandleShiftRightLogical(void* op, Program* prog);
 struct SShiftRightLogical {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1095,7 +1097,7 @@ struct SShiftRightLogical {
   uint32 Operand2Id;
 };
 
-static void HandleShiftRightArithmetic(void* op, Program* prog);
+void HandleShiftRightArithmetic(void* op, Program* prog);
 struct SShiftRightArithmetic {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1103,7 +1105,7 @@ struct SShiftRightArithmetic {
   uint32 Operand2Id;
 };
 
-static void HandleShiftLeftLogical(void* op, Program* prog);
+void HandleShiftLeftLogical(void* op, Program* prog);
 struct SShiftLeftLogical {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1111,7 +1113,7 @@ struct SShiftLeftLogical {
   uint32 Operand2Id;
 };
 
-static void HandleLogicalOr(void* op, Program* prog);
+void HandleLogicalOr(void* op, Program* prog);
 struct SLogicalOr {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1119,7 +1121,7 @@ struct SLogicalOr {
   uint32 Operand2Id;
 };
 
-static void HandleLogicalXor(void* op, Program* prog);
+void HandleLogicalXor(void* op, Program* prog);
 struct SLogicalXor {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1127,7 +1129,7 @@ struct SLogicalXor {
   uint32 Operand2Id;
 };
 
-static void HandleLogicalAnd(void* op, Program* prog);
+void HandleLogicalAnd(void* op, Program* prog);
 struct SLogicalAnd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1135,7 +1137,7 @@ struct SLogicalAnd {
   uint32 Operand2Id;
 };
 
-static void HandleBitwiseOr(void* op, Program* prog);
+void HandleBitwiseOr(void* op, Program* prog);
 struct SBitwiseOr {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1143,7 +1145,7 @@ struct SBitwiseOr {
   uint32 Operand2Id;
 };
 
-static void HandleBitwiseXor(void* op, Program* prog);
+void HandleBitwiseXor(void* op, Program* prog);
 struct SBitwiseXor {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1151,7 +1153,7 @@ struct SBitwiseXor {
   uint32 Operand2Id;
 };
 
-static void HandleBitwiseAnd(void* op, Program* prog);
+void HandleBitwiseAnd(void* op, Program* prog);
 struct SBitwiseAnd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1159,7 +1161,7 @@ struct SBitwiseAnd {
   uint32 Operand2Id;
 };
 
-static void HandleSelect(void* op, Program* prog);
+void HandleSelect(void* op, Program* prog);
 struct SSelect {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1168,7 +1170,7 @@ struct SSelect {
   uint32 Object2Id;
 };
 
-static void HandleIEqual(void* op, Program* prog);
+void HandleIEqual(void* op, Program* prog);
 struct SIEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1176,7 +1178,7 @@ struct SIEqual {
   uint32 Operand2Id;
 };
 
-static void HandleFOrdEqual(void* op, Program* prog);
+void HandleFOrdEqual(void* op, Program* prog);
 struct SFOrdEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1184,7 +1186,7 @@ struct SFOrdEqual {
   uint32 Operand2Id;
 };
 
-static void HandleFUnordEqual(void* op, Program* prog);
+void HandleFUnordEqual(void* op, Program* prog);
 struct SFUnordEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1192,7 +1194,7 @@ struct SFUnordEqual {
   uint32 Operand2Id;
 };
 
-static void HandleINotEqual(void* op, Program* prog);
+void HandleINotEqual(void* op, Program* prog);
 struct SINotEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1200,7 +1202,7 @@ struct SINotEqual {
   uint32 Operand2Id;
 };
 
-static void HandleFOrdNotEqual(void* op, Program* prog);
+void HandleFOrdNotEqual(void* op, Program* prog);
 struct SFOrdNotEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1208,7 +1210,7 @@ struct SFOrdNotEqual {
   uint32 Operand2Id;
 };
 
-static void HandleFUnordNotEqual(void* op, Program* prog);
+void HandleFUnordNotEqual(void* op, Program* prog);
 struct SFUnordNotEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1216,7 +1218,7 @@ struct SFUnordNotEqual {
   uint32 Operand2Id;
 };
 
-static void HandleULessThan(void* op, Program* prog);
+void HandleULessThan(void* op, Program* prog);
 struct SULessThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1224,7 +1226,7 @@ struct SULessThan {
   uint32 Operand2Id;
 };
 
-static void HandleSLessThan(void* op, Program* prog);
+void HandleSLessThan(void* op, Program* prog);
 struct SSLessThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1232,7 +1234,7 @@ struct SSLessThan {
   uint32 Operand2Id;
 };
 
-static void HandleFOrdLessThan(void* op, Program* prog);
+void HandleFOrdLessThan(void* op, Program* prog);
 struct SFOrdLessThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1240,7 +1242,7 @@ struct SFOrdLessThan {
   uint32 Operand2Id;
 };
 
-static void HandleFUnordLessThan(void* op, Program* prog);
+void HandleFUnordLessThan(void* op, Program* prog);
 struct SFUnordLessThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1248,7 +1250,7 @@ struct SFUnordLessThan {
   uint32 Operand2Id;
 };
 
-static void HandleUGreaterThan(void* op, Program* prog);
+void HandleUGreaterThan(void* op, Program* prog);
 struct SUGreaterThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1256,7 +1258,7 @@ struct SUGreaterThan {
   uint32 Operand2Id;
 };
 
-static void HandleSGreaterThan(void* op, Program* prog);
+void HandleSGreaterThan(void* op, Program* prog);
 struct SSGreaterThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1264,7 +1266,7 @@ struct SSGreaterThan {
   uint32 Operand2Id;
 };
 
-static void HandleFOrdGreaterThan(void* op, Program* prog);
+void HandleFOrdGreaterThan(void* op, Program* prog);
 struct SFOrdGreaterThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1272,7 +1274,7 @@ struct SFOrdGreaterThan {
   uint32 Operand2Id;
 };
 
-static void HandleFUnordGreaterThan(void* op, Program* prog);
+void HandleFUnordGreaterThan(void* op, Program* prog);
 struct SFUnordGreaterThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1280,7 +1282,7 @@ struct SFUnordGreaterThan {
   uint32 Operand2Id;
 };
 
-static void HandleULessThanEqual(void* op, Program* prog);
+void HandleULessThanEqual(void* op, Program* prog);
 struct SULessThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1288,7 +1290,7 @@ struct SULessThanEqual {
   uint32 Operand2Id;
 };
 
-static void HandleSLessThanEqual(void* op, Program* prog);
+void HandleSLessThanEqual(void* op, Program* prog);
 struct SSLessThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1296,7 +1298,7 @@ struct SSLessThanEqual {
   uint32 Operand2Id;
 };
 
-static void HandleFOrdLessThanEqual(void* op, Program* prog);
+void HandleFOrdLessThanEqual(void* op, Program* prog);
 struct SFOrdLessThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1304,7 +1306,7 @@ struct SFOrdLessThanEqual {
   uint32 Operand2Id;
 };
 
-static void HandleFUnordLessThanEqual(void* op, Program* prog);
+void HandleFUnordLessThanEqual(void* op, Program* prog);
 struct SFUnordLessThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1312,7 +1314,7 @@ struct SFUnordLessThanEqual {
   uint32 Operand2Id;
 };
 
-static void HandleUGreaterThanEqual(void* op, Program* prog);
+void HandleUGreaterThanEqual(void* op, Program* prog);
 struct SUGreaterThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1320,7 +1322,7 @@ struct SUGreaterThanEqual {
   uint32 Operand2Id;
 };
 
-static void HandleSGreaterThanEqual(void* op, Program* prog);
+void HandleSGreaterThanEqual(void* op, Program* prog);
 struct SSGreaterThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1328,7 +1330,7 @@ struct SSGreaterThanEqual {
   uint32 Operand2Id;
 };
 
-static void HandleFOrdGreaterThanEqual(void* op, Program* prog);
+void HandleFOrdGreaterThanEqual(void* op, Program* prog);
 struct SFOrdGreaterThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1336,7 +1338,7 @@ struct SFOrdGreaterThanEqual {
   uint32 Operand2Id;
 };
 
-static void HandleFUnordGreaterThanEqual(void* op, Program* prog);
+void HandleFUnordGreaterThanEqual(void* op, Program* prog);
 struct SFUnordGreaterThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1344,99 +1346,99 @@ struct SFUnordGreaterThanEqual {
   uint32 Operand2Id;
 };
 
-static void HandleDPdx(void* op, Program* prog);
+void HandleDPdx(void* op, Program* prog);
 struct SDPdx {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-static void HandleDPdy(void* op, Program* prog);
+void HandleDPdy(void* op, Program* prog);
 struct SDPdy {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-static void HandleFwidth(void* op, Program* prog);
+void HandleFwidth(void* op, Program* prog);
 struct SFwidth {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-static void HandleDPdxFine(void* op, Program* prog);
+void HandleDPdxFine(void* op, Program* prog);
 struct SDPdxFine {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-static void HandleDPdyFine(void* op, Program* prog);
+void HandleDPdyFine(void* op, Program* prog);
 struct SDPdyFine {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-static void HandleFwidthFine(void* op, Program* prog);
+void HandleFwidthFine(void* op, Program* prog);
 struct SFwidthFine {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-static void HandleDPdxCoarse(void* op, Program* prog);
+void HandleDPdxCoarse(void* op, Program* prog);
 struct SDPdxCoarse {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-static void HandleDPdyCoarse(void* op, Program* prog);
+void HandleDPdyCoarse(void* op, Program* prog);
 struct SDPdyCoarse {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-static void HandleFwidthCoarse(void* op, Program* prog);
+void HandleFwidthCoarse(void* op, Program* prog);
 struct SFwidthCoarse {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-static void HandleEmitVertex(void* op, Program* prog);
+void HandleEmitVertex(void* op, Program* prog);
 struct SEmitVertex {
 };
 
-static void HandleEndPrimitive(void* op, Program* prog);
+void HandleEndPrimitive(void* op, Program* prog);
 struct SEndPrimitive {
 };
 
-static void HandleEmitStreamVertex(void* op, Program* prog);
+void HandleEmitStreamVertex(void* op, Program* prog);
 struct SEmitStreamVertex {
   uint32 StreamId;
 };
 
-static void HandleEndStreamPrimitive(void* op, Program* prog);
+void HandleEndStreamPrimitive(void* op, Program* prog);
 struct SEndStreamPrimitive {
   uint32 StreamId;
 };
 
-static void HandleControlBarrier(void* op, Program* prog);
+void HandleControlBarrier(void* op, Program* prog);
 struct SControlBarrier {
   ExecutionScope Scope;
 };
 
-static void HandleMemoryBarrier(void* op, Program* prog);
+void HandleMemoryBarrier(void* op, Program* prog);
 struct SMemoryBarrier {
   ExecutionScope Scope;
   MemorySemantics Semantics;
 };
 
-static void HandleImagePointer(void* op, Program* prog);
+void HandleImagePointer(void* op, Program* prog);
 struct SImagePointer {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1445,13 +1447,13 @@ struct SImagePointer {
   uint32 SampleId;
 };
 
-static void HandleAtomicInit(void* op, Program* prog);
+void HandleAtomicInit(void* op, Program* prog);
 struct SAtomicInit {
   uint32 PointerId;
   uint32 ValueId;
 };
 
-static void HandleAtomicLoad(void* op, Program* prog);
+void HandleAtomicLoad(void* op, Program* prog);
 struct SAtomicLoad {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1460,7 +1462,7 @@ struct SAtomicLoad {
   MemorySemantics Semantics;
 };
 
-static void HandleAtomicStore(void* op, Program* prog);
+void HandleAtomicStore(void* op, Program* prog);
 struct SAtomicStore {
   uint32 PointerId;
   ExecutionScope Scope;
@@ -1468,7 +1470,7 @@ struct SAtomicStore {
   uint32 ValueId;
 };
 
-static void HandleAtomicExchange(void* op, Program* prog);
+void HandleAtomicExchange(void* op, Program* prog);
 struct SAtomicExchange {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1478,7 +1480,7 @@ struct SAtomicExchange {
   uint32 ValueId;
 };
 
-static void HandleAtomicCompareExchange(void* op, Program* prog);
+void HandleAtomicCompareExchange(void* op, Program* prog);
 struct SAtomicCompareExchange {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1489,7 +1491,7 @@ struct SAtomicCompareExchange {
   uint32 ComparatorId;
 };
 
-static void HandleAtomicCompareExchangeWeak(void* op, Program* prog);
+void HandleAtomicCompareExchangeWeak(void* op, Program* prog);
 struct SAtomicCompareExchangeWeak {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1500,7 +1502,7 @@ struct SAtomicCompareExchangeWeak {
   uint32 ComparatorId;
 };
 
-static void HandleAtomicIIncrement(void* op, Program* prog);
+void HandleAtomicIIncrement(void* op, Program* prog);
 struct SAtomicIIncrement {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1509,7 +1511,7 @@ struct SAtomicIIncrement {
   MemorySemantics Semantics;
 };
 
-static void HandleAtomicIDecrement(void* op, Program* prog);
+void HandleAtomicIDecrement(void* op, Program* prog);
 struct SAtomicIDecrement {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1518,7 +1520,7 @@ struct SAtomicIDecrement {
   MemorySemantics Semantics;
 };
 
-static void HandleAtomicIAdd(void* op, Program* prog);
+void HandleAtomicIAdd(void* op, Program* prog);
 struct SAtomicIAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1528,7 +1530,7 @@ struct SAtomicIAdd {
   uint32 ValueId;
 };
 
-static void HandleAtomicISub(void* op, Program* prog);
+void HandleAtomicISub(void* op, Program* prog);
 struct SAtomicISub {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1538,7 +1540,7 @@ struct SAtomicISub {
   uint32 ValueId;
 };
 
-static void HandleAtomicUMin(void* op, Program* prog);
+void HandleAtomicUMin(void* op, Program* prog);
 struct SAtomicUMin {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1548,7 +1550,7 @@ struct SAtomicUMin {
   uint32 ValueId;
 };
 
-static void HandleAtomicUMax(void* op, Program* prog);
+void HandleAtomicUMax(void* op, Program* prog);
 struct SAtomicUMax {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1558,7 +1560,7 @@ struct SAtomicUMax {
   uint32 ValueId;
 };
 
-static void HandleAtomicAnd(void* op, Program* prog);
+void HandleAtomicAnd(void* op, Program* prog);
 struct SAtomicAnd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1568,7 +1570,7 @@ struct SAtomicAnd {
   uint32 ValueId;
 };
 
-static void HandleAtomicOr(void* op, Program* prog);
+void HandleAtomicOr(void* op, Program* prog);
 struct SAtomicOr {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1578,7 +1580,7 @@ struct SAtomicOr {
   uint32 ValueId;
 };
 
-static void HandleAtomicXor(void* op, Program* prog);
+void HandleAtomicXor(void* op, Program* prog);
 struct SAtomicXor {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1588,29 +1590,29 @@ struct SAtomicXor {
   uint32 ValueId;
 };
 
-static void HandleLoopMerge(void* op, Program* prog);
+void HandleLoopMerge(void* op, Program* prog);
 struct SLoopMerge {
   uint32 LabelId;
   LoopControl LoopControl;
 };
 
-static void HandleSelectionMerge(void* op, Program* prog);
+void HandleSelectionMerge(void* op, Program* prog);
 struct SSelectionMerge {
   uint32 LabelId;
   SelectionControl SelectionControl;
 };
 
-static void HandleLabel(void* op, Program* prog);
+void HandleLabel(void* op, Program* prog);
 struct SLabel {
   uint32 ResultId;
 };
 
-static void HandleBranch(void* op, Program* prog);
+void HandleBranch(void* op, Program* prog);
 struct SBranch {
   uint32 TargetLabelId;
 };
 
-static void HandleBranchConditional(void* op, Program* prog);
+void HandleBranchConditional(void* op, Program* prog);
 struct SBranchConditional {
   uint32 ConditionId;
   uint32 TrueLabelId;
@@ -1619,7 +1621,7 @@ struct SBranchConditional {
   uint32* Branchweights;
 };
 
-static void HandleSwitch(void* op, Program* prog);
+void HandleSwitch(void* op, Program* prog);
 struct SSwitch {
   uint32 SelectorId;
   uint32 DefaultId;
@@ -1627,41 +1629,41 @@ struct SSwitch {
   uint32* literalIds;
 };
 
-static void HandleKill(void* op, Program* prog);
+void HandleKill(void* op, Program* prog);
 struct SKill {
 };
 
-static void HandleReturn(void* op, Program* prog);
+void HandleReturn(void* op, Program* prog);
 struct SReturn {
 };
 
-static void HandleReturnValue(void* op, Program* prog);
+void HandleReturnValue(void* op, Program* prog);
 struct SReturnValue {
   uint32 ValueId;
 };
 
-static void HandleUnreachable(void* op, Program* prog);
+void HandleUnreachable(void* op, Program* prog);
 struct SUnreachable {
 };
 
-static void HandleLifetimeStart(void* op, Program* prog);
+void HandleLifetimeStart(void* op, Program* prog);
 struct SLifetimeStart {
   uint32 Id0;
   uint32 LiteralNumber;
 };
 
-static void HandleLifetimeStop(void* op, Program* prog);
+void HandleLifetimeStop(void* op, Program* prog);
 struct SLifetimeStop {
   uint32 Id0;
   uint32 LiteralNumber;
 };
 
-static void HandleCompileFlag(void* op, Program* prog);
+void HandleCompileFlag(void* op, Program* prog);
 struct SCompileFlag {
   char* Flag;
 };
 
-static void HandleAsyncGroupCopy(void* op, Program* prog);
+void HandleAsyncGroupCopy(void* op, Program* prog);
 struct SAsyncGroupCopy {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1673,7 +1675,7 @@ struct SAsyncGroupCopy {
   uint32 EventId;
 };
 
-static void HandleWaitGroupEvents(void* op, Program* prog);
+void HandleWaitGroupEvents(void* op, Program* prog);
 struct SWaitGroupEvents {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1682,7 +1684,7 @@ struct SWaitGroupEvents {
   uint32 EventsListId;
 };
 
-static void HandleGroupAll(void* op, Program* prog);
+void HandleGroupAll(void* op, Program* prog);
 struct SGroupAll {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1690,7 +1692,7 @@ struct SGroupAll {
   uint32 PredicateId;
 };
 
-static void HandleGroupAny(void* op, Program* prog);
+void HandleGroupAny(void* op, Program* prog);
 struct SGroupAny {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1698,7 +1700,7 @@ struct SGroupAny {
   uint32 PredicateId;
 };
 
-static void HandleGroupBroadcast(void* op, Program* prog);
+void HandleGroupBroadcast(void* op, Program* prog);
 struct SGroupBroadcast {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1707,7 +1709,7 @@ struct SGroupBroadcast {
   uint32 LocalIdId;
 };
 
-static void HandleGroupIAdd(void* op, Program* prog);
+void HandleGroupIAdd(void* op, Program* prog);
 struct SGroupIAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1716,7 +1718,7 @@ struct SGroupIAdd {
   uint32 XId;
 };
 
-static void HandleGroupFAdd(void* op, Program* prog);
+void HandleGroupFAdd(void* op, Program* prog);
 struct SGroupFAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1725,7 +1727,7 @@ struct SGroupFAdd {
   uint32 XId;
 };
 
-static void HandleGroupFMin(void* op, Program* prog);
+void HandleGroupFMin(void* op, Program* prog);
 struct SGroupFMin {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1734,7 +1736,7 @@ struct SGroupFMin {
   uint32 XId;
 };
 
-static void HandleGroupUMin(void* op, Program* prog);
+void HandleGroupUMin(void* op, Program* prog);
 struct SGroupUMin {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1743,7 +1745,7 @@ struct SGroupUMin {
   uint32 XId;
 };
 
-static void HandleGroupSMin(void* op, Program* prog);
+void HandleGroupSMin(void* op, Program* prog);
 struct SGroupSMin {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1752,7 +1754,7 @@ struct SGroupSMin {
   uint32 XId;
 };
 
-static void HandleGroupFMax(void* op, Program* prog);
+void HandleGroupFMax(void* op, Program* prog);
 struct SGroupFMax {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1761,7 +1763,7 @@ struct SGroupFMax {
   uint32 XId;
 };
 
-static void HandleGroupUMax(void* op, Program* prog);
+void HandleGroupUMax(void* op, Program* prog);
 struct SGroupUMax {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1770,7 +1772,7 @@ struct SGroupUMax {
   uint32 XId;
 };
 
-static void HandleGroupSMax(void* op, Program* prog);
+void HandleGroupSMax(void* op, Program* prog);
 struct SGroupSMax {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1779,7 +1781,7 @@ struct SGroupSMax {
   uint32 XId;
 };
 
-static void HandleGenericCastToPtrExplicit(void* op, Program* prog);
+void HandleGenericCastToPtrExplicit(void* op, Program* prog);
 struct SGenericCastToPtrExplicit {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1787,14 +1789,14 @@ struct SGenericCastToPtrExplicit {
   StorageClass storage;
 };
 
-static void HandleGenericPtrMemSemantics(void* op, Program* prog);
+void HandleGenericPtrMemSemantics(void* op, Program* prog);
 struct SGenericPtrMemSemantics {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 ptrId;
 };
 
-static void HandleReadPipe(void* op, Program* prog);
+void HandleReadPipe(void* op, Program* prog);
 struct SReadPipe {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1802,7 +1804,7 @@ struct SReadPipe {
   uint32 ptrId;
 };
 
-static void HandleWritePipe(void* op, Program* prog);
+void HandleWritePipe(void* op, Program* prog);
 struct SWritePipe {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1810,7 +1812,7 @@ struct SWritePipe {
   uint32 ptrId;
 };
 
-static void HandleReservedReadPipe(void* op, Program* prog);
+void HandleReservedReadPipe(void* op, Program* prog);
 struct SReservedReadPipe {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1820,7 +1822,7 @@ struct SReservedReadPipe {
   uint32 ptrId;
 };
 
-static void HandleReservedWritePipe(void* op, Program* prog);
+void HandleReservedWritePipe(void* op, Program* prog);
 struct SReservedWritePipe {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1830,7 +1832,7 @@ struct SReservedWritePipe {
   uint32 ptrId;
 };
 
-static void HandleReserveReadPipePackets(void* op, Program* prog);
+void HandleReserveReadPipePackets(void* op, Program* prog);
 struct SReserveReadPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1838,7 +1840,7 @@ struct SReserveReadPipePackets {
   uint32 num_packetsId;
 };
 
-static void HandleReserveWritePipePackets(void* op, Program* prog);
+void HandleReserveWritePipePackets(void* op, Program* prog);
 struct SReserveWritePipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1846,40 +1848,40 @@ struct SReserveWritePipePackets {
   uint32 num_packetsId;
 };
 
-static void HandleCommitReadPipe(void* op, Program* prog);
+void HandleCommitReadPipe(void* op, Program* prog);
 struct SCommitReadPipe {
   uint32 pId;
   uint32 reserve_idId;
 };
 
-static void HandleCommitWritePipe(void* op, Program* prog);
+void HandleCommitWritePipe(void* op, Program* prog);
 struct SCommitWritePipe {
   uint32 pId;
   uint32 reserve_idId;
 };
 
-static void HandleIsValidReserveId(void* op, Program* prog);
+void HandleIsValidReserveId(void* op, Program* prog);
 struct SIsValidReserveId {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 reserve_idId;
 };
 
-static void HandleGetNumPipePackets(void* op, Program* prog);
+void HandleGetNumPipePackets(void* op, Program* prog);
 struct SGetNumPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 pId;
 };
 
-static void HandleGetMaxPipePackets(void* op, Program* prog);
+void HandleGetMaxPipePackets(void* op, Program* prog);
 struct SGetMaxPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 pId;
 };
 
-static void HandleGroupReserveReadPipePackets(void* op, Program* prog);
+void HandleGroupReserveReadPipePackets(void* op, Program* prog);
 struct SGroupReserveReadPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1888,7 +1890,7 @@ struct SGroupReserveReadPipePackets {
   uint32 num_packetsId;
 };
 
-static void HandleGroupReserveWritePipePackets(void* op, Program* prog);
+void HandleGroupReserveWritePipePackets(void* op, Program* prog);
 struct SGroupReserveWritePipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1897,21 +1899,21 @@ struct SGroupReserveWritePipePackets {
   uint32 num_packetsId;
 };
 
-static void HandleGroupCommitReadPipe(void* op, Program* prog);
+void HandleGroupCommitReadPipe(void* op, Program* prog);
 struct SGroupCommitReadPipe {
   ExecutionScope Scope;
   uint32 pId;
   uint32 reserve_idId;
 };
 
-static void HandleGroupCommitWritePipe(void* op, Program* prog);
+void HandleGroupCommitWritePipe(void* op, Program* prog);
 struct SGroupCommitWritePipe {
   ExecutionScope Scope;
   uint32 pId;
   uint32 reserve_idId;
 };
 
-static void HandleEnqueueMarker(void* op, Program* prog);
+void HandleEnqueueMarker(void* op, Program* prog);
 struct SEnqueueMarker {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1921,7 +1923,7 @@ struct SEnqueueMarker {
   uint32 RetEventId;
 };
 
-static void HandleEnqueueKernel(void* op, Program* prog);
+void HandleEnqueueKernel(void* op, Program* prog);
 struct SEnqueueKernel {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1939,7 +1941,7 @@ struct SEnqueueKernel {
   uint32* LocalSizeIds;
 };
 
-static void HandleGetKernelNDrangeSubGroupCount(void* op, Program* prog);
+void HandleGetKernelNDrangeSubGroupCount(void* op, Program* prog);
 struct SGetKernelNDrangeSubGroupCount {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1947,7 +1949,7 @@ struct SGetKernelNDrangeSubGroupCount {
   uint32 InvokeId;
 };
 
-static void HandleGetKernelNDrangeMaxSubGroupSize(void* op, Program* prog);
+void HandleGetKernelNDrangeMaxSubGroupSize(void* op, Program* prog);
 struct SGetKernelNDrangeMaxSubGroupSize {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1955,63 +1957,63 @@ struct SGetKernelNDrangeMaxSubGroupSize {
   uint32 InvokeId;
 };
 
-static void HandleGetKernelWorkGroupSize(void* op, Program* prog);
+void HandleGetKernelWorkGroupSize(void* op, Program* prog);
 struct SGetKernelWorkGroupSize {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 InvokeId;
 };
 
-static void HandleGetKernelPreferredWorkGroupSizeMultiple(void* op, Program* prog);
+void HandleGetKernelPreferredWorkGroupSizeMultiple(void* op, Program* prog);
 struct SGetKernelPreferredWorkGroupSizeMultiple {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 InvokeId;
 };
 
-static void HandleRetainEvent(void* op, Program* prog);
+void HandleRetainEvent(void* op, Program* prog);
 struct SRetainEvent {
   uint32 eventId;
 };
 
-static void HandleReleaseEvent(void* op, Program* prog);
+void HandleReleaseEvent(void* op, Program* prog);
 struct SReleaseEvent {
   uint32 eventId;
 };
 
-static void HandleCreateUserEvent(void* op, Program* prog);
+void HandleCreateUserEvent(void* op, Program* prog);
 struct SCreateUserEvent {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-static void HandleIsValidEvent(void* op, Program* prog);
+void HandleIsValidEvent(void* op, Program* prog);
 struct SIsValidEvent {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 eventId;
 };
 
-static void HandleSetUserEventStatus(void* op, Program* prog);
+void HandleSetUserEventStatus(void* op, Program* prog);
 struct SSetUserEventStatus {
   uint32 eventId;
   uint32 statusId;
 };
 
-static void HandleCaptureEventProfilingInfo(void* op, Program* prog);
+void HandleCaptureEventProfilingInfo(void* op, Program* prog);
 struct SCaptureEventProfilingInfo {
   uint32 eventId;
   KernelProfilingInfo info;
   uint32 valueId;
 };
 
-static void HandleGetDefaultQueue(void* op, Program* prog);
+void HandleGetDefaultQueue(void* op, Program* prog);
 struct SGetDefaultQueue {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-static void HandleBuildNDRange(void* op, Program* prog);
+void HandleBuildNDRange(void* op, Program* prog);
 struct SBuildNDRange {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -2020,21 +2022,21 @@ struct SBuildNDRange {
   uint32 GlobalWorkOffsetId;
 };
 
-static void HandleSatConvertSToU(void* op, Program* prog);
+void HandleSatConvertSToU(void* op, Program* prog);
 struct SSatConvertSToU {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SignedValueId;
 };
 
-static void HandleSatConvertUToS(void* op, Program* prog);
+void HandleSatConvertUToS(void* op, Program* prog);
 struct SSatConvertUToS {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 UnsignedValueId;
 };
 
-static void HandleAtomicIMin(void* op, Program* prog);
+void HandleAtomicIMin(void* op, Program* prog);
 struct SAtomicIMin {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -2044,7 +2046,7 @@ struct SAtomicIMin {
   uint32 ValueId;
 };
 
-static void HandleAtomicIMax(void* op, Program* prog);
+void HandleAtomicIMax(void* op, Program* prog);
 struct SAtomicIMax {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -4347,813 +4349,8 @@ static WordType AtomicIMaxWordTypes[]{
 };
 static uint32 AtomicIMaxWordTypesCount = 7;
 
-static void* LUTOpWordTypes[]{
-  &NopWordTypes,
-  &SourceWordTypes,
-  &SourceExtensionWordTypes,
-  &ExtensionWordTypes,
-  &ExtInstImportWordTypes,
-  &MemoryModelWordTypes,
-  &EntryPointWordTypes,
-  &ExecutionModeWordTypes,
-  &TypeVoidWordTypes,
-  &TypeBoolWordTypes,
-  &TypeIntWordTypes,
-  &TypeFloatWordTypes,
-  &TypeVectorWordTypes,
-  &TypeMatrixWordTypes,
-  &TypeSamplerWordTypes,
-  &TypeFilterWordTypes,
-  &TypeArrayWordTypes,
-  &TypeRuntimeArrayWordTypes,
-  &TypeStructWordTypes,
-  &TypeOpaqueWordTypes,
-  &TypePointerWordTypes,
-  &TypeFunctionWordTypes,
-  &TypeEventWordTypes,
-  &TypeDeviceEventWordTypes,
-  &TypeReserveIdWordTypes,
-  &TypeQueueWordTypes,
-  &TypePipeWordTypes,
-  &ConstantTrueWordTypes,
-  &ConstantFalseWordTypes,
-  &ConstantWordTypes,
-  &ConstantCompositeWordTypes,
-  &ConstantSamplerWordTypes,
-  &ConstantNullPointerWordTypes,
-  &ConstantNullObjectWordTypes,
-  &SpecConstantTrueWordTypes,
-  &SpecConstantFalseWordTypes,
-  &SpecConstantWordTypes,
-  &SpecConstantCompositeWordTypes,
-  &VariableWordTypes,
-  &VariableArrayWordTypes,
-  &FunctionWordTypes,
-  &FunctionParameterWordTypes,
-  &FunctionEndWordTypes,
-  &FunctionCallWordTypes,
-  &ExtInstWordTypes,
-  &UndefWordTypes,
-  &LoadWordTypes,
-  &StoreWordTypes,
-  &PhiWordTypes,
-  &DecorationGroupWordTypes,
-  &DecorateWordTypes,
-  &MemberDecorateWordTypes,
-  &GroupDecorateWordTypes,
-  &GroupMemberDecorateWordTypes,
-  &NameWordTypes,
-  &MemberNameWordTypes,
-  &StringWordTypes,
-  &LineWordTypes,
-  &VectorExtractDynamicWordTypes,
-  &VectorInsertDynamicWordTypes,
-  &VectorShuffleWordTypes,
-  &CompositeConstructWordTypes,
-  &CompositeExtractWordTypes,
-  &CompositeInsertWordTypes,
-  &CopyObjectWordTypes,
-  &CopyMemoryWordTypes,
-  &CopyMemorySizedWordTypes,
-  &SamplerWordTypes,
-  &TextureSampleWordTypes,
-  &TextureSampleDrefWordTypes,
-  &TextureSampleLodWordTypes,
-  &TextureSampleProjWordTypes,
-  &TextureSampleGradWordTypes,
-  &TextureSampleOffsetWordTypes,
-  &TextureSampleProjLodWordTypes,
-  &TextureSampleProjGradWordTypes,
-  &TextureSampleLodOffsetWordTypes,
-  &TextureSampleProjOffsetWordTypes,
-  &TextureSampleGradOffsetWordTypes,
-  &TextureSampleProjLodOffsetWordTypes,
-  &TextureSampleProjGradOffsetWordTypes,
-  &TextureFetchTexelLodWordTypes,
-  &TextureFetchTexelOffsetWordTypes,
-  &TextureFetchSampleWordTypes,
-  &TextureFetchTexelWordTypes,
-  &TextureGatherWordTypes,
-  &TextureGatherOffsetWordTypes,
-  &TextureGatherOffsetsWordTypes,
-  &TextureQuerySizeLodWordTypes,
-  &TextureQuerySizeWordTypes,
-  &TextureQueryLodWordTypes,
-  &TextureQueryLevelsWordTypes,
-  &TextureQuerySamplesWordTypes,
-  &AccessChainWordTypes,
-  &InBoundsAccessChainWordTypes,
-  &SNegateWordTypes,
-  &FNegateWordTypes,
-  &NotWordTypes,
-  &AnyWordTypes,
-  &AllWordTypes,
-  &ConvertFToUWordTypes,
-  &ConvertFToSWordTypes,
-  &ConvertSToFWordTypes,
-  &ConvertUToFWordTypes,
-  &UConvertWordTypes,
-  &SConvertWordTypes,
-  &FConvertWordTypes,
-  &ConvertPtrToUWordTypes,
-  &ConvertUToPtrWordTypes,
-  &PtrCastToGenericWordTypes,
-  &GenericCastToPtrWordTypes,
-  &BitcastWordTypes,
-  &TransposeWordTypes,
-  &IsNanWordTypes,
-  &IsInfWordTypes,
-  &IsFiniteWordTypes,
-  &IsNormalWordTypes,
-  &SignBitSetWordTypes,
-  &LessOrGreaterWordTypes,
-  &OrderedWordTypes,
-  &UnorderedWordTypes,
-  &ArrayLengthWordTypes,
-  &IAddWordTypes,
-  &FAddWordTypes,
-  &ISubWordTypes,
-  &FSubWordTypes,
-  &IMulWordTypes,
-  &FMulWordTypes,
-  &UDivWordTypes,
-  &SDivWordTypes,
-  &FDivWordTypes,
-  &UModWordTypes,
-  &SRemWordTypes,
-  &SModWordTypes,
-  &FRemWordTypes,
-  &FModWordTypes,
-  &VectorTimesScalarWordTypes,
-  &MatrixTimesScalarWordTypes,
-  &VectorTimesMatrixWordTypes,
-  &MatrixTimesVectorWordTypes,
-  &MatrixTimesMatrixWordTypes,
-  &OuterProductWordTypes,
-  &DotWordTypes,
-  &ShiftRightLogicalWordTypes,
-  &ShiftRightArithmeticWordTypes,
-  &ShiftLeftLogicalWordTypes,
-  &LogicalOrWordTypes,
-  &LogicalXorWordTypes,
-  &LogicalAndWordTypes,
-  &BitwiseOrWordTypes,
-  &BitwiseXorWordTypes,
-  &BitwiseAndWordTypes,
-  &SelectWordTypes,
-  &IEqualWordTypes,
-  &FOrdEqualWordTypes,
-  &FUnordEqualWordTypes,
-  &INotEqualWordTypes,
-  &FOrdNotEqualWordTypes,
-  &FUnordNotEqualWordTypes,
-  &ULessThanWordTypes,
-  &SLessThanWordTypes,
-  &FOrdLessThanWordTypes,
-  &FUnordLessThanWordTypes,
-  &UGreaterThanWordTypes,
-  &SGreaterThanWordTypes,
-  &FOrdGreaterThanWordTypes,
-  &FUnordGreaterThanWordTypes,
-  &ULessThanEqualWordTypes,
-  &SLessThanEqualWordTypes,
-  &FOrdLessThanEqualWordTypes,
-  &FUnordLessThanEqualWordTypes,
-  &UGreaterThanEqualWordTypes,
-  &SGreaterThanEqualWordTypes,
-  &FOrdGreaterThanEqualWordTypes,
-  &FUnordGreaterThanEqualWordTypes,
-  &DPdxWordTypes,
-  &DPdyWordTypes,
-  &FwidthWordTypes,
-  &DPdxFineWordTypes,
-  &DPdyFineWordTypes,
-  &FwidthFineWordTypes,
-  &DPdxCoarseWordTypes,
-  &DPdyCoarseWordTypes,
-  &FwidthCoarseWordTypes,
-  &EmitVertexWordTypes,
-  &EndPrimitiveWordTypes,
-  &EmitStreamVertexWordTypes,
-  &EndStreamPrimitiveWordTypes,
-  &ControlBarrierWordTypes,
-  &MemoryBarrierWordTypes,
-  &ImagePointerWordTypes,
-  &AtomicInitWordTypes,
-  &AtomicLoadWordTypes,
-  &AtomicStoreWordTypes,
-  &AtomicExchangeWordTypes,
-  &AtomicCompareExchangeWordTypes,
-  &AtomicCompareExchangeWeakWordTypes,
-  &AtomicIIncrementWordTypes,
-  &AtomicIDecrementWordTypes,
-  &AtomicIAddWordTypes,
-  &AtomicISubWordTypes,
-  &AtomicUMinWordTypes,
-  &AtomicUMaxWordTypes,
-  &AtomicAndWordTypes,
-  &AtomicOrWordTypes,
-  &AtomicXorWordTypes,
-  &LoopMergeWordTypes,
-  &SelectionMergeWordTypes,
-  &LabelWordTypes,
-  &BranchWordTypes,
-  &BranchConditionalWordTypes,
-  &SwitchWordTypes,
-  &KillWordTypes,
-  &ReturnWordTypes,
-  &ReturnValueWordTypes,
-  &UnreachableWordTypes,
-  &LifetimeStartWordTypes,
-  &LifetimeStopWordTypes,
-  &CompileFlagWordTypes,
-  &AsyncGroupCopyWordTypes,
-  &WaitGroupEventsWordTypes,
-  &GroupAllWordTypes,
-  &GroupAnyWordTypes,
-  &GroupBroadcastWordTypes,
-  &GroupIAddWordTypes,
-  &GroupFAddWordTypes,
-  &GroupFMinWordTypes,
-  &GroupUMinWordTypes,
-  &GroupSMinWordTypes,
-  &GroupFMaxWordTypes,
-  &GroupUMaxWordTypes,
-  &GroupSMaxWordTypes,
-  &GenericCastToPtrExplicitWordTypes,
-  &GenericPtrMemSemanticsWordTypes,
-  &ReadPipeWordTypes,
-  &WritePipeWordTypes,
-  &ReservedReadPipeWordTypes,
-  &ReservedWritePipeWordTypes,
-  &ReserveReadPipePacketsWordTypes,
-  &ReserveWritePipePacketsWordTypes,
-  &CommitReadPipeWordTypes,
-  &CommitWritePipeWordTypes,
-  &IsValidReserveIdWordTypes,
-  &GetNumPipePacketsWordTypes,
-  &GetMaxPipePacketsWordTypes,
-  &GroupReserveReadPipePacketsWordTypes,
-  &GroupReserveWritePipePacketsWordTypes,
-  &GroupCommitReadPipeWordTypes,
-  &GroupCommitWritePipeWordTypes,
-  &EnqueueMarkerWordTypes,
-  &EnqueueKernelWordTypes,
-  &GetKernelNDrangeSubGroupCountWordTypes,
-  &GetKernelNDrangeMaxSubGroupSizeWordTypes,
-  &GetKernelWorkGroupSizeWordTypes,
-  &GetKernelPreferredWorkGroupSizeMultipleWordTypes,
-  &RetainEventWordTypes,
-  &ReleaseEventWordTypes,
-  &CreateUserEventWordTypes,
-  &IsValidEventWordTypes,
-  &SetUserEventStatusWordTypes,
-  &CaptureEventProfilingInfoWordTypes,
-  &GetDefaultQueueWordTypes,
-  &BuildNDRangeWordTypes,
-  &SatConvertSToUWordTypes,
-  &SatConvertUToSWordTypes,
-  &AtomicIMinWordTypes,
-  &AtomicIMaxWordTypes,
-};
-
-static uint32 LUTOpWordTypesCount[]{
-  NopWordTypesCount,
-  SourceWordTypesCount,
-  SourceExtensionWordTypesCount,
-  ExtensionWordTypesCount,
-  ExtInstImportWordTypesCount,
-  MemoryModelWordTypesCount,
-  EntryPointWordTypesCount,
-  ExecutionModeWordTypesCount,
-  TypeVoidWordTypesCount,
-  TypeBoolWordTypesCount,
-  TypeIntWordTypesCount,
-  TypeFloatWordTypesCount,
-  TypeVectorWordTypesCount,
-  TypeMatrixWordTypesCount,
-  TypeSamplerWordTypesCount,
-  TypeFilterWordTypesCount,
-  TypeArrayWordTypesCount,
-  TypeRuntimeArrayWordTypesCount,
-  TypeStructWordTypesCount,
-  TypeOpaqueWordTypesCount,
-  TypePointerWordTypesCount,
-  TypeFunctionWordTypesCount,
-  TypeEventWordTypesCount,
-  TypeDeviceEventWordTypesCount,
-  TypeReserveIdWordTypesCount,
-  TypeQueueWordTypesCount,
-  TypePipeWordTypesCount,
-  ConstantTrueWordTypesCount,
-  ConstantFalseWordTypesCount,
-  ConstantWordTypesCount,
-  ConstantCompositeWordTypesCount,
-  ConstantSamplerWordTypesCount,
-  ConstantNullPointerWordTypesCount,
-  ConstantNullObjectWordTypesCount,
-  SpecConstantTrueWordTypesCount,
-  SpecConstantFalseWordTypesCount,
-  SpecConstantWordTypesCount,
-  SpecConstantCompositeWordTypesCount,
-  VariableWordTypesCount,
-  VariableArrayWordTypesCount,
-  FunctionWordTypesCount,
-  FunctionParameterWordTypesCount,
-  FunctionEndWordTypesCount,
-  FunctionCallWordTypesCount,
-  ExtInstWordTypesCount,
-  UndefWordTypesCount,
-  LoadWordTypesCount,
-  StoreWordTypesCount,
-  PhiWordTypesCount,
-  DecorationGroupWordTypesCount,
-  DecorateWordTypesCount,
-  MemberDecorateWordTypesCount,
-  GroupDecorateWordTypesCount,
-  GroupMemberDecorateWordTypesCount,
-  NameWordTypesCount,
-  MemberNameWordTypesCount,
-  StringWordTypesCount,
-  LineWordTypesCount,
-  VectorExtractDynamicWordTypesCount,
-  VectorInsertDynamicWordTypesCount,
-  VectorShuffleWordTypesCount,
-  CompositeConstructWordTypesCount,
-  CompositeExtractWordTypesCount,
-  CompositeInsertWordTypesCount,
-  CopyObjectWordTypesCount,
-  CopyMemoryWordTypesCount,
-  CopyMemorySizedWordTypesCount,
-  SamplerWordTypesCount,
-  TextureSampleWordTypesCount,
-  TextureSampleDrefWordTypesCount,
-  TextureSampleLodWordTypesCount,
-  TextureSampleProjWordTypesCount,
-  TextureSampleGradWordTypesCount,
-  TextureSampleOffsetWordTypesCount,
-  TextureSampleProjLodWordTypesCount,
-  TextureSampleProjGradWordTypesCount,
-  TextureSampleLodOffsetWordTypesCount,
-  TextureSampleProjOffsetWordTypesCount,
-  TextureSampleGradOffsetWordTypesCount,
-  TextureSampleProjLodOffsetWordTypesCount,
-  TextureSampleProjGradOffsetWordTypesCount,
-  TextureFetchTexelLodWordTypesCount,
-  TextureFetchTexelOffsetWordTypesCount,
-  TextureFetchSampleWordTypesCount,
-  TextureFetchTexelWordTypesCount,
-  TextureGatherWordTypesCount,
-  TextureGatherOffsetWordTypesCount,
-  TextureGatherOffsetsWordTypesCount,
-  TextureQuerySizeLodWordTypesCount,
-  TextureQuerySizeWordTypesCount,
-  TextureQueryLodWordTypesCount,
-  TextureQueryLevelsWordTypesCount,
-  TextureQuerySamplesWordTypesCount,
-  AccessChainWordTypesCount,
-  InBoundsAccessChainWordTypesCount,
-  SNegateWordTypesCount,
-  FNegateWordTypesCount,
-  NotWordTypesCount,
-  AnyWordTypesCount,
-  AllWordTypesCount,
-  ConvertFToUWordTypesCount,
-  ConvertFToSWordTypesCount,
-  ConvertSToFWordTypesCount,
-  ConvertUToFWordTypesCount,
-  UConvertWordTypesCount,
-  SConvertWordTypesCount,
-  FConvertWordTypesCount,
-  ConvertPtrToUWordTypesCount,
-  ConvertUToPtrWordTypesCount,
-  PtrCastToGenericWordTypesCount,
-  GenericCastToPtrWordTypesCount,
-  BitcastWordTypesCount,
-  TransposeWordTypesCount,
-  IsNanWordTypesCount,
-  IsInfWordTypesCount,
-  IsFiniteWordTypesCount,
-  IsNormalWordTypesCount,
-  SignBitSetWordTypesCount,
-  LessOrGreaterWordTypesCount,
-  OrderedWordTypesCount,
-  UnorderedWordTypesCount,
-  ArrayLengthWordTypesCount,
-  IAddWordTypesCount,
-  FAddWordTypesCount,
-  ISubWordTypesCount,
-  FSubWordTypesCount,
-  IMulWordTypesCount,
-  FMulWordTypesCount,
-  UDivWordTypesCount,
-  SDivWordTypesCount,
-  FDivWordTypesCount,
-  UModWordTypesCount,
-  SRemWordTypesCount,
-  SModWordTypesCount,
-  FRemWordTypesCount,
-  FModWordTypesCount,
-  VectorTimesScalarWordTypesCount,
-  MatrixTimesScalarWordTypesCount,
-  VectorTimesMatrixWordTypesCount,
-  MatrixTimesVectorWordTypesCount,
-  MatrixTimesMatrixWordTypesCount,
-  OuterProductWordTypesCount,
-  DotWordTypesCount,
-  ShiftRightLogicalWordTypesCount,
-  ShiftRightArithmeticWordTypesCount,
-  ShiftLeftLogicalWordTypesCount,
-  LogicalOrWordTypesCount,
-  LogicalXorWordTypesCount,
-  LogicalAndWordTypesCount,
-  BitwiseOrWordTypesCount,
-  BitwiseXorWordTypesCount,
-  BitwiseAndWordTypesCount,
-  SelectWordTypesCount,
-  IEqualWordTypesCount,
-  FOrdEqualWordTypesCount,
-  FUnordEqualWordTypesCount,
-  INotEqualWordTypesCount,
-  FOrdNotEqualWordTypesCount,
-  FUnordNotEqualWordTypesCount,
-  ULessThanWordTypesCount,
-  SLessThanWordTypesCount,
-  FOrdLessThanWordTypesCount,
-  FUnordLessThanWordTypesCount,
-  UGreaterThanWordTypesCount,
-  SGreaterThanWordTypesCount,
-  FOrdGreaterThanWordTypesCount,
-  FUnordGreaterThanWordTypesCount,
-  ULessThanEqualWordTypesCount,
-  SLessThanEqualWordTypesCount,
-  FOrdLessThanEqualWordTypesCount,
-  FUnordLessThanEqualWordTypesCount,
-  UGreaterThanEqualWordTypesCount,
-  SGreaterThanEqualWordTypesCount,
-  FOrdGreaterThanEqualWordTypesCount,
-  FUnordGreaterThanEqualWordTypesCount,
-  DPdxWordTypesCount,
-  DPdyWordTypesCount,
-  FwidthWordTypesCount,
-  DPdxFineWordTypesCount,
-  DPdyFineWordTypesCount,
-  FwidthFineWordTypesCount,
-  DPdxCoarseWordTypesCount,
-  DPdyCoarseWordTypesCount,
-  FwidthCoarseWordTypesCount,
-  EmitVertexWordTypesCount,
-  EndPrimitiveWordTypesCount,
-  EmitStreamVertexWordTypesCount,
-  EndStreamPrimitiveWordTypesCount,
-  ControlBarrierWordTypesCount,
-  MemoryBarrierWordTypesCount,
-  ImagePointerWordTypesCount,
-  AtomicInitWordTypesCount,
-  AtomicLoadWordTypesCount,
-  AtomicStoreWordTypesCount,
-  AtomicExchangeWordTypesCount,
-  AtomicCompareExchangeWordTypesCount,
-  AtomicCompareExchangeWeakWordTypesCount,
-  AtomicIIncrementWordTypesCount,
-  AtomicIDecrementWordTypesCount,
-  AtomicIAddWordTypesCount,
-  AtomicISubWordTypesCount,
-  AtomicUMinWordTypesCount,
-  AtomicUMaxWordTypesCount,
-  AtomicAndWordTypesCount,
-  AtomicOrWordTypesCount,
-  AtomicXorWordTypesCount,
-  LoopMergeWordTypesCount,
-  SelectionMergeWordTypesCount,
-  LabelWordTypesCount,
-  BranchWordTypesCount,
-  BranchConditionalWordTypesCount,
-  SwitchWordTypesCount,
-  KillWordTypesCount,
-  ReturnWordTypesCount,
-  ReturnValueWordTypesCount,
-  UnreachableWordTypesCount,
-  LifetimeStartWordTypesCount,
-  LifetimeStopWordTypesCount,
-  CompileFlagWordTypesCount,
-  AsyncGroupCopyWordTypesCount,
-  WaitGroupEventsWordTypesCount,
-  GroupAllWordTypesCount,
-  GroupAnyWordTypesCount,
-  GroupBroadcastWordTypesCount,
-  GroupIAddWordTypesCount,
-  GroupFAddWordTypesCount,
-  GroupFMinWordTypesCount,
-  GroupUMinWordTypesCount,
-  GroupSMinWordTypesCount,
-  GroupFMaxWordTypesCount,
-  GroupUMaxWordTypesCount,
-  GroupSMaxWordTypesCount,
-  GenericCastToPtrExplicitWordTypesCount,
-  GenericPtrMemSemanticsWordTypesCount,
-  ReadPipeWordTypesCount,
-  WritePipeWordTypesCount,
-  ReservedReadPipeWordTypesCount,
-  ReservedWritePipeWordTypesCount,
-  ReserveReadPipePacketsWordTypesCount,
-  ReserveWritePipePacketsWordTypesCount,
-  CommitReadPipeWordTypesCount,
-  CommitWritePipeWordTypesCount,
-  IsValidReserveIdWordTypesCount,
-  GetNumPipePacketsWordTypesCount,
-  GetMaxPipePacketsWordTypesCount,
-  GroupReserveReadPipePacketsWordTypesCount,
-  GroupReserveWritePipePacketsWordTypesCount,
-  GroupCommitReadPipeWordTypesCount,
-  GroupCommitWritePipeWordTypesCount,
-  EnqueueMarkerWordTypesCount,
-  EnqueueKernelWordTypesCount,
-  GetKernelNDrangeSubGroupCountWordTypesCount,
-  GetKernelNDrangeMaxSubGroupSizeWordTypesCount,
-  GetKernelWorkGroupSizeWordTypesCount,
-  GetKernelPreferredWorkGroupSizeMultipleWordTypesCount,
-  RetainEventWordTypesCount,
-  ReleaseEventWordTypesCount,
-  CreateUserEventWordTypesCount,
-  IsValidEventWordTypesCount,
-  SetUserEventStatusWordTypesCount,
-  CaptureEventProfilingInfoWordTypesCount,
-  GetDefaultQueueWordTypesCount,
-  BuildNDRangeWordTypesCount,
-  SatConvertSToUWordTypesCount,
-  SatConvertUToSWordTypesCount,
-  AtomicIMinWordTypesCount,
-  AtomicIMaxWordTypesCount,
-};
+extern void* LUTOpWordTypes[Op::Count];
+extern uint32 LUTOpWordTypesCount[Op::Count];
 
 typedef void(*OpHandler)(void*, Program*);
-static OpHandler LUTHandlerMethods[]{
-  HandleNop,
-  HandleSource,
-  HandleSourceExtension,
-  HandleExtension,
-  HandleExtInstImport,
-  HandleMemoryModel,
-  HandleEntryPoint,
-  HandleExecutionMode,
-  HandleTypeVoid,
-  HandleTypeBool,
-  HandleTypeInt,
-  HandleTypeFloat,
-  HandleTypeVector,
-  HandleTypeMatrix,
-  HandleTypeSampler,
-  HandleTypeFilter,
-  HandleTypeArray,
-  HandleTypeRuntimeArray,
-  HandleTypeStruct,
-  HandleTypeOpaque,
-  HandleTypePointer,
-  HandleTypeFunction,
-  HandleTypeEvent,
-  HandleTypeDeviceEvent,
-  HandleTypeReserveId,
-  HandleTypeQueue,
-  HandleTypePipe,
-  HandleConstantTrue,
-  HandleConstantFalse,
-  HandleConstant,
-  HandleConstantComposite,
-  HandleConstantSampler,
-  HandleConstantNullPointer,
-  HandleConstantNullObject,
-  HandleSpecConstantTrue,
-  HandleSpecConstantFalse,
-  HandleSpecConstant,
-  HandleSpecConstantComposite,
-  HandleVariable,
-  HandleVariableArray,
-  HandleFunction,
-  HandleFunctionParameter,
-  HandleFunctionEnd,
-  HandleFunctionCall,
-  HandleExtInst,
-  HandleUndef,
-  HandleLoad,
-  HandleStore,
-  HandlePhi,
-  HandleDecorationGroup,
-  HandleDecorate,
-  HandleMemberDecorate,
-  HandleGroupDecorate,
-  HandleGroupMemberDecorate,
-  HandleName,
-  HandleMemberName,
-  HandleString,
-  HandleLine,
-  HandleVectorExtractDynamic,
-  HandleVectorInsertDynamic,
-  HandleVectorShuffle,
-  HandleCompositeConstruct,
-  HandleCompositeExtract,
-  HandleCompositeInsert,
-  HandleCopyObject,
-  HandleCopyMemory,
-  HandleCopyMemorySized,
-  HandleSampler,
-  HandleTextureSample,
-  HandleTextureSampleDref,
-  HandleTextureSampleLod,
-  HandleTextureSampleProj,
-  HandleTextureSampleGrad,
-  HandleTextureSampleOffset,
-  HandleTextureSampleProjLod,
-  HandleTextureSampleProjGrad,
-  HandleTextureSampleLodOffset,
-  HandleTextureSampleProjOffset,
-  HandleTextureSampleGradOffset,
-  HandleTextureSampleProjLodOffset,
-  HandleTextureSampleProjGradOffset,
-  HandleTextureFetchTexelLod,
-  HandleTextureFetchTexelOffset,
-  HandleTextureFetchSample,
-  HandleTextureFetchTexel,
-  HandleTextureGather,
-  HandleTextureGatherOffset,
-  HandleTextureGatherOffsets,
-  HandleTextureQuerySizeLod,
-  HandleTextureQuerySize,
-  HandleTextureQueryLod,
-  HandleTextureQueryLevels,
-  HandleTextureQuerySamples,
-  HandleAccessChain,
-  HandleInBoundsAccessChain,
-  HandleSNegate,
-  HandleFNegate,
-  HandleNot,
-  HandleAny,
-  HandleAll,
-  HandleConvertFToU,
-  HandleConvertFToS,
-  HandleConvertSToF,
-  HandleConvertUToF,
-  HandleUConvert,
-  HandleSConvert,
-  HandleFConvert,
-  HandleConvertPtrToU,
-  HandleConvertUToPtr,
-  HandlePtrCastToGeneric,
-  HandleGenericCastToPtr,
-  HandleBitcast,
-  HandleTranspose,
-  HandleIsNan,
-  HandleIsInf,
-  HandleIsFinite,
-  HandleIsNormal,
-  HandleSignBitSet,
-  HandleLessOrGreater,
-  HandleOrdered,
-  HandleUnordered,
-  HandleArrayLength,
-  HandleIAdd,
-  HandleFAdd,
-  HandleISub,
-  HandleFSub,
-  HandleIMul,
-  HandleFMul,
-  HandleUDiv,
-  HandleSDiv,
-  HandleFDiv,
-  HandleUMod,
-  HandleSRem,
-  HandleSMod,
-  HandleFRem,
-  HandleFMod,
-  HandleVectorTimesScalar,
-  HandleMatrixTimesScalar,
-  HandleVectorTimesMatrix,
-  HandleMatrixTimesVector,
-  HandleMatrixTimesMatrix,
-  HandleOuterProduct,
-  HandleDot,
-  HandleShiftRightLogical,
-  HandleShiftRightArithmetic,
-  HandleShiftLeftLogical,
-  HandleLogicalOr,
-  HandleLogicalXor,
-  HandleLogicalAnd,
-  HandleBitwiseOr,
-  HandleBitwiseXor,
-  HandleBitwiseAnd,
-  HandleSelect,
-  HandleIEqual,
-  HandleFOrdEqual,
-  HandleFUnordEqual,
-  HandleINotEqual,
-  HandleFOrdNotEqual,
-  HandleFUnordNotEqual,
-  HandleULessThan,
-  HandleSLessThan,
-  HandleFOrdLessThan,
-  HandleFUnordLessThan,
-  HandleUGreaterThan,
-  HandleSGreaterThan,
-  HandleFOrdGreaterThan,
-  HandleFUnordGreaterThan,
-  HandleULessThanEqual,
-  HandleSLessThanEqual,
-  HandleFOrdLessThanEqual,
-  HandleFUnordLessThanEqual,
-  HandleUGreaterThanEqual,
-  HandleSGreaterThanEqual,
-  HandleFOrdGreaterThanEqual,
-  HandleFUnordGreaterThanEqual,
-  HandleDPdx,
-  HandleDPdy,
-  HandleFwidth,
-  HandleDPdxFine,
-  HandleDPdyFine,
-  HandleFwidthFine,
-  HandleDPdxCoarse,
-  HandleDPdyCoarse,
-  HandleFwidthCoarse,
-  HandleEmitVertex,
-  HandleEndPrimitive,
-  HandleEmitStreamVertex,
-  HandleEndStreamPrimitive,
-  HandleControlBarrier,
-  HandleMemoryBarrier,
-  HandleImagePointer,
-  HandleAtomicInit,
-  HandleAtomicLoad,
-  HandleAtomicStore,
-  HandleAtomicExchange,
-  HandleAtomicCompareExchange,
-  HandleAtomicCompareExchangeWeak,
-  HandleAtomicIIncrement,
-  HandleAtomicIDecrement,
-  HandleAtomicIAdd,
-  HandleAtomicISub,
-  HandleAtomicUMin,
-  HandleAtomicUMax,
-  HandleAtomicAnd,
-  HandleAtomicOr,
-  HandleAtomicXor,
-  HandleLoopMerge,
-  HandleSelectionMerge,
-  HandleLabel,
-  HandleBranch,
-  HandleBranchConditional,
-  HandleSwitch,
-  HandleKill,
-  HandleReturn,
-  HandleReturnValue,
-  HandleUnreachable,
-  HandleLifetimeStart,
-  HandleLifetimeStop,
-  HandleCompileFlag,
-  HandleAsyncGroupCopy,
-  HandleWaitGroupEvents,
-  HandleGroupAll,
-  HandleGroupAny,
-  HandleGroupBroadcast,
-  HandleGroupIAdd,
-  HandleGroupFAdd,
-  HandleGroupFMin,
-  HandleGroupUMin,
-  HandleGroupSMin,
-  HandleGroupFMax,
-  HandleGroupUMax,
-  HandleGroupSMax,
-  HandleGenericCastToPtrExplicit,
-  HandleGenericPtrMemSemantics,
-  HandleReadPipe,
-  HandleWritePipe,
-  HandleReservedReadPipe,
-  HandleReservedWritePipe,
-  HandleReserveReadPipePackets,
-  HandleReserveWritePipePackets,
-  HandleCommitReadPipe,
-  HandleCommitWritePipe,
-  HandleIsValidReserveId,
-  HandleGetNumPipePackets,
-  HandleGetMaxPipePackets,
-  HandleGroupReserveReadPipePackets,
-  HandleGroupReserveWritePipePackets,
-  HandleGroupCommitReadPipe,
-  HandleGroupCommitWritePipe,
-  HandleEnqueueMarker,
-  HandleEnqueueKernel,
-  HandleGetKernelNDrangeSubGroupCount,
-  HandleGetKernelNDrangeMaxSubGroupSize,
-  HandleGetKernelWorkGroupSize,
-  HandleGetKernelPreferredWorkGroupSizeMultiple,
-  HandleRetainEvent,
-  HandleReleaseEvent,
-  HandleCreateUserEvent,
-  HandleIsValidEvent,
-  HandleSetUserEventStatus,
-  HandleCaptureEventProfilingInfo,
-  HandleGetDefaultQueue,
-  HandleBuildNDRange,
-  HandleSatConvertSToU,
-  HandleSatConvertUToS,
-  HandleAtomicIMin,
-  HandleAtomicIMax,
-};
+extern OpHandler LUTHandlerMethods[Op::Count];
