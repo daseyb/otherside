@@ -8,6 +8,7 @@
 #include "parser_definitions.h" 
 #include "parser.h"
 #include "codegen.h"
+#include "interpreted_vm.h"
 
 std::string USAGE = "-i <input file> -o <outputFile>";
 
@@ -36,6 +37,13 @@ bool ParseArgs(int argc, const char** argv, CmdArgs* args) {
   }
   return true;
 }
+
+struct Color {
+  float r;
+  float g;
+  float b;
+  float a;
+};
 
 int main(int argc, const char** argv) {
   CmdArgs args;
@@ -78,6 +86,30 @@ int main(int argc, const char** argv) {
   outFile.open(args.OutputFile, std::ofstream::out);
   outFile << out.str();
   outFile.close();
+
+  Environment env;
+  InterpretedVM vm(prog, env);
+  
+  Color* col = new Color();
+  col->r = 1;
+  col->g = 0.5f;
+  col->b= 0.25f;
+
+  vm.SetVariable("color", &col);
+  
+  std::cout << "============================================" << std::endl;
+  std::cout << "Running program with: " << std::endl;
+  std::cout << "color = (" << col->r << "," << col->g << "," << col->b << ")" << std::endl;
+  std::cout << "============================================" << std::endl;
+  if (!vm.Run()) {
+    std::cout << "Could not run program." << std::endl;
+  } else {
+    std::cout << "Success!" << std::endl;
+    Color* fracColor = *(Color**)vm.ReadVariable("gl_FragColor");
+    std::cout << "gl_FragColor = (" << fracColor->r << "," << fracColor->g << "," << fracColor->b << "," << fracColor->a << ")" << std::endl;
+  }
+
+
 
   getchar();
   

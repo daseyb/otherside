@@ -132,7 +132,6 @@ bool Parser::ParseProgram(Program* prog) {
       addOp(prog, op);
     }
 
-    instructionIndex++;
   } while (prog->NextOp.Op != Op::OpNop);
 
   return true;

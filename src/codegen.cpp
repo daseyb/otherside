@@ -187,6 +187,7 @@ bool g_literal(std::stringstream* ss, const Program& prog, int typeId, int value
     break;
   case Op::OpTypeStruct:
   case Op::OpTypeVector:
+    break;
   }
 
   return true;

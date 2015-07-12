@@ -134,6 +134,7 @@
     <ClCompile Include="codegen.cpp">
       <FileType>CppCode</FileType>
     </ClCompile>
+    <ClCompile Include="interpreted_vm.cpp" />
     <ClCompile Include="lookups.cpp" />
     <ClCompile Include="lookups_gen.cpp" />
     <ClCompile Include="otherside_main.cpp" />
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="codegen.h" />
+    <ClInclude Include="interpreted_vm.h" />
     <ClInclude Include="Khronos\GLSL450Lib.h" />
     <ClInclude Include="Khronos\spirv.h" />
     <ClInclude Include="lookups.h" />
@@ -148,6 +150,7 @@
     <ClInclude Include="parser.h" />
     <ClInclude Include="parser_definitions.h" />
     <ClInclude Include="types.h" />
+    <ClInclude Include="vm.h" />
   </ItemGroup>
   <ItemGroup>
     <Copy Include="data\sample.frag.spv">

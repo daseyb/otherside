@@ -22,43 +22,14 @@ struct Block {
   std::vector<uint32> Children;
 };
 
-enum CFGNodeType {
-  Base,
-  Loop,
-  If,
-  Switch
-};
-
-struct CFGNode {
-  CFGNodeType Type;
-};
-
-struct CFGNodeBase : CFGNode {
-  Block* Block;
-};
-
-struct CFGNodeLoop : CFGNode {
-  CFGNode* LoopNode;
-  std::vector<int> BreakInstructions;
-  std::vector<int> ContinueInstructions;
-};
-
-struct CFGNodeIf : CFGNode {
-  CFGNode* ThenNode;
-  CFGNode* ElseNode;
-};
-
-struct CFGNodeSwitch : CFGNode {
-  std::map<uint32, CFGNode*> SwitchNodes;
-
-};
-
 struct Function {
   SFunction Info;
   std::vector<SFunctionParameter> Parameters;
+  std::vector<SOp> Ops;
   std::map<uint32, Block> Blocks;
   std::map<uint32, SVariable> Variables;
   std::map<uint32, SVariableArray> Arrays;
+  std::map<uint32, uint32> Labels;
 
   std::stack<uint32> BlockStack;
   Block* CurrentBlock;
@@ -205,6 +176,12 @@ static void endFunction(Program* prog) {
   prog->InFunction = false;
 }
 
+static void addLabel(Program* prog, SLabel* label) {
+  assert(prog->InFunction);
+  prog->CurrentFunction.Labels[label->ResultId] = prog->CurrentFunction.Ops.size();
+}
+
 static void addOp(Program* prog, SOp op) {
+  prog->CurrentFunction.Ops.push_back(op);
   prog->CurrentFunction.CurrentBlock->Ops.push_back(op);
 }

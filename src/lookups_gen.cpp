@@ -883,6 +883,7 @@ void HandleSelectionMerge(void* op, Program* prog) {
 
 void HandleLabel(void* op, Program* prog) {
   SLabel* opLabel = (SLabel*)op;
+  addLabel(prog, opLabel);
   startNewBlock(prog, *opLabel);
 }
 
