@@ -205,7 +205,7 @@ void HandleFunction(void* op, Program* prog) {
 
 void HandleFunctionParameter(void* op, Program* prog) {
   SFunctionParameter* opFunctionParameter = (SFunctionParameter*)op;
-  prog->CurrentFunction.Parameters.push_back(*opFunctionParameter);
+  prog->CurrentFunction->Parameters.push_back(*opFunctionParameter);
 }
 
 void HandleFunctionEnd(void* op, Program* prog) {

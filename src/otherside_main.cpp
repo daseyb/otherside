@@ -95,7 +95,15 @@ int main(int argc, const char** argv) {
   col->g = 0.5f;
   col->b= 0.25f;
 
+  int* it = new int;
+  *it = 10;
+
+  bool* lf = new bool;
+  *lf = false;
+
   vm.SetVariable("color", &col);
+  vm.SetVariable("iterations", &it);
+  vm.SetVariable("loopFlag", &lf);
   
   std::cout << "============================================" << std::endl;
   std::cout << "Running program with: " << std::endl;

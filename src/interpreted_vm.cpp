@@ -79,6 +79,11 @@ bool InterpretedVM::Execute(const Function & func) {
       pc = func.Labels.at(labelID);
       break;
     }
+    case Op::OpSLessThan: {
+      auto lessThan = (SSLessThan*)op.Memory;
+      
+      break;
+    }
     case Op::OpLoad: {
       auto load = (SLoad*)op.Memory;
       auto valueToLoad = env.Values.at(load->PointerId);
@@ -91,6 +96,7 @@ bool InterpretedVM::Execute(const Function & func) {
       break;
     }
     case Op::OpLabel:
+    case Op::OpSelectionMerge:
       break;
     case Op::OpCompositeExtract: {
       auto extract = (SCompositeExtract*)op.Memory;
@@ -113,6 +119,18 @@ bool InterpretedVM::Execute(const Function & func) {
         memPtr += memSize;
       }
       assert(memPtr - val.Memory == GetTypeByteSize(construct->ResultTypeId));
+      break;
+    }
+    case Op::OpVariable: {
+      auto var = (SVariable*)op.Memory;
+      Value val = { var->ResultTypeId, VmAlloc(var->ResultTypeId) };
+      if (var->InitializerId) {
+        memcpy(val.Memory, env.Values[var->InitializerId].Memory, GetTypeByteSize(val.TypeId));
+      }
+      else {
+        memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
+      }
+      env.Values[var->ResultId] = val;
       break;
     }
     case Op::OpReturn:
@@ -145,10 +163,21 @@ void* InterpretedVM::ReadVariable(std::string name) {
 }
 
 bool InterpretedVM::SetVariable(uint32 id, void* value) {
-  auto var = prog.Variables.at(id);
+  SVariable var;
+  
+  if (prog.CurrentFunction->Variables.find(id) != prog.CurrentFunction->Variables.end()) {
+    var = prog.CurrentFunction->Variables.at(id);
+  } else {
+    var = prog.Variables.at(id);
+  }
+
   if (env.Values.find(var.ResultId) == env.Values.end()) {
     Value val = { var.ResultTypeId, VmAlloc(var.ResultTypeId) };
-    memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
+    if (value) {
+      memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
+    } else {
+      memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
+    }
     env.Values[var.ResultId] = val;
   } else {
     Value val = env.Values[var.ResultId];
@@ -275,6 +304,7 @@ bool InterpretedVM::Run() {
 
   for (auto& ep : prog.EntryPoints) {
     auto func = prog.FunctionDefinitions.at(ep.second.EntryPointId);
+    prog.CurrentFunction = &func;
     if (!Execute(func)) {
       return false;
     }

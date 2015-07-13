@@ -128,7 +128,7 @@ bool Parser::ParseProgram(Program* prog) {
 
     LUTHandlerMethods[op.Op]((void*)op.Memory, prog);
 
-    if (prog->InFunction && prog->CurrentFunction.InBlock) {
+    if (prog->InFunction && prog->CurrentFunction->InBlock) {
       addOp(prog, op);
     }
 

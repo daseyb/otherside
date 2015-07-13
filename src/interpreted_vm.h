@@ -7,7 +7,7 @@ struct Function;
 
 class InterpretedVM : public VM {
 private:
-  const Program& prog;
+  Program& prog;
   Environment& env;
   std::map<uint32, uint32> TypeByteSizes;
   std::vector<std::unique_ptr<byte>> VmMemory;
@@ -20,7 +20,7 @@ private:
   uint32 GetTypeByteSize(uint32 typeId);
   bool InitializeConstants();
 public:
-  InterpretedVM(const Program& prog, Environment& env) : prog(prog), env(env) { }
+  InterpretedVM(Program& prog, Environment& env) : prog(prog), env(env) { }
   virtual bool Run() override;
   bool SetVariable(std::string name, void * value);
   void * ReadVariable(std::string name);
