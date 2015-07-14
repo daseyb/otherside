@@ -169,21 +169,25 @@ std::string writeOp(SOp op) {
     }
     else if (wordTypes[i] == WordType::TIdList) {
       uint32 count = word;
-
+      uint32* ptr = (uint32*)*((uint32*)op.Memory + i);
+      opline << " [";
       for (int j = 0; j < count; j++) {
-        word = *((uint32*)op.Memory + i + j);
-        opline << " [" << word << "]";
+        word = ptr[j];
+        opline << "[" << word << "]" << (j != count - 1 ? ", " : "");
       }
+      opline << "]";
 
       break;
     }
     else if (wordTypes[i] == WordType::TLiteralNumberList) {
       uint32 count = word;
-
+      uint32* ptr = (uint32*)*((uint32*)op.Memory + i);
+      opline << " [";
       for (int j = 0; j < count; j++) {
-        word = *((uint32*)op.Memory + i + j);
-        opline << " " << word;
+        word = ptr[j];
+        opline << (j != count - 1 ? ", " : "") << word;
       }
+      opline << "]";
 
       break;
     }

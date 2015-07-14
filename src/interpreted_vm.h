@@ -2,6 +2,7 @@
 #include "vm.h"
 #include <memory>
 #include <vector>
+#include "parser_definitions.h"
 
 struct Function;
 
@@ -12,9 +13,15 @@ private:
   std::map<uint32, uint32> TypeByteSizes;
   std::vector<std::unique_ptr<byte>> VmMemory;
   byte* VmAlloc(uint32 typeId);
+  Value VmInit(uint32 typeId, void * val);
+  Value Dereference(Value val);
+  Value IndexMemberValue(Value val, uint32 index);
   Value IndexMemberValue(uint32 typeId, byte * val, uint32 index);
   byte * GetPointerInComposite(uint32 typeId, byte * composite, uint32 indexCount, uint32 * indices, uint32 currLevel);
-  bool Execute(const Function& func);
+  SOp GetType(uint32 typeId);
+  bool IsVectorType(uint32 typeId);
+  uint32 ElementCount(uint32 typeId);
+  uint32 Execute(Function* func);
   void * ReadVariable(uint32 id);
   bool SetVariable(uint32 id, void * value);
   uint32 GetTypeByteSize(uint32 typeId);
@@ -24,4 +31,10 @@ public:
   virtual bool Run() override;
   bool SetVariable(std::string name, void * value);
   void * ReadVariable(std::string name);
+
+  template <typename Func>
+  void DoOp(uint32 resultTypeId, uint32 resultId, Value op1, Func op);
+
+  template <typename Func>
+  void DoOp(uint32 resultTypeId, uint32 resultId, Value op1, Value op2, Func op);
 };

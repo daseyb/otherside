@@ -1,5 +1,4 @@
 #include "interpreted_vm.h"
-#include "parser_definitions.h"
 #include "parser.h"
 #include <iostream>
 
@@ -8,6 +7,10 @@ byte* InterpretedVM::VmAlloc(uint32 typeId) {
   byte* mem = (byte*)malloc(compositeSize);
   VmMemory.push_back(std::unique_ptr<byte>(mem));
   return (byte*)mem;
+}
+
+Value InterpretedVM::IndexMemberValue(Value val, uint32 index) {
+  return IndexMemberValue(val.TypeId, val.Memory, index);
 }
 
 Value InterpretedVM::IndexMemberValue(uint32 typeId, byte* val, uint32 index) {
@@ -55,33 +58,217 @@ byte* InterpretedVM::GetPointerInComposite(uint32 typeId, byte* composite, uint3
   return GetPointerInComposite(member.TypeId, member.Memory, indexCount, indices, currLevel + 1);
 }
 
-bool InterpretedVM::Execute(const Function & func) {
+SOp InterpretedVM::GetType(uint32 typeId) {
+  return prog.DefinedTypes.at(typeId);
+}
+
+bool InterpretedVM::IsVectorType(uint32 typeId) {
+  return GetType(typeId).Op == Op::OpTypeVector;
+}
+
+uint32 InterpretedVM::ElementCount(uint32 typeId) {
+  auto def = GetType(typeId);
+  switch (def.Op)
+  {
+  case Op::OpTypeArray: {
+    uint32 lengthId = ((STypeArray*)def.Memory)->LengthId;
+    return *(uint32*)env.Values.at(lengthId).Memory;
+  }
+  case Op::OpTypeVector: {
+    auto vec = (STypeVector*)def.Memory;
+    return vec->Componentcount;
+  }
+  default:
+    return 0;
+  }
+}
+
+Value InterpretedVM::VmInit(uint32 typeId, void* value) {
+  Value val = { typeId, VmAlloc(typeId) };
+  if (value) {
+    memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
+  } else {
+    memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
+  }
+  return val;
+}
+
+Value InterpretedVM::Dereference(Value val) {
+  auto def = GetType(val.TypeId);
+  if (def.Op != Op::OpTypePointer) {
+    return val;
+  }
+
+  Value res { ((STypePointer*)def.Memory)->TypeId, (byte*)*(void**)val.Memory };
+  return res;
+}
+
+template<typename T>
+int Cmp(Value op1, Value op2) {
+  T a = *(T*)op1.Memory;
+  T b = *(T*)op2.Memory;
+  return a < b ? -1 : a == b ? 0 : 1;
+}
+
+template<typename T>
+T Add(Value op1, Value op2) {
+  T a = *(T*)op1.Memory;
+  T b = *(T*)op2.Memory;
+  return a + b;
+}
+
+template<typename T>
+T Sub(Value op1, Value op2) {
+  T a = *(T*)op1.Memory;
+  T b = *(T*)op2.Memory;
+  return a - b;
+}
+
+template<typename T>
+T Div(Value op1, Value op2) {
+  T a = *(T*)op1.Memory;
+  T b = *(T*)op2.Memory;
+  return a / b;
+}
+
+template<typename T>
+T Mul(Value op1, Value op2) {
+  T a = *(T*)op1.Memory;
+  T b = *(T*)op2.Memory;
+  return a * b;
+}
+
+template<typename S, typename D>
+D Convert(Value op) {
+  return (D)*(S*)op.Memory;
+}
+
+template<typename Func>
+void InterpretedVM::DoOp(uint32 resultTypeId, uint32 resultId, Value op1, Func op) {
+  Value val;
+  if (IsVectorType(op1.TypeId)) {
+    val = VmInit(resultTypeId, 0);
+    int elCount = ElementCount(op1.TypeId);
+    for (int i = 0; i < elCount; i++) {
+      auto result = op(IndexMemberValue(op1, i));
+      memcpy(IndexMemberValue(val, i).Memory, &result, GetTypeByteSize(resultTypeId) / elCount);
+    }
+  } else {
+    auto result = op(op1);
+    val = VmInit(resultTypeId, &result);
+  }
+  env.Values[resultId] = val;
+}
+
+template<typename Func>
+void InterpretedVM::DoOp(uint32 resultTypeId, uint32 resultId, Value op1, Value op2, Func op) {
+  Value val;
+  if (IsVectorType(op1.TypeId)) {
+    val = VmInit(resultTypeId, 0);
+    int elCount = ElementCount(op1.TypeId);
+    for (int i = 0; i < elCount; i++) {
+      auto result = op(IndexMemberValue(op1, i), IndexMemberValue(op2, i));
+      memcpy(IndexMemberValue(val, i).Memory, &result, GetTypeByteSize(resultTypeId) / elCount);
+    }
+  } else {
+    auto result = op(op1, op2);
+    val = VmInit(resultTypeId, &result);
+  }
+  env.Values[resultId] = val;
+}
+
+uint32 InterpretedVM::Execute(Function* func) {
+  prog.CurrentFunction = func;
 
   int pc = 0;
 
   for (;;) {
-    auto op = func.Ops[pc];
+    auto op = func->Ops[pc];
     switch (op.Op) {
     case Op::OpBranch: {
       auto branch = (SBranch*)op.Memory;
-      pc = func.Labels.at(branch->TargetLabelId);
+      pc = func->Labels.at(branch->TargetLabelId);
       break;
     }
     case Op::OpBranchConditional: {
       auto branch = (SBranchConditional*)op.Memory;
       uint32 labelID;
-      Value val = env.Values[branch->ConditionId];
+      Value val = Dereference(env.Values[branch->ConditionId]);
       if (*(bool*)val.Memory) {
         labelID = branch->TrueLabelId;
       } else {
         labelID = branch->FalseLabelId;
       }
-      pc = func.Labels.at(labelID);
+      pc = func->Labels.at(labelID);
+      break;
+    }
+    case Op::OpFunctionCall: {
+      auto call = (SFunctionCall*)op.Memory;
+      Function toCall = prog.FunctionDefinitions.at(call->FunctionId);
+      for (int i = 0; i < call->ArgumentIdsCount; i++) {
+        env.Values[toCall.Parameters[i].ResultId] = Dereference(env.Values.at(call->ArgumentIds[i]));
+      }
+      uint32 resultId = Execute(&toCall);
+      if (resultId == -1) {
+        return -1;
+      }
+      prog.CurrentFunction = func;
+      env.Values[call->ResultId] = env.Values[resultId];
+      break;
+    }
+    case Op::OpConvertSToF: {
+      auto convert = (SConvertSToF*)op.Memory;
+      Value op1 = Dereference(env.Values[convert->SignedValueId]);
+      DoOp(convert->ResultTypeId, convert->ResultId, op1, Convert<int32, float>);
+      break;
+    }
+    case Op::OpFAdd: {
+      auto add = (SFAdd*)op.Memory;
+      Value op1 = Dereference(env.Values[add->Operand1Id]);
+      Value op2 = Dereference(env.Values[add->Operand2Id]);
+      DoOp(add->ResultTypeId, add->ResultId, op1, op2, Add<float>);
+      break;
+    }
+    case Op::OpIAdd: {
+      auto add = (SIAdd*)op.Memory;
+      Value op1 = Dereference(env.Values[add->Operand1Id]);
+      Value op2 = Dereference(env.Values[add->Operand2Id]);
+      DoOp(add->ResultTypeId, add->ResultId, op1, op2, Add<int32>);
+      break;
+    }
+    case Op::OpFSub: {
+      auto sub = (SFSub*)op.Memory;
+      Value op1 = Dereference(env.Values[sub->Operand1Id]);
+      Value op2 = Dereference(env.Values[sub->Operand2Id]);
+      DoOp(sub->ResultTypeId, sub->ResultId, op1, op2, Sub<float>);
+      break;
+    }
+    case Op::OpFDiv: {
+      auto div = (SFDiv*)op.Memory;
+      Value op1 = Dereference(env.Values[div->Operand1Id]);
+      Value op2 = Dereference(env.Values[div->Operand2Id]);
+      DoOp(div->ResultTypeId, div->ResultId, op1, op2, Div<float>);
+      break;
+    }
+    case Op::OpVectorTimesScalar: {
+      auto vts = (SVectorTimesScalar*)op.Memory;
+      Value scalar = Dereference(env.Values[vts->ScalarId]);
+      Value vector = Dereference(env.Values[vts->VectorId]);
+      DoOp(vts->ResultTypeId, vts->ResultId, vector, [scalar](Value comp) {return Mul<float>(scalar, comp);});
       break;
     }
     case Op::OpSLessThan: {
       auto lessThan = (SSLessThan*)op.Memory;
-      
+      Value op1 = Dereference(env.Values[lessThan->Operand1Id]);
+      Value op2 = Dereference(env.Values[lessThan->Operand2Id]);
+      DoOp(lessThan->ResultTypeId, lessThan->ResultId, op1, op2, [](Value a, Value b) { return Cmp<int32>(a, b) == -1; });
+      break;
+    }
+    case Op::OpSGreaterThan: {
+      auto greaterThan = (SSLessThan*)op.Memory;
+      Value op1 = Dereference(env.Values[greaterThan->Operand1Id]);
+      Value op2 = Dereference(env.Values[greaterThan->Operand2Id]);
+      DoOp(greaterThan->ResultTypeId, greaterThan->ResultId, op1, op2, [](Value a, Value b) { return Cmp<int32>(a, b) == 1; });
       break;
     }
     case Op::OpLoad: {
@@ -92,12 +279,35 @@ bool InterpretedVM::Execute(const Function & func) {
     }
     case Op::OpStore: {
       auto store = (SStore*)op.Memory;
-      SetVariable(store->PointerId, &env.Values[store->ObjectId].Memory);
+      auto val = env.Values[store->ObjectId];
+      auto var = GetType(val.TypeId);
+      if (var.Op == Op::OpTypePointer) {
+        SetVariable(store->PointerId, val.Memory);
+      } else {
+        SetVariable(store->PointerId, &val.Memory);
+      }
       break;
     }
     case Op::OpLabel:
     case Op::OpSelectionMerge:
+    case Op::OpLoopMerge:
       break;
+    case Op::OpAccessChain: {
+      auto access = (SAccessChain*)op.Memory;
+      auto val = Dereference(env.Values.at(access->BaseId));
+
+      uint32* indices = new uint32[access->IndexesIdsCount];
+      for (int i = 0; i < access->IndexesIdsCount; i++) {
+        indices[i] = *(uint32*)Dereference(env.Values[access->IndexesIds[i]]).Memory;
+      }
+
+      byte* mem = GetPointerInComposite(val.TypeId, val.Memory, access->IndexesIdsCount, indices);
+      delete indices;
+
+      Value res = VmInit(access->ResultTypeId, &mem);
+      env.Values[access->ResultId] = res;
+      break;
+    }
     case Op::OpCompositeExtract: {
       auto extract = (SCompositeExtract*)op.Memory;
       auto composite = env.Values[extract->CompositeId];
@@ -133,16 +343,20 @@ bool InterpretedVM::Execute(const Function & func) {
       env.Values[var->ResultId] = val;
       break;
     }
+    case Op::OpReturnValue: {
+      auto ret = (SReturnValue*)op.Memory;
+      return ret->ValueId;
+    }
     case Op::OpReturn:
-      return true;
+      return 0;
     default:
       std::cout << "Unimplemented operation: " << writeOp(op);
-      return false;
+      return -1;
     }
 
     pc++;
   }
-  return true;
+  return 0;
 }
 
 void* InterpretedVM::ReadVariable(uint32 id) {
@@ -304,8 +518,7 @@ bool InterpretedVM::Run() {
 
   for (auto& ep : prog.EntryPoints) {
     auto func = prog.FunctionDefinitions.at(ep.second.EntryPointId);
-    prog.CurrentFunction = &func;
-    if (!Execute(func)) {
+    if (Execute(&func) != 0) {
       return false;
     }
   }

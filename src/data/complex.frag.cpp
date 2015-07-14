@@ -1,7 +1,7 @@
 /*
 Version: 99
 Generator Magic: 85590203
-ID Bound: 87
+ID Bound: 90
 Instruction Schema: 0
 =================================================
 */
@@ -34,93 +34,98 @@ struct v_float_7_3_8 {
 typedef v_float_7_3_8* p_v_float_7_3_8_9;
 typedef float_7* p_float_7_10;
 struct lerp_res {
-  v_float_7_3_8 val;
+  v_float_7_3_8 val1;
+  v_float_7_3_8 val1;
 };
 typedef lerp_res* p_lerp_res_18;
-typedef v_float_7_3_8* p_v_float_7_3_8_31;
-typedef bool bool_34;
-typedef bool_34* p_bool_34_35;
-typedef int32 int_40;
-typedef int_40* p_int_40_41;
-typedef int_40* p_int_40_47;
-struct v_float_7_4_79 {
+typedef v_float_7_3_8* p_v_float_7_3_8_33;
+typedef bool bool_36;
+typedef bool_36* p_bool_36_37;
+typedef int32 int_42;
+typedef int_42* p_int_42_43;
+typedef int_42* p_int_42_49;
+struct v_float_7_4_82 {
   float_7 v[4];
 };
-typedef v_float_7_4_79* p_v_float_7_4_79_80;
+typedef v_float_7_4_82* p_v_float_7_4_82_83;
 
-static p_v_float_7_3_8_31 color;
-static p_bool_34_35 loopFlag;
-static p_int_40_47 iterations;
-static p_v_float_7_4_79_80 gl_FragColor;
+static p_v_float_7_3_8_33 color;
+static p_bool_36_37 loopFlag;
+static p_int_42_49 iterations;
+static p_v_float_7_4_82_83 gl_FragColor;
 
-int_40 c_43 = 0;
-float_7 c_55 = 2;
-int_40 c_68 = 1;
-float_7 c_74 = 0;
-float_7 c_77 = 1;
+float_7 c_20 = 0;
+int_42 c_45 = 0;
+int_42 c_58 = 1;
+float_7 c_80 = 1;
 
 static void_2 main() {
 //Label [5]
-//Variable [9] [30] Function [0]
-//Variable [41] [42] Function [0]
-//Variable [18] [52] Function [0]
-//Variable [9] [57] Function [0]
-//Variable [9] [59] Function [0]
-//Variable [10] [61] Function [0]
-//Load [8] [33] [32]
-//Store [30] [33]
-//Load [34] [37] [36]
-//SelectionMerge [39] Flatten
-//BranchConditional [37] [38] [39]
-//  Label [38]
-//  Store [42] [43]
-//  Branch [44]
-//  Label [44]
-//  Load [40] [46] [42]
-//  Load [40] [49] [48]
-//  SLessThan [34] [50] [46] [49]
-//  LoopMerge [45] Unroll
-//  BranchConditional [50] [51] [45]
-//    Label [51]
-//    Load [40] [53] [42]
-//    ConvertSToF [7] [54] [53]
-//    FDiv [7] [56] [54] [55]
-//    Load [8] [58] [30]
-//    Store [57] [58]
-//    Load [8] [60] [32]
-//    Store [59] [60]
-//    Store [61] [56]
-//    FunctionCall [11] [62] [16] [13908400] [0] [4261281277]
-//    Store [52] [62]
-//    AccessChain [9] [63] [52] [13908440]
-//    Load [8] [64] [63]
-//    Load [8] [65] [30]
-//    FAdd [8] [66] [65] [64]
-//    Store [30] [66]
-//    Load [40] [67] [42]
-//    IAdd [40] [69] [67] [68]
-//    Store [42] [69]
-//    Branch [44]
-//  Label [45]
-//  Branch [39]
-//Label [39]
-//Load [40] [70] [48]
-//SGreaterThan [34] [71] [70] [43]
-//SelectionMerge [73] Flatten
-//BranchConditional [71] [72] [76]
-//  Label [72]
-//  Store [30] [75]
-//  Branch [73]
-//  Label [76]
-//  Store [30] [78]
-//  Branch [73]
-//Label [73]
-//Load [8] [82] [32]
-//CompositeExtract [7] [83] [82] 13908748
-//CompositeExtract [7] [84] [82] 13908768
-//CompositeExtract [7] [85] [82] 13908788
-//CompositeConstruct [79] [86] [13908804] [0] [4261281277] [1093092269]
-//Store [81] [86]
+//Variable [9] [32] Function [0]
+//Variable [43] [44] Function [0]
+//Variable [18] [54] Function [0]
+//Variable [9] [62] Function [0]
+//Variable [9] [64] Function [0]
+//Variable [10] [66] Function [0]
+//Load [8] [35] [34] []
+//Store [32] [35] []
+//Load [36] [39] [38] []
+//SelectionMerge [41] Flatten
+//BranchConditional [39] [40] [74] []
+//  Label [40]
+//  Store [44] [45] []
+//  Branch [46]
+//  Label [46]
+//  Load [42] [48] [44] []
+//  Load [42] [51] [50] []
+//  SLessThan [36] [52] [48] [51]
+//  LoopMerge [47] Unroll
+//  BranchConditional [52] [53] [47] []
+//    Label [53]
+//    Load [42] [55] [44] []
+//    ConvertSToF [7] [56] [55]
+//    Load [42] [57] [50] []
+//    IAdd [42] [59] [57] [58]
+//    ConvertSToF [7] [60] [59]
+//    FDiv [7] [61] [56] [60]
+//    Load [8] [63] [32] []
+//    Store [62] [63] []
+//    Load [8] [65] [34] []
+//    Store [64] [65] []
+//    Store [66] [61] []
+//    FunctionCall [11] [67] [16] [[62], [64], [66]]
+//    Store [54] [67] []
+//    AccessChain [9] [68] [54] [[58]]
+//    Load [8] [69] [68] []
+//    Load [8] [70] [32] []
+//    FAdd [8] [71] [70] [69]
+//    Store [32] [71] []
+//    Load [42] [72] [44] []
+//    IAdd [42] [73] [72] [58]
+//    Store [44] [73] []
+//    Branch [46]
+//  Label [47]
+//  Branch [41]
+//  Label [74]
+//  Load [42] [75] [50] []
+//  SGreaterThan [36] [76] [75] [45]
+//  SelectionMerge [78] Flatten
+//  BranchConditional [76] [77] [79] []
+//    Label [77]
+//    Store [32] [21] []
+//    Branch [78]
+//    Label [79]
+//    Store [32] [81] []
+//    Branch [78]
+//  Label [78]
+//  Branch [41]
+//Label [41]
+//Load [8] [85] [32] []
+//CompositeExtract [7] [86] [85] [0]
+//CompositeExtract [7] [87] [85] [1]
+//CompositeExtract [7] [88] [85] [2]
+//CompositeConstruct [82] [89] [[86], [87], [88], [80]]
+//Store [84] [89] []
 //Branch [6]
 //Label [6]
 //Return
@@ -129,16 +134,16 @@ static void_2 main() {
 static lerp_res mlerp(vf3;vf3;f1;(p_v_float_7_3_8_9 a, p_v_float_7_3_8_9 b, p_float_7_10 t) {
 //Label [17]
 //Variable [18] [19] Function [0]
-//Load [8] [20] [13]
-//Load [8] [21] [14]
-//Load [8] [22] [13]
-//FSub [8] [23] [21] [22]
-//Load [7] [24] [15]
-//VectorTimesScalar [8] [25] [23] [24]
-//FAdd [8] [26] [20] [25]
-//CompositeConstruct [11] [27] [13909072]
-//Store [19] [27]
-//Load [11] [28] [19]
-//ReturnValue [28]
+//Load [8] [22] [13] []
+//Load [8] [23] [14] []
+//Load [8] [24] [13] []
+//FSub [8] [25] [23] [24]
+//Load [7] [26] [15] []
+//VectorTimesScalar [8] [27] [25] [26]
+//FAdd [8] [28] [22] [27]
+//CompositeConstruct [11] [29] [[21], [28]]
+//Store [19] [29] []
+//Load [11] [30] [19] []
+//ReturnValue [30]
 }
 

@@ -99,15 +99,17 @@ int main(int argc, const char** argv) {
   *it = 10;
 
   bool* lf = new bool;
-  *lf = false;
+  *lf = true;
 
   vm.SetVariable("color", &col);
   vm.SetVariable("iterations", &it);
   vm.SetVariable("loopFlag", &lf);
-  
+
   std::cout << "============================================" << std::endl;
   std::cout << "Running program with: " << std::endl;
   std::cout << "color = (" << col->r << "," << col->g << "," << col->b << ")" << std::endl;
+  std::cout << "iterations = " << *it << std::endl;
+  std::cout << "loopFlag = " << *lf << std::endl;
   std::cout << "============================================" << std::endl;
   if (!vm.Run()) {
     std::cout << "Could not run program." << std::endl;
@@ -116,8 +118,6 @@ int main(int argc, const char** argv) {
     Color* fracColor = *(Color**)vm.ReadVariable("gl_FragColor");
     std::cout << "gl_FragColor = (" << fracColor->r << "," << fracColor->g << "," << fracColor->b << "," << fracColor->a << ")" << std::endl;
   }
-
-
 
   getchar();
   
