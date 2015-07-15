@@ -143,6 +143,26 @@ D Convert(Value op) {
   return (D)*(S*)op.Memory;
 }
 
+Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint32 resultTypeId) {
+  STypeSampler* samplerType =(STypeSampler*)GetType(sampler.TypeId).Memory;
+  assert(samplerType->Content == 2);
+  assert(ElementCount(coord.TypeId) >= samplerType->Dim + samplerType->Arrayed);
+  Sampler* s = ((Sampler*)sampler.Memory);
+  uint32 index = 0;
+  uint32 acc = 1;
+  for (int d = 0; d < s->DimCount; d++) {
+    uint32 dd = s->Dims[d];
+    uint32 add = (uint32)(*(float*)IndexMemberValue(coord, d).Memory * (dd - 1) + 0.5f);
+    switch (s->WrapMode) {
+    case WrapMode::Clamp: add = add < 0 ? 0 : add > dd - 1 ? dd - 1 : add; break;
+    case WrapMode::Repeat: add = add % dd; break;
+    }
+    index += add * acc;
+    acc *= dd;
+  }
+  return VmInit(resultTypeId, ((float*)s->Data) + index * 4);
+}
+
 template<typename Func>
 void InterpretedVM::DoOp(uint32 resultTypeId, uint32 resultId, Value op1, Func op) {
   Value val;
@@ -286,6 +306,18 @@ uint32 InterpretedVM::Execute(Function* func) {
       } else {
         SetVariable(store->PointerId, &val.Memory);
       }
+      break;
+    }
+    case Op::OpTextureSample: {
+      auto sample = (STextureSample*)op.Memory;
+      auto sampler = Dereference(env.Values.at(sample->SamplerId));
+      auto coord = Dereference(env.Values.at(sample->CoordinateId));
+      Value bias = { 0, 0 };
+      if (sample->BiasId != 0) {
+        bias = Dereference(env.Values.at(sample->BiasId));
+      }
+
+      env.Values[sample->ResultId] = TextureSample(sampler, coord, bias, sample->ResultTypeId);
       break;
     }
     case Op::OpLabel:

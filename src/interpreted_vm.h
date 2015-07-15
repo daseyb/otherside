@@ -6,6 +6,24 @@
 
 struct Function;
 
+enum FilterMode {
+  Point,
+  Bilinear
+};
+
+enum WrapMode {
+  Clamp,
+  Repeat
+};
+
+struct Sampler {
+  uint32 DimCount;
+  uint32* Dims;
+  void* Data;
+  FilterMode FilterMode;
+  WrapMode WrapMode;
+};
+
 class InterpretedVM : public VM {
 private:
   Program& prog;
@@ -21,6 +39,7 @@ private:
   SOp GetType(uint32 typeId);
   bool IsVectorType(uint32 typeId);
   uint32 ElementCount(uint32 typeId);
+  Value TextureSample(Value sampler, Value coord, Value bias, uint32 resultTypeId);
   uint32 Execute(Function* func);
   void * ReadVariable(uint32 id);
   bool SetVariable(uint32 id, void * value);

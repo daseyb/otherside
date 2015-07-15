@@ -12,6 +12,14 @@
 
 std::string USAGE = "-i <input file> -o <outputFile>";
 
+
+struct TestArgs {
+  const char* ShaderFile;
+  const char* CppFile;
+  std::map<std::string, void*> inputValues;
+};
+
+
 struct CmdArgs {
   const char* InputFile;
   const char* OutputFile;
@@ -45,6 +53,35 @@ struct Color {
   float a;
 };
 
+
+struct Texture {
+  int width;
+  int height;
+  Color* data;
+};
+
+Texture MakeFlatTexture(int w, int h, Color col) {
+  Color* data = new Color[w * h];
+  for (int i = 0; i < w * h; i++) {
+    data[i] = col;
+  }
+  return Texture{ w, h, data };
+}
+
+Texture MakeGradientTexture(int w, int h) {
+  Color* data = new Color[w * h];
+  float a = 1;
+  for (int x = 0; x < w; x++) {
+    float r = float(x) / (w - 1);
+    for (int y = 0; y < h; y++) {
+      float g = float(y) / (h - 1);
+      float b = r*g;
+      data[x + y * w] = { r, g, b, a };
+    }
+  }
+  return Texture{ w, h, data };
+}
+
 int main(int argc, const char** argv) {
   CmdArgs args;
   if (!ParseArgs(argc, argv, &args)) {
@@ -53,10 +90,13 @@ int main(int argc, const char** argv) {
   }
 
   std::ifstream inputFile;
+  
   inputFile.open(args.InputFile, std::ifstream::in | std::ifstream::binary);
   inputFile.seekg(0, std::ios::end);
   std::streamsize size = inputFile.tellg();
   inputFile.seekg(0, std::ios::beg);
+
+
 
   assert(size % 4 == 0);
   std::streamsize wordCount = size / 4;
@@ -95,21 +135,22 @@ int main(int argc, const char** argv) {
   col->g = 0.5f;
   col->b= 0.25f;
 
-  int* it = new int;
-  *it = 10;
 
-  bool* lf = new bool;
-  *lf = true;
+  Color* uv = new Color();
+  uv->r = 1.2f;
+  uv->g = 0.6f;
 
-  vm.SetVariable("color", &col);
-  vm.SetVariable("iterations", &it);
-  vm.SetVariable("loopFlag", &lf);
+  Texture tex = MakeGradientTexture(10, 10);
+
+  Sampler* sampler = new Sampler{ 2, (uint32*)&tex, tex.data, FilterMode::Point, WrapMode::Repeat };
+
+  vm.SetVariable("uv", &uv);
+  vm.SetVariable("testTex", &sampler);
 
   std::cout << "============================================" << std::endl;
   std::cout << "Running program with: " << std::endl;
-  std::cout << "color = (" << col->r << "," << col->g << "," << col->b << ")" << std::endl;
-  std::cout << "iterations = " << *it << std::endl;
-  std::cout << "loopFlag = " << *lf << std::endl;
+  std::cout << "uv = (" << uv->r << "," << uv->g << ")" << std::endl;
+  std::cout << "testTex = " << tex.width << std::endl;
   std::cout << "============================================" << std::endl;
   if (!vm.Run()) {
     std::cout << "Could not run program." << std::endl;
