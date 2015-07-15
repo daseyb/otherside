@@ -1,0 +1,12 @@
+shader:
+	complex.frag
+cpp:
+	complex.cpp
+run:
+	true
+input:
+	v f 3 color: 1, 0.5, 0.25
+	i 32 iterations: 1
+	b loopFlag: 1
+expect:
+	v f 4 gl_FragColor

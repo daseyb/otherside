@@ -10,6 +10,11 @@
 #include "codegen.h"
 #include "interpreted_vm.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb\stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb\stb_image_write.h"
+
 std::string USAGE = "-i <input file> -o <outputFile>";
 
 
@@ -46,12 +51,16 @@ bool ParseArgs(int argc, const char** argv, CmdArgs* args) {
   return true;
 }
 
-struct Color {
-  float r;
-  float g;
-  float b;
-  float a;
+template<typename T>
+struct TColor {
+  T r;
+  T g;
+  T b;
+  T a;
 };
+
+typedef TColor<float> Color;
+typedef TColor<byte> BColor;
 
 
 struct Texture {
@@ -80,6 +89,28 @@ Texture MakeGradientTexture(int w, int h) {
     }
   }
   return Texture{ w, h, data };
+}
+
+BColor* ConvertToByte(uint32 w, uint32 h, Color* in) {
+  BColor* data = new BColor[w *h];
+  for (int x = 0; x < w; x++) {
+    for (int y = 0; y < h; y++) {
+      auto p = in[x + y * w];
+      data[x + y * w] = BColor { byte(p.r * 255), byte(p.g * 255), byte(p.b * 255), byte(p.a * 255) };
+    }
+  }
+  return data;
+}
+
+Color* ConvertToFloat(uint32 w, uint32 h, BColor* in) {
+  Color* data = new Color[w *h];
+  for (int x = 0; x < w; x++) {
+    for (int y = 0; y < h; y++) {
+      auto p = in[x + y * w];
+      data[x + y * w] = { float(p.r) / 255, float(p.g) / 255, float(p.b) / 255, float(p.a) / 255 };
+    }
+  }
+  return data;
 }
 
 int main(int argc, const char** argv) {
@@ -137,28 +168,40 @@ int main(int argc, const char** argv) {
 
 
   Color* uv = new Color();
-  uv->r = 1.2f;
-  uv->g = 0.6f;
+  uv->r = 1.0f;
+  uv->g = 1.0f;
 
-  Texture tex = MakeGradientTexture(10, 10);
 
-  Sampler* sampler = new Sampler{ 2, (uint32*)&tex, tex.data, FilterMode::Point, WrapMode::Repeat };
+  Texture inTex;
+  int comps;
+  BColor* inputData = (BColor*)stbi_load("data/testin.bmp", &inTex.width, &inTex.height, &comps, 4);
+  inTex.data = ConvertToFloat(inTex.width, inTex.height, inputData);
+  free(inputData);
+
+  Sampler* sampler = new Sampler{ 2, (uint32*)&inTex, inTex.data, FilterMode::Point, WrapMode::Repeat };
+  Texture outTex = MakeFlatTexture(inTex.width, inTex.height, { 0, 0, 0, 1 });
+
+  std::cout << "Running program: ...";
 
   vm.SetVariable("uv", &uv);
   vm.SetVariable("testTex", &sampler);
-
-  std::cout << "============================================" << std::endl;
-  std::cout << "Running program with: " << std::endl;
-  std::cout << "uv = (" << uv->r << "," << uv->g << ")" << std::endl;
-  std::cout << "testTex = " << tex.width << std::endl;
-  std::cout << "============================================" << std::endl;
-  if (!vm.Run()) {
-    std::cout << "Could not run program." << std::endl;
-  } else {
-    std::cout << "Success!" << std::endl;
-    Color* fracColor = *(Color**)vm.ReadVariable("gl_FragColor");
-    std::cout << "gl_FragColor = (" << fracColor->r << "," << fracColor->g << "," << fracColor->b << "," << fracColor->a << ")" << std::endl;
+  bool didFail = false;
+  for (int x = 0; x < outTex.width && !didFail; x++) {
+    for (int y = 0; y < outTex.height; y++) {
+      uv->r = float(x) / outTex.width;
+      uv->g = float(y) / outTex.height;
+      if (!vm.Run()) {
+        didFail = true;
+        break;
+      }
+      outTex.data[x + y * outTex.width] = **(Color**)vm.ReadVariable("gl_FragColor");
+    }
   }
+
+  BColor* outData = ConvertToByte(outTex.width, outTex.height, outTex.data);
+  stbi_write_bmp("data/testout.bmp", outTex.width, outTex.height, 4, outData);
+
+  std::cout << " done";
 
   getchar();
   

@@ -1,7 +1,7 @@
 /*
 Version: 99
 Generator Magic: 85590203
-ID Bound: 20
+ID Bound: 26
 Instruction Schema: 0
 =================================================
 */
@@ -42,6 +42,7 @@ static p_v_float_7_4_8_9 gl_FragColor;
 static p__12 testTex;
 static p_v_float_7_2_15_16 uv;
 
+float_7 c_23 = 1;
 
 static void_2 main() {
 //Label [5]
@@ -49,6 +50,13 @@ static void_2 main() {
 //Load [15] [18] [17] []
 //TextureSample [8] [19] [14] [18] [0]
 //Store [10] [19] []
+//Load [8] [20] [10] []
+//Load [8] [21] [10] []
+//FMul [8] [22] [21] [20]
+//Store [10] [22] []
+//Load [8] [24] [10] []
+//CompositeInsert [8] [25] [23] [24] [3]
+//Store [10] [25] []
 //Branch [6]
 //Label [6]
 //Return

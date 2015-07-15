@@ -270,6 +270,13 @@ uint32 InterpretedVM::Execute(Function* func) {
       DoOp(div->ResultTypeId, div->ResultId, op1, op2, Div<float>);
       break;
     }
+    case Op::OpFMul: {
+      auto mul = (SFMul*)op.Memory;
+      Value op1 = Dereference(env.Values[mul->Operand1Id]);
+      Value op2 = Dereference(env.Values[mul->Operand2Id]);
+      DoOp(mul->ResultTypeId, mul->ResultId, op1, op2, Mul<float>);
+      break;
+    }
     case Op::OpVectorTimesScalar: {
       auto vts = (SVectorTimesScalar*)op.Memory;
       Value scalar = Dereference(env.Values[vts->ScalarId]);
@@ -340,6 +347,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       env.Values[access->ResultId] = res;
       break;
     }
+    //TODO: FIX INDICES (NOT HIERARCHY!)
     case Op::OpCompositeExtract: {
       auto extract = (SCompositeExtract*)op.Memory;
       auto composite = env.Values[extract->CompositeId];
@@ -347,6 +355,15 @@ uint32 InterpretedVM::Execute(Function* func) {
       Value val = { extract->ResultTypeId, VmAlloc(extract->ResultTypeId) };
       memcpy(val.Memory, mem, GetTypeByteSize(val.TypeId));
       env.Values[extract->ResultId] = val;
+      break;
+    }
+    case Op::OpCompositeInsert: {
+      auto insert = (SCompositeInsert*)op.Memory;
+      auto composite = Dereference(env.Values[insert->CompositeId]);
+      Value val = Dereference(env.Values.at(insert->ObjectId));
+      byte* mem = GetPointerInComposite(composite.TypeId, composite.Memory, insert->IndexesCount, insert->Indexes);
+      memcpy(mem, val.Memory, GetTypeByteSize(val.TypeId));
+      env.Values[insert->ResultId] = VmInit(composite.TypeId, composite.Memory);
       break;
     }
     case Op::OpCompositeConstruct: {
