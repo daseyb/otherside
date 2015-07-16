@@ -5,9 +5,7 @@ VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "otherside", "src\otherside.vcxproj", "{97067868-238F-4DE8-AE90-B4D203270C81}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FFTs", "FFTs\FFTs.vcxproj", "{9F7C50B5-30A4-4C26-9288-3419FD3CCD04}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecParser", "SpecParser\SpecParser.csproj", "{5AE845F6-4E1F-4966-BC0F-6708AE42CBD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecParser", "tools\SpecParser\SpecParser.csproj", "{5AE845F6-4E1F-4966-BC0F-6708AE42CBD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
