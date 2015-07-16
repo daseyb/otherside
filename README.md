@@ -11,3 +11,10 @@ This is very much a work in progress. Not all instructions are implemented and p
 
 #### Spec Parser
 This project downloads the latest spec and generates C++ files with useful declerations from it. Mostly information about  op codes and structs to represent them to help with parsing and processing.
+
+#### Todo
+
+* SPIR-V Validation ([validation rules described here]( https://www.khronos.org/registry/spir-v/specs/1.0/SPIRV.html#_a_id_validation_a_validation_rules))
+* Implement all OpCodes
+* Improve performance
+* Better human readable parsing output (at least match the reference compiler)
