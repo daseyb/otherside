@@ -1,0 +1,10 @@
+# otherside
+A VM running SPIR-V code on the CPU
+
+This is an implementation of the SPIR-V, the new intermediate language defined by Khronos.  
+See the official specification here: [SPIR-V 1.0](https://www.khronos.org/registry/spir-v/specs/1.0/SPIRV.html)
+
+It also produces C like code that represents the given SPIR-V file (for easier reading).
+
+#### Note 
+This is very much a work in progress. Not all instructions are implemented and performance has not been a priority so far.
