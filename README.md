@@ -8,3 +8,6 @@ It also produces C like code that represents the given SPIR-V file (for easier r
 
 #### Note 
 This is very much a work in progress. Not all instructions are implemented and performance has not been a priority so far.
+
+#### Spec Parser
+This project downloads the latest spec and generates C++ files with useful declerations from it. Mostly information about  op codes and structs to represent them to help with parsing and processing.
