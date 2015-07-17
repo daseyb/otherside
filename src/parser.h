@@ -36,9 +36,6 @@ public:
     assert(inputFileName);
 
     this->index = 0;
-    this->length = 0;
-    this->bufferStart = std::unique_ptr<uint32>(new uint32[length]);
-    this->buffer = bufferStart.get();
 
     std::ifstream inputFile;
 
@@ -50,9 +47,13 @@ public:
     assert(size % 4 == 0);
 
     this->length = size / 4;
+    this->bufferStart = std::unique_ptr<uint32>(new uint32[length]);
+    this->buffer = bufferStart.get();
+
     if (!inputFile.read((char*)GetBufferPtr(), size)) {
       std::cout << "Could not read file." << std::endl;
     }
+    
     inputFile.close();
   }
 
