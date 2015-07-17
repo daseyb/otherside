@@ -347,6 +347,30 @@ uint32 InterpretedVM::Execute(Function* func) {
       env.Values[access->ResultId] = res;
       break;
     }
+    case Op::OpVectorShuffle: {
+      auto vecShuffle = (SVectorShuffle*)op.Memory;
+      auto vec1 = Dereference(env.Values.at(vecShuffle->Vector1Id));
+      auto vec2 = Dereference(env.Values.at(vecShuffle->Vector2Id));
+
+      auto result = VmInit(vecShuffle->ResultTypeId, nullptr);
+      int v1ElCount = ElementCount(vec1.TypeId);
+      for (int i = 0; i < vecShuffle->ComponentsCount; i++) {
+        int index = vecShuffle->Components[i];
+        Value toCopy;
+        if (index < v1ElCount) {
+          toCopy = vec1;
+        } else {
+          index -= v1ElCount;
+          toCopy = vec2;
+        }
+
+        Value elToCopy = IndexMemberValue(toCopy, index);
+        memcpy(IndexMemberValue(result, i).Memory, elToCopy.Memory, GetTypeByteSize(elToCopy.TypeId));
+      }
+
+      env.Values[vecShuffle->ResultId] = result;
+      break;
+    }
     //TODO: FIX INDICES (NOT HIERARCHY!)
     case Op::OpCompositeExtract: {
       auto extract = (SCompositeExtract*)op.Memory;

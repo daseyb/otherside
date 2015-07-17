@@ -159,6 +159,7 @@ int main(int argc, const char** argv) {
 
       if (!vm.Run()) {
         std::cout << "Program failed to run.";
+        getchar();
         return -1;
       }
 

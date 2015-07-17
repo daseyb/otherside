@@ -1,7 +1,7 @@
 /*
 Version: 99
 Generator Magic: 85590203
-ID Bound: 26
+ID Bound: 31
 Instruction Schema: 0
 =================================================
 */
@@ -37,26 +37,34 @@ struct v_float_7_2_15 {
   float_7 v[2];
 };
 typedef v_float_7_2_15* p_v_float_7_2_15_16;
+struct v_float_7_3_21 {
+  float_7 v[3];
+};
+typedef v_float_7_4_8* p_v_float_7_4_8_25;
 
-static p_v_float_7_4_8_9 gl_FragColor;
 static p__12 testTex;
 static p_v_float_7_2_15_16 uv;
+static p_v_float_7_4_8_25 gl_FragColor;
 
-float_7 c_23 = 1;
+float_7 c_28 = 1;
 
 static void_2 main() {
 //Label [5]
+//Variable [9] [10] Function [0]
 //Load [11] [14] [13] []
 //Load [15] [18] [17] []
 //TextureSample [8] [19] [14] [18] [0]
 //Store [10] [19] []
 //Load [8] [20] [10] []
-//Load [8] [21] [10] []
-//FMul [8] [22] [21] [20]
-//Store [10] [22] []
-//Load [8] [24] [10] []
-//CompositeInsert [8] [25] [23] [24] [3]
-//Store [10] [25] []
+//VectorShuffle [21] [22] [20] [20] [, 0, 20]
+//Load [8] [23] [10] []
+//VectorShuffle [8] [24] [23] [22] [, 4, 5, 63]
+//Store [10] [24] []
+//Load [8] [27] [10] []
+//Store [26] [27] []
+//Load [8] [29] [26] []
+//CompositeInsert [8] [30] [28] [29] [3]
+//Store [26] [30] []
 //Branch [6]
 //Label [6]
 //Return
