@@ -1,7 +1,10 @@
 #pragma once
 #include "types.h"
 #include <string>
+#include <assert.h>
 #include <memory>
+#include <fstream>
+#include <iostream>
 
 struct Program;
 struct SOp;
@@ -27,6 +30,30 @@ public:
     this->length = length;
     this->bufferStart = std::unique_ptr<uint32>(new uint32[length]);
     this->buffer = bufferStart.get();
+  }
+
+  Parser(const char* inputFileName) {
+    assert(inputFileName);
+
+    this->index = 0;
+    this->length = 0;
+    this->bufferStart = std::unique_ptr<uint32>(new uint32[length]);
+    this->buffer = bufferStart.get();
+
+    std::ifstream inputFile;
+
+    inputFile.open(inputFileName, std::ifstream::in | std::ifstream::binary);
+    assert(inputFile.is_open());
+    inputFile.seekg(0, std::ios::end);
+    std::streamsize size = inputFile.tellg();
+    inputFile.seekg(0, std::ios::beg);
+    assert(size % 4 == 0);
+
+    this->length = size / 4;
+    if (!inputFile.read((char*)GetBufferPtr(), size)) {
+      std::cout << "Could not read file." << std::endl;
+    }
+    inputFile.close();
   }
 
   bool ParseProgram(Program* prog);

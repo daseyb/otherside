@@ -1,6 +1,7 @@
 #include "codegen.h"
 #include <string>
 #include <iomanip>
+#include <fstream>
 
 #include "parser_definitions.h"
 #include "lookups_gen.h"
@@ -378,4 +379,16 @@ bool genCode(std::stringstream* ss, const Program& prog) {
 
 
   return true;
+}
+
+
+bool genCode(const char* outFileName, const Program& prog) {
+  std::stringstream out;
+  if (!genCode(&out, prog)) {
+    return false;
+  }
+  std::ofstream outFile;
+  outFile.open(outFileName, std::ofstream::out);
+  outFile << out.str();
+  outFile.close();
 }

@@ -99,17 +99,9 @@ bool Parser::ParseProgram(Program* prog) {
   }
 
   prog->Version = getAndEat();
-  std::cout << "Version: " << prog->Version << std::endl;
-
   prog->GeneratorMagic = getAndEat();
-  std::cout << "Generator Magic: " << prog->GeneratorMagic << std::endl;
-
   prog->IDBound = getAndEat();
-  std::cout << "ID Bound: " << prog->IDBound << std::endl;
-
   prog->InstructionSchema = getAndEat();
-  std::cout << "Instruction Schema: " << prog->InstructionSchema << std::endl;
-  std::cout << "=================================================" << std::endl;
 
   int instructionIndex = 0;
   
@@ -117,7 +109,6 @@ bool Parser::ParseProgram(Program* prog) {
 
   do {
     SOp op = prog->NextOp;
-    std::cout << std::setw(3) << instructionIndex << ": " << writeOp(op);
     instructionIndex++;
     if (!end()) {
       prog->NextOp = readInstruction();

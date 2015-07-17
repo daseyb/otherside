@@ -120,63 +120,29 @@ int main(int argc, const char** argv) {
     return -1;
   }
 
-  std::ifstream inputFile;
-  
-  inputFile.open(args.InputFile, std::ifstream::in | std::ifstream::binary);
-  inputFile.seekg(0, std::ios::end);
-  std::streamsize size = inputFile.tellg();
-  inputFile.seekg(0, std::ios::beg);
-
-
-
-  assert(size % 4 == 0);
-  std::streamsize wordCount = size / 4;
-
-  Parser parser(wordCount);
-
-
-  if (!inputFile.read((char*)parser.GetBufferPtr(), size)) {
-    std::cout << "Could not read file." << std::endl;
-    return -1;
-  }
-  
-  inputFile.close();
-
+  Parser parser(args.InputFile);
   Program prog;
 
   if (!parser.ParseProgram(&prog)) {
     std::cout << "Could not parse program." << std::endl;
+    return -1;
   }
 
-  std::stringstream out;
-  if (!genCode(&out, prog)) {
+  if (!genCode(args.OutputFile, prog)) {
     std::cout << "Could not generate code for program." << std::endl;
+    return -1;
   }
-
-  std::ofstream outFile;
-  outFile.open(args.OutputFile, std::ofstream::out);
-  outFile << out.str();
-  outFile.close();
 
   Environment env;
   InterpretedVM vm(prog, env);
   
-  Color* col = new Color();
-  col->r = 1;
-  col->g = 0.5f;
-  col->b= 0.25f;
-
-
-  Color* uv = new Color();
-  uv->r = 1.0f;
-  uv->g = 1.0f;
-
+  Color* col = new Color{ 1, 0.5f, 0.25f };
+  Color* uv = new Color{ 1.0f, 1.0f, 0, 0 };
 
   Texture inTex;
   int comps;
   BColor* inputData = (BColor*)stbi_load("data/testin.bmp", &inTex.width, &inTex.height, &comps, 4);
   inTex.data = ConvertToFloat(inTex.width, inTex.height, inputData);
-  free(inputData);
 
   Sampler* sampler = new Sampler{ 2, (uint32*)&inTex, inTex.data, FilterMode::Point, WrapMode::Repeat };
   Texture outTex = MakeFlatTexture(inTex.width, inTex.height, { 0, 0, 0, 1 });
@@ -190,10 +156,12 @@ int main(int argc, const char** argv) {
     for (int y = 0; y < outTex.height; y++) {
       uv->r = float(x) / outTex.width;
       uv->g = float(y) / outTex.height;
+
       if (!vm.Run()) {
-        didFail = true;
-        break;
+        std::cout << "Program failed to run.";
+        return -1;
       }
+
       outTex.data[x + y * outTex.width] = **(Color**)vm.ReadVariable("gl_FragColor");
     }
   }
@@ -203,7 +171,5 @@ int main(int argc, const char** argv) {
 
   std::cout << " done";
 
-  getchar();
-  
   return 0;
 }
