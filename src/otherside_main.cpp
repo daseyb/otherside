@@ -113,6 +113,16 @@ Color* ConvertToFloat(uint32 w, uint32 h, BColor* in) {
   return data;
 }
 
+struct Vec2 {
+  float x;
+  float y;
+};
+
+struct Light {
+  Color color;
+  Vec2 pos;
+};
+
 int main(int argc, const char** argv) {
   CmdArgs args;
   if (!ParseArgs(argc, argv, &args)) {
@@ -137,7 +147,7 @@ int main(int argc, const char** argv) {
   InterpretedVM vm(prog, env);
   
   Color* col = new Color{ 1, 0.5f, 0.25f };
-  Color* uv = new Color{ 1.0f, 1.0f, 0, 0 };
+  Vec2* uv = new Vec2{ 1.0f, 1.0f };
 
   Texture inTex;
   int comps;
@@ -149,13 +159,19 @@ int main(int argc, const char** argv) {
 
   std::cout << "Running program: ...";
 
+  Vec2* texSize = new Vec2{ (float)inTex.width, (float)inTex.height};
+  Light* light = new Light{ {1, 0, 0, 2}, {0.5f, 0.5f} };
+
   vm.SetVariable("uv", &uv);
+  vm.SetVariable("texSize", &texSize);
   vm.SetVariable("testTex", &sampler);
+  vm.SetVariable("light", &light);
+
   bool didFail = false;
   for (int x = 0; x < outTex.width && !didFail; x++) {
     for (int y = 0; y < outTex.height; y++) {
-      uv->r = float(x) / outTex.width;
-      uv->g = float(y) / outTex.height;
+      uv->x = float(x) / outTex.width;
+      uv->y = float(y) / outTex.height;
 
       if (!vm.Run()) {
         std::cout << "Program failed to run.";
