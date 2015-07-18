@@ -18,3 +18,86 @@ This project downloads the latest spec and generates C++ files with useful decle
 * Implement all OpCodes
 * Improve performance
 * Better human readable parsing output (at least match the reference compiler)
+
+#### Example Code
+Input File:  
+![Input File](https://raw.githubusercontent.com/bonus2113/otherside/master/data/testin.bmp)
+
+Output File:  
+![Output File](https://raw.githubusercontent.com/bonus2113/otherside/master/data/testout.bmp)
+
+Shader code:
+
+    #version 110
+    varying vec2 uv;
+    uniform sampler2D testTex;
+
+    void main() {
+      vec4 col = texture2D(testTex, uv);
+      col.rgb = col.rbr;
+      gl_FragColor = col;
+      gl_FragColor.a = 1.0;
+    }
+    
+C++ code:
+
+    int main(int argc, const char** argv) {
+      CmdArgs args;
+      if (!ParseArgs(argc, argv, &args)) {
+        std::cout << "Could not parse arguments. Usage: " << USAGE << std::endl;
+        return -1;
+      }
+
+      Parser parser(args.InputFile);
+      Program prog;
+
+      if (!parser.ParseProgram(&prog)) {
+        std::cout << "Could not parse program." << std::endl;
+        return -1;
+      }
+
+      if (!genCode(args.OutputFile, prog)) {
+        std::cout << "Could not generate code for program." << std::endl;
+        return -1;
+      }
+
+      Environment env;
+      InterpretedVM vm(prog, env);
+  
+      Color* col = new Color{ 1, 0.5f, 0.25f };
+      Color* uv = new Color{ 1.0f, 1.0f, 0, 0 };
+
+      Texture inTex;
+      int comps;
+      BColor* inputData = (BColor*)stbi_load("data/testin.bmp", &inTex.width, &inTex.height, &comps, 4);
+      inTex.data = ConvertToFloat(inTex.width, inTex.height, inputData);
+
+      Sampler* sampler = new Sampler{ 2, (uint32*)&inTex, inTex.data, FilterMode::Point, WrapMode::Repeat };
+      Texture outTex = MakeFlatTexture(inTex.width, inTex.height, { 0, 0, 0, 1 });
+
+      std::cout << "Running program: ...";
+
+      vm.SetVariable("uv", &uv);
+      vm.SetVariable("testTex", &sampler);
+      bool didFail = false;
+      for (int x = 0; x < outTex.width && !didFail; x++) {
+        for (int y = 0; y < outTex.height; y++) {
+          uv->r = float(x) / outTex.width;
+          uv->g = float(y) / outTex.height;
+    
+          if (!vm.Run()) {
+            std::cout << "Program failed to run.";
+            return -1;
+          }
+    
+          outTex.data[x + y * outTex.width] = **(Color**)vm.ReadVariable("gl_FragColor");
+        }
+      }
+    
+      BColor* outData = ConvertToByte(outTex.width, outTex.height, outTex.data);
+      stbi_write_bmp("data/testout.bmp", outTex.width, outTex.height, 4, outData);
+
+      std::cout << " done";
+
+      return 0;
+    }
