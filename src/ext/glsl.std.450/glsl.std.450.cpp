@@ -1,10 +1,23 @@
 #include "vm.h"
 
-Value round_exp(Value op1, const Program& prog) {
-  return op1;
-};
+#ifdef __cplusplus
+extern "C" {
+#endif
+  EXT_INST_FUNC(round_ext) {
+    return values[0];
+  };
 
+  EXT_INST_FUNC(roundEven_ext) {
+    return values[0];
+  };
 
-__declspec(dllexport) void* EXT_EXPORT_TABLE[] {
-  round_exp,
-};
+  ExtInstFunc* exports[]{
+    round_ext,
+    roundEven_ext
+  };
+
+  EXT_EXPORT_TABLE_FUNC(exports)
+
+#ifdef __cplusplus
+}
+#endif

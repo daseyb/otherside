@@ -49,8 +49,16 @@ private:
   uint32 GetTypeByteSize(uint32 typeId) const;
 
   bool InitializeConstants();
+
+  void ImportExt(SExtInstImport import);
+
 public:
-  InterpretedVM(Program& prog, Environment& env) : prog(prog), env(env) { }
+  InterpretedVM(Program& prog, Environment& env) : prog(prog), env(env) { 
+    for (auto& ext : prog.ExtensionImports) {
+      ImportExt(ext.second);
+    }
+  }
+
   virtual bool Run() override;
   bool SetVariable(std::string name, void * value);
   void * ReadVariable(std::string name) const;

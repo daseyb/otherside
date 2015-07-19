@@ -1,6 +1,7 @@
 #include "interpreted_vm.h"
 #include "parser.h"
 #include <iostream>
+#include <Windows.h>
 
 byte* InterpretedVM::VmAlloc(uint32 typeId) {
   uint32 compositeSize = GetTypeByteSize(typeId);
@@ -218,6 +219,12 @@ uint32 InterpretedVM::Execute(Function* func) {
       prog.CurrentFunction = func;
       env.Values[call->ResultId] = env.Values[resultId];
       break;
+    }
+    case Op::OpExtInst: {
+      auto extInst = (SExtInst*)op.Memory;
+      Value* ops = new Value[extInst->OperandIdsCount];
+      ExtInstFunc* func = env.Extensions[extInst->SetId][extInst->Instruction];
+      env.Values[extInst->ResultId] = func(extInst->ResultTypeId, extInst->OperandIdsCount, ops);
     }
     case Op::OpConvertSToF: {
       auto convert = (SConvertSToF*)op.Memory;
@@ -579,6 +586,20 @@ bool InterpretedVM::InitializeConstants() {
   }
 
   return true;
+}
+
+void InterpretedVM::ImportExt(SExtInstImport import) {
+  std::string name(import.Name);
+  HINSTANCE extInst = LoadLibrary( ("ext\\" + name + ".dll").c_str());
+  
+  if (extInst) {
+    const char* funcName = xstr(EXT_EXPORT_TABLE_FUNC_NAME);
+    GetExtTableFunc* func = (GetExtTableFunc*)GetProcAddress(extInst, TEXT(funcName));
+    if (func) {
+      auto res = func();
+      env.Extensions[import.ResultId] = res;
+    }
+  }
 }
 
 bool InterpretedVM::Run() {
