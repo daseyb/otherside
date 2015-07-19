@@ -9,11 +9,11 @@ byte* InterpretedVM::VmAlloc(uint32 typeId) {
   return (byte*)mem;
 }
 
-Value InterpretedVM::IndexMemberValue(Value val, uint32 index) {
+Value InterpretedVM::IndexMemberValue(Value val, uint32 index) const {
   return IndexMemberValue(val.TypeId, val.Memory, index);
 }
 
-Value InterpretedVM::IndexMemberValue(uint32 typeId, byte* val, uint32 index) {
+Value InterpretedVM::IndexMemberValue(uint32 typeId, byte* val, uint32 index) const {
   Value result;
 
   SOp compDef = prog.DefinedTypes.at(typeId);
@@ -48,7 +48,7 @@ Value InterpretedVM::IndexMemberValue(uint32 typeId, byte* val, uint32 index) {
   return result;
 }
 
-byte* InterpretedVM::GetPointerInComposite(uint32 typeId, byte* composite, uint32 indexCount, uint32* indices, uint32 currLevel = 0) {
+byte* InterpretedVM::GetPointerInComposite(uint32 typeId, byte* composite, uint32 indexCount, uint32* indices, uint32 currLevel = 0) const {
   if (currLevel == indexCount) {
     return composite;
   }
@@ -58,15 +58,15 @@ byte* InterpretedVM::GetPointerInComposite(uint32 typeId, byte* composite, uint3
   return GetPointerInComposite(member.TypeId, member.Memory, indexCount, indices, currLevel + 1);
 }
 
-SOp InterpretedVM::GetType(uint32 typeId) {
+SOp InterpretedVM::GetType(uint32 typeId) const {
   return prog.DefinedTypes.at(typeId);
 }
 
-bool InterpretedVM::IsVectorType(uint32 typeId) {
+bool InterpretedVM::IsVectorType(uint32 typeId) const {
   return GetType(typeId).Op == Op::OpTypeVector;
 }
 
-uint32 InterpretedVM::ElementCount(uint32 typeId) {
+uint32 InterpretedVM::ElementCount(uint32 typeId) const {
   auto def = GetType(typeId);
   switch (def.Op)
   {
@@ -93,7 +93,7 @@ Value InterpretedVM::VmInit(uint32 typeId, void* value) {
   return val;
 }
 
-Value InterpretedVM::Dereference(Value val) {
+Value InterpretedVM::Dereference(Value val) const {
   auto def = GetType(val.TypeId);
   if (def.Op != Op::OpTypePointer) {
     return val;
@@ -163,38 +163,21 @@ Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint3
   return VmInit(resultTypeId, ((float*)s->Data) + index * 4);
 }
 
-template<typename Func>
-void InterpretedVM::DoOp(uint32 resultTypeId, uint32 resultId, Value op1, Func op) {
+template<typename Func, typename Arg, typename ...Args>
+Value InterpretedVM::DoOp(uint32 resultTypeId, Func op, Arg op1, Args && ...args) {
   Value val;
   if (IsVectorType(op1.TypeId)) {
     val = VmInit(resultTypeId, 0);
     int elCount = ElementCount(op1.TypeId);
     for (int i = 0; i < elCount; i++) {
-      auto result = op(IndexMemberValue(op1, i));
+      auto result = op(IndexMemberValue(op1, i), IndexMemberValue(args, i)...);
       memcpy(IndexMemberValue(val, i).Memory, &result, GetTypeByteSize(resultTypeId) / elCount);
     }
   } else {
-    auto result = op(op1);
+    auto result = op(op1, std::forward<Args>(args)...);
     val = VmInit(resultTypeId, &result);
   }
-  env.Values[resultId] = val;
-}
-
-template<typename Func>
-void InterpretedVM::DoOp(uint32 resultTypeId, uint32 resultId, Value op1, Value op2, Func op) {
-  Value val;
-  if (IsVectorType(op1.TypeId)) {
-    val = VmInit(resultTypeId, 0);
-    int elCount = ElementCount(op1.TypeId);
-    for (int i = 0; i < elCount; i++) {
-      auto result = op(IndexMemberValue(op1, i), IndexMemberValue(op2, i));
-      memcpy(IndexMemberValue(val, i).Memory, &result, GetTypeByteSize(resultTypeId) / elCount);
-    }
-  } else {
-    auto result = op(op1, op2);
-    val = VmInit(resultTypeId, &result);
-  }
-  env.Values[resultId] = val;
+  return val;
 }
 
 uint32 InterpretedVM::Execute(Function* func) {
@@ -239,63 +222,77 @@ uint32 InterpretedVM::Execute(Function* func) {
     case Op::OpConvertSToF: {
       auto convert = (SConvertSToF*)op.Memory;
       Value op1 = Dereference(env.Values[convert->SignedValueId]);
-      DoOp(convert->ResultTypeId, convert->ResultId, op1, Convert<int32, float>);
+      env.Values[convert->ResultId] = DoOp(convert->ResultTypeId, Convert<int32, float>, op1);
       break;
     }
     case Op::OpFAdd: {
       auto add = (SFAdd*)op.Memory;
       Value op1 = Dereference(env.Values[add->Operand1Id]);
       Value op2 = Dereference(env.Values[add->Operand2Id]);
-      DoOp(add->ResultTypeId, add->ResultId, op1, op2, Add<float>);
+      env.Values[add->ResultId] = DoOp(add->ResultTypeId, Add<float>, op1, op2);
       break;
     }
     case Op::OpIAdd: {
       auto add = (SIAdd*)op.Memory;
       Value op1 = Dereference(env.Values[add->Operand1Id]);
       Value op2 = Dereference(env.Values[add->Operand2Id]);
-      DoOp(add->ResultTypeId, add->ResultId, op1, op2, Add<int32>);
+      env.Values[add->ResultId] = DoOp(add->ResultTypeId, Add<int>, op1, op2);
       break;
     }
     case Op::OpFSub: {
       auto sub = (SFSub*)op.Memory;
       Value op1 = Dereference(env.Values[sub->Operand1Id]);
       Value op2 = Dereference(env.Values[sub->Operand2Id]);
-      DoOp(sub->ResultTypeId, sub->ResultId, op1, op2, Sub<float>);
+      env.Values[sub->ResultId] = DoOp(sub->ResultTypeId, Sub<float>, op1, op2);
+      break;
+    }
+    case Op::OpISub: {
+      auto sub = (SISub*)op.Memory;
+      Value op1 = Dereference(env.Values[sub->Operand1Id]);
+      Value op2 = Dereference(env.Values[sub->Operand2Id]);
+      env.Values[sub->ResultId] = DoOp(sub->ResultTypeId, Sub<int>, op1, op2);
       break;
     }
     case Op::OpFDiv: {
       auto div = (SFDiv*)op.Memory;
       Value op1 = Dereference(env.Values[div->Operand1Id]);
       Value op2 = Dereference(env.Values[div->Operand2Id]);
-      DoOp(div->ResultTypeId, div->ResultId, op1, op2, Div<float>);
+      env.Values[div->ResultId] = DoOp(div->ResultTypeId, Div<float>, op1, op2);
       break;
     }
     case Op::OpFMul: {
       auto mul = (SFMul*)op.Memory;
       Value op1 = Dereference(env.Values[mul->Operand1Id]);
       Value op2 = Dereference(env.Values[mul->Operand2Id]);
-      DoOp(mul->ResultTypeId, mul->ResultId, op1, op2, Mul<float>);
+      env.Values[mul->ResultId] = DoOp(mul->ResultTypeId, Mul<float>, op1, op2);
+      break;
+    }
+    case Op::OpIMul: {
+      auto mul = (SFMul*)op.Memory;
+      Value op1 = Dereference(env.Values[mul->Operand1Id]);
+      Value op2 = Dereference(env.Values[mul->Operand2Id]);
+      env.Values[mul->ResultId] = DoOp(mul->ResultTypeId, Mul<int>, op1, op2);
       break;
     }
     case Op::OpVectorTimesScalar: {
       auto vts = (SVectorTimesScalar*)op.Memory;
       Value scalar = Dereference(env.Values[vts->ScalarId]);
       Value vector = Dereference(env.Values[vts->VectorId]);
-      DoOp(vts->ResultTypeId, vts->ResultId, vector, [scalar](Value comp) {return Mul<float>(scalar, comp);});
+      env.Values[vts->ResultId] = DoOp(vts->ResultTypeId, [scalar](Value comp) {return Mul<float>(scalar, comp);}, vector);
       break;
     }
     case Op::OpSLessThan: {
       auto lessThan = (SSLessThan*)op.Memory;
       Value op1 = Dereference(env.Values[lessThan->Operand1Id]);
       Value op2 = Dereference(env.Values[lessThan->Operand2Id]);
-      DoOp(lessThan->ResultTypeId, lessThan->ResultId, op1, op2, [](Value a, Value b) { return Cmp<int32>(a, b) == -1; });
+      env.Values[lessThan->ResultId] = DoOp(lessThan->ResultTypeId, [](Value a, Value b) { return Cmp<int32>(a, b) == -1; }, op1, op2);
       break;
     }
     case Op::OpSGreaterThan: {
       auto greaterThan = (SSLessThan*)op.Memory;
       Value op1 = Dereference(env.Values[greaterThan->Operand1Id]);
       Value op2 = Dereference(env.Values[greaterThan->Operand2Id]);
-      DoOp(greaterThan->ResultTypeId, greaterThan->ResultId, op1, op2, [](Value a, Value b) { return Cmp<int32>(a, b) == 1; });
+      env.Values[greaterThan->ResultId] = DoOp(greaterThan->ResultTypeId, [](Value a, Value b) { return Cmp<int32>(a, b) == 1; }, op1, op2);
       break;
     }
     case Op::OpLoad: {
@@ -432,7 +429,7 @@ uint32 InterpretedVM::Execute(Function* func) {
   return 0;
 }
 
-void* InterpretedVM::ReadVariable(uint32 id) {
+void* InterpretedVM::ReadVariable(uint32 id) const {
   auto var = prog.Variables.at(id);
   if (env.Values.find(var.ResultId) == env.Values.end()) {
     return nullptr;
@@ -440,7 +437,7 @@ void* InterpretedVM::ReadVariable(uint32 id) {
   return env.Values[var.ResultId].Memory;
 }
 
-void* InterpretedVM::ReadVariable(std::string name) {
+void* InterpretedVM::ReadVariable(std::string name) const {
   for (auto& nameOp : prog.Names) {
     if (nameOp.second.Name == name) {
       return ReadVariable(nameOp.second.TargetId);
@@ -482,7 +479,7 @@ bool InterpretedVM::SetVariable(std::string name, void* value) {
   return false;
 }
 
-uint32 InterpretedVM::GetTypeByteSize(uint32 typeId) {
+uint32 InterpretedVM::GetTypeByteSize(uint32 typeId) const {
   if (TypeByteSizes.find(typeId) != TypeByteSizes.end()) {
     return TypeByteSizes.at(typeId);
   }
@@ -534,7 +531,8 @@ uint32 InterpretedVM::GetTypeByteSize(uint32 typeId) {
     std::cout << "Not a type definition: " << writeOp(definedType);
   }
 
-  TypeByteSizes[typeId] = size;
+  //TODO: Precalc type sizes
+  //TypeByteSizes[typeId] = size;
   return size;
 }
 

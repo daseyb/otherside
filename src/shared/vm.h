@@ -2,6 +2,8 @@
 #include <map>
 #include "types.h"
 
+#define EXT_EXPORT_TABLE ext_exports
+
 struct Program;
 
 struct Value {

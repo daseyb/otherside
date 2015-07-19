@@ -30,30 +30,35 @@ private:
   Environment& env;
   std::map<uint32, uint32> TypeByteSizes;
   std::vector<std::unique_ptr<byte>> VmMemory;
+
   byte* VmAlloc(uint32 typeId);
   Value VmInit(uint32 typeId, void * val);
-  Value Dereference(Value val);
-  Value IndexMemberValue(Value val, uint32 index);
-  Value IndexMemberValue(uint32 typeId, byte * val, uint32 index);
-  byte * GetPointerInComposite(uint32 typeId, byte * composite, uint32 indexCount, uint32 * indices, uint32 currLevel);
-  SOp GetType(uint32 typeId);
-  bool IsVectorType(uint32 typeId);
-  uint32 ElementCount(uint32 typeId);
+  
+  byte * GetPointerInComposite(uint32 typeId, byte * composite, uint32 indexCount, uint32 * indices, uint32 currLevel) const;
+  SOp GetType(uint32 typeId) const;
+  bool IsVectorType(uint32 typeId) const;
+  uint32 ElementCount(uint32 typeId) const;
+  
   Value TextureSample(Value sampler, Value coord, Value bias, uint32 resultTypeId);
+  
   uint32 Execute(Function* func);
-  void * ReadVariable(uint32 id);
+  
+  void * ReadVariable(uint32 id) const;
   bool SetVariable(uint32 id, void * value);
-  uint32 GetTypeByteSize(uint32 typeId);
+  
+  uint32 GetTypeByteSize(uint32 typeId) const;
+
   bool InitializeConstants();
 public:
   InterpretedVM(Program& prog, Environment& env) : prog(prog), env(env) { }
   virtual bool Run() override;
   bool SetVariable(std::string name, void * value);
-  void * ReadVariable(std::string name);
+  void * ReadVariable(std::string name) const;
 
-  template <typename Func>
-  void DoOp(uint32 resultTypeId, uint32 resultId, Value op1, Func op);
+  template<typename Func, typename Arg, typename ...Args>
+  Value DoOp(uint32 resultTypeId, Func op, Arg op1, Args && ...args);
 
-  template <typename Func>
-  void DoOp(uint32 resultTypeId, uint32 resultId, Value op1, Value op2, Func op);
+  Value Dereference(Value val) const;
+  Value IndexMemberValue(Value val, uint32 index) const;
+  Value IndexMemberValue(uint32 typeId, byte * val, uint32 index) const;
 };
