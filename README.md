@@ -6,6 +6,10 @@ See the official specification here: [SPIR-V 1.0](https://www.khronos.org/regist
 
 It also produces C like code that represents the given SPIR-V file (for easier reading).
 
+#### Why?
+I'm mostly working on this out of academic interest. I do plan on using it in my universities "write a software rasterizer" project.  
+Once verification is implemented it could be used to verify the output of tools that produce SPIR-V (and right now, I guess if the program runs and gives the correct output, that is some kind of verification as well).
+
 #### Note 
 This is very much a work in progress. Not all instructions are implemented and performance has not been a priority so far.
 
