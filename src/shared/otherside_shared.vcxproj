@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="common_ops.h" />
     <ClInclude Include="Khronos\GLSL450Lib.h" />
     <ClInclude Include="Khronos\spirv.h" />
     <ClInclude Include="parser_definitions.h" />

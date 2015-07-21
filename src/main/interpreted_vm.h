@@ -6,24 +6,6 @@
 
 struct Function;
 
-enum FilterMode {
-  Point,
-  Bilinear
-};
-
-enum WrapMode {
-  Clamp,
-  Repeat
-};
-
-struct Sampler {
-  uint32 DimCount;
-  uint32* Dims;
-  void* Data;
-  FilterMode FilterMode;
-  WrapMode WrapMode;
-};
-
 class InterpretedVM : public VM {
 private:
   Program& prog;
@@ -31,13 +13,7 @@ private:
   std::map<uint32, uint32> TypeByteSizes;
   std::vector<std::unique_ptr<byte>> VmMemory;
 
-  byte* VmAlloc(uint32 typeId);
-  Value VmInit(uint32 typeId, void * val);
-  
-  byte * GetPointerInComposite(uint32 typeId, byte * composite, uint32 indexCount, uint32 * indices, uint32 currLevel) const;
-  SOp GetType(uint32 typeId) const;
-  bool IsVectorType(uint32 typeId) const;
-  uint32 ElementCount(uint32 typeId) const;
+  byte* VmAlloc(uint32 typeId) override;
   
   Value TextureSample(Value sampler, Value coord, Value bias, uint32 resultTypeId);
   
@@ -46,7 +22,6 @@ private:
   void * ReadVariable(uint32 id) const;
   bool SetVariable(uint32 id, void * value);
   
-  uint32 GetTypeByteSize(uint32 typeId) const;
 
   bool InitializeConstants();
 
@@ -60,13 +35,17 @@ public:
   }
 
   virtual bool Run() override;
-  bool SetVariable(std::string name, void * value);
-  void * ReadVariable(std::string name) const;
+  bool SetVariable(std::string name, void * value) override;
+  void * ReadVariable(std::string name) const override;
+  Value VmInit(uint32 typeId, void * val) override;
 
-  template<typename Func, typename Arg, typename ...Args>
-  Value DoOp(uint32 resultTypeId, Func op, Arg op1, Args && ...args);
+  Value Dereference(Value val) const override;
+  Value IndexMemberValue(Value val, uint32 index) const override;
+  Value IndexMemberValue(uint32 typeId, byte * val, uint32 index) const override;
 
-  Value Dereference(Value val) const;
-  Value IndexMemberValue(Value val, uint32 index) const;
-  Value IndexMemberValue(uint32 typeId, byte * val, uint32 index) const;
+  uint32 GetTypeByteSize(uint32 typeId) const override;
+  byte * GetPointerInComposite(uint32 typeId, byte * composite, uint32 indexCount, uint32 * indices, uint32 currLevel) const override;
+  SOp GetType(uint32 typeId) const override;
+  bool IsVectorType(uint32 typeId) const override;
+  uint32 ElementCount(uint32 typeId) const override;
 };

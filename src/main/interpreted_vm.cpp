@@ -104,45 +104,6 @@ Value InterpretedVM::Dereference(Value val) const {
   return res;
 }
 
-template<typename T>
-int Cmp(Value op1, Value op2) {
-  T a = *(T*)op1.Memory;
-  T b = *(T*)op2.Memory;
-  return a < b ? -1 : a == b ? 0 : 1;
-}
-
-template<typename T>
-T Add(Value op1, Value op2) {
-  T a = *(T*)op1.Memory;
-  T b = *(T*)op2.Memory;
-  return a + b;
-}
-
-template<typename T>
-T Sub(Value op1, Value op2) {
-  T a = *(T*)op1.Memory;
-  T b = *(T*)op2.Memory;
-  return a - b;
-}
-
-template<typename T>
-T Div(Value op1, Value op2) {
-  T a = *(T*)op1.Memory;
-  T b = *(T*)op2.Memory;
-  return a / b;
-}
-
-template<typename T>
-T Mul(Value op1, Value op2) {
-  T a = *(T*)op1.Memory;
-  T b = *(T*)op2.Memory;
-  return a * b;
-}
-
-template<typename S, typename D>
-D Convert(Value op) {
-  return (D)*(S*)op.Memory;
-}
 
 Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint32 resultTypeId) {
   STypeSampler* samplerType =(STypeSampler*)GetType(sampler.TypeId).Memory;
@@ -162,23 +123,6 @@ Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint3
     acc *= dd;
   }
   return VmInit(resultTypeId, ((float*)s->Data) + index * 4);
-}
-
-template<typename Func, typename Arg, typename ...Args>
-Value InterpretedVM::DoOp(uint32 resultTypeId, Func op, Arg op1, Args && ...args) {
-  Value val;
-  if (IsVectorType(op1.TypeId)) {
-    val = VmInit(resultTypeId, 0);
-    int elCount = ElementCount(op1.TypeId);
-    for (int i = 0; i < elCount; i++) {
-      auto result = op(IndexMemberValue(op1, i), IndexMemberValue(args, i)...);
-      memcpy(IndexMemberValue(val, i).Memory, &result, GetTypeByteSize(resultTypeId) / elCount);
-    }
-  } else {
-    auto result = op(op1, std::forward<Args>(args)...);
-    val = VmInit(resultTypeId, &result);
-  }
-  return val;
 }
 
 uint32 InterpretedVM::Execute(Function* func) {
@@ -223,8 +167,12 @@ uint32 InterpretedVM::Execute(Function* func) {
     case Op::OpExtInst: {
       auto extInst = (SExtInst*)op.Memory;
       Value* ops = new Value[extInst->OperandIdsCount];
+      for (int i = 0; i < extInst->OperandIdsCount; i++) {
+        ops[i] = Dereference(env.Values.at(extInst->OperandIds[i]));
+      }
+
       ExtInstFunc* func = env.Extensions[extInst->SetId][extInst->Instruction];
-      env.Values[extInst->ResultId] = func(extInst->ResultTypeId, extInst->OperandIdsCount, ops);
+      env.Values[extInst->ResultId] = func(this, extInst->ResultTypeId, extInst->OperandIdsCount, ops);
     }
     case Op::OpConvertSToF: {
       auto convert = (SConvertSToF*)op.Memory;
