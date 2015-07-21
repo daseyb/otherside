@@ -116,8 +116,8 @@ Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint3
     uint32 dd = s->Dims[d];
     uint32 add = (uint32)(*(float*)IndexMemberValue(coord, d).Memory * (dd - 1) + 0.5f);
     switch (s->WrapMode) {
-    case WrapMode::Clamp: add = add < 0 ? 0 : add > dd - 1 ? dd - 1 : add; break;
-    case WrapMode::Repeat: add = add % dd; break;
+    case WrapMode::WMClamp: add = add < 0 ? 0 : add > dd - 1 ? dd - 1 : add; break;
+    case WrapMode::WMRepeat: add = add % dd; break;
     }
     index += add * acc;
     acc *= dd;
@@ -173,6 +173,7 @@ uint32 InterpretedVM::Execute(Function* func) {
 
       ExtInstFunc* func = env.Extensions[extInst->SetId][extInst->Instruction];
       env.Values[extInst->ResultId] = func(this, extInst->ResultTypeId, extInst->OperandIdsCount, ops);
+      break;
     }
     case Op::OpConvertSToF: {
       auto convert = (SConvertSToF*)op.Memory;

@@ -108,7 +108,15 @@ extern "C" {
   EXT_INST_FUNC(modf_ext) { return values [0]; }          
   EXT_INST_FUNC(min_ext) { return values [0]; }
   EXT_INST_FUNC(max_ext) { return values [0]; }
-  EXT_INST_FUNC(clamp_ext) { return values [0]; }
+  EXT_INST_FUNC(clamp_ext) { 
+    assert(valueCount == 3);
+    Value toClamp = values[0];
+    Value min = values[1];
+    Value max = values[2];
+
+    Value result = vm->DoOp(resultTypeId, Clamp<float>, toClamp, min, max);
+    return result;
+  }
   EXT_INST_FUNC(mix_ext) { return values [0]; }
   EXT_INST_FUNC(step_ext) { return values [0]; }
   EXT_INST_FUNC(smoothStep_ext) { return values [0]; }

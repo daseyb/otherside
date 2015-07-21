@@ -154,18 +154,21 @@ int main(int argc, const char** argv) {
   BColor* inputData = (BColor*)stbi_load("data/testin.bmp", &inTex.width, &inTex.height, &comps, 4);
   inTex.data = ConvertToFloat(inTex.width, inTex.height, inputData);
 
-  Sampler* sampler = new Sampler{ 2, (uint32*)&inTex, inTex.data, FilterMode::Point, WrapMode::Repeat };
+  Sampler* sampler = new Sampler{ 2, (uint32*)&inTex, inTex.data, FilterMode::FMPoint, WrapMode::WMRepeat };
   Texture outTex = MakeFlatTexture(inTex.width, inTex.height, { 0, 0, 0, 1 });
 
   std::cout << "Running program: ...";
 
   Vec2* texSize = new Vec2{ (float)inTex.width, (float)inTex.height};
-  Light* light = new Light{ {1, 0, 0, 2}, {0.5f, 0.5f} };
+  Light* light = new Light{ {1, 0, 0, 1}, {0.5f, 0.5f} };
+
+  Color* fragColor = new Color{ 0, 0, 0, 0 };
 
   vm.SetVariable("uv", &uv);
   vm.SetVariable("texSize", &texSize);
   vm.SetVariable("testTex", &sampler);
   vm.SetVariable("light", &light);
+  vm.SetVariable("gl_FragColor", &fragColor);
 
   bool didFail = false;
   for (int x = 0; x < outTex.width && !didFail; x++) {

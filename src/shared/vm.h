@@ -11,13 +11,13 @@ struct Value {
 };
 
 enum FilterMode {
-  Point,
-  Bilinear
+  FMPoint,
+  FMBilinear
 };
 
 enum WrapMode {
-  Clamp,
-  Repeat
+  WMClamp,
+  WMRepeat
 };
 
 struct Sampler {

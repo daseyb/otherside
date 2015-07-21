@@ -38,3 +38,12 @@ template<typename S, typename D>
 inline D Convert(Value op) {
   return (D)*(S*)op.Memory;
 }
+
+template<typename T>
+inline T Clamp(Value val, Value min, Value max) {
+  T tval = *(T*)val.Memory;
+  T tmin = *(T*)min.Memory;
+  T tmax = *(T*)max.Memory;
+  return tval < tmin ? tmin : tval > tmax ? tmax : tval;
+}
+
