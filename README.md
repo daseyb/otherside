@@ -28,7 +28,7 @@ Input File:
 ![Input File](https://raw.githubusercontent.com/bonus2113/otherside/master/data/testin.bmp)
 
 Output File:  
-![Output File](https://raw.githubusercontent.com/bonus2113/otherside/master/data/testout.bmp)
+![Output File](https://raw.githubusercontent.com/bonus2113/otherside/4f9a9b915d84ed1de4681e9d2433c29179134896/data/testout.bmp)
 
 Shader code:
 
