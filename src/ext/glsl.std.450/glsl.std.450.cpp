@@ -4,11 +4,25 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+  #define ONE_ARG_OP(func) \
+    assert(valueCount == 1); \
+    return vm->DoOp(resultTypeId, [](Value val) {return func(*(float*)val.Memory); }, values[0]); \
+
+  #define TWO_ARG_OP(func) \
+    assert(valueCount == 2); \
+    return vm->DoOp(resultTypeId, [](Value op1, Value op2) {return func(*(float*)op1.Memory, *(float*)op2.Memory); }, values[0], values[1]); \
+
+  #define THREE_ARG_OP(func) \
+    assert(valueCount == 3); \
+    return vm->DoOp(resultTypeId, [](Value op1, Value op2, Value op3) {return func(*(float*)op1.Memory, *(float*)op2.Memory, *(float*)op3.Memory); }, values[0], values[1], values[2]); \
+
+  #define THREE_ARG_OP_D(func) \
+    assert(valueCount == 3); \
+    return vm->DoOp(resultTypeId, func, values[0], values[1], values[2]); \
+
   EXT_INST_FUNC(round_ext) {
-    assert(valueCount == 1);
-    Value toRound = values[0];
-    Value result = vm->DoOp(resultTypeId, [](Value val) { return roundf(*(float*)val.Memory); }, toRound);
-    return result;
+    ONE_ARG_OP(roundf);
   };
 
   EXT_INST_FUNC(roundEven_ext) {
@@ -16,23 +30,23 @@ extern "C" {
   };
 
   EXT_INST_FUNC(trunc_ext) {
-    return values[0];
+    ONE_ARG_OP(trunc);
   };
 
   EXT_INST_FUNC(abs_ext) {
-    return values[0];
+    ONE_ARG_OP(fabsf);
   };
 
   EXT_INST_FUNC(sign_ext) {
-    return values[0];
+    ONE_ARG_OP([](float f) { return signbit(f) ? 0 : 1;})
   };
 
   EXT_INST_FUNC(floor_ext) {
-    return values[0];
+    ONE_ARG_OP(floorf);
   };
 
   EXT_INST_FUNC(ceil_ext) {
-    return values[0];
+    ONE_ARG_OP(ceilf);
   };
 
   EXT_INST_FUNC(fract_ext) {
@@ -48,36 +62,56 @@ extern "C" {
   };
 
   EXT_INST_FUNC(sin_ext) {
-    return values[0];
+    ONE_ARG_OP(sinf);
   };
 
   EXT_INST_FUNC(cos_ext) {
-    return values[0];
+    ONE_ARG_OP(cosf);
   };
 
   EXT_INST_FUNC(tan_ext) {
-    return values[0];
+    ONE_ARG_OP(tanf);
   };
 
   EXT_INST_FUNC(asin_ext) {
-    return values[0];
+    ONE_ARG_OP(asinf);
   };
 
   EXT_INST_FUNC(acos_ext) {
-    return values[0];
+    ONE_ARG_OP(acosf);
   };
 
   EXT_INST_FUNC(atan_ext) {
-    return values[0];
+    ONE_ARG_OP(atanf);
   };
 
-  EXT_INST_FUNC(sinh_ext) { return values [0]; }
-  EXT_INST_FUNC(cosh_ext) { return values [0]; }
-  EXT_INST_FUNC(tanh_ext) { return values [0]; }
-  EXT_INST_FUNC(asinh_ext) { return values [0]; }
-  EXT_INST_FUNC(acosh_ext) { return values [0]; }
-  EXT_INST_FUNC(atanh_ext) { return values [0]; }
-  EXT_INST_FUNC(atan2_ext) { return values [0]; }
+  EXT_INST_FUNC(sinh_ext) {
+    ONE_ARG_OP(sinhf);
+  }
+
+  EXT_INST_FUNC(cosh_ext) {
+    ONE_ARG_OP(coshf);
+  }
+
+  EXT_INST_FUNC(tanh_ext) {
+    ONE_ARG_OP(tanhf);
+  }
+  
+  EXT_INST_FUNC(asinh_ext) {
+    ONE_ARG_OP(asinhf);
+  }
+  
+  EXT_INST_FUNC(acosh_ext) {
+    ONE_ARG_OP(acoshf);
+  }
+
+  EXT_INST_FUNC(atanh_ext) {
+    ONE_ARG_OP(atanhf);
+  }
+
+  EXT_INST_FUNC(atan2_ext) { 
+    TWO_ARG_OP(atan2f); 
+  }
 
   EXT_INST_FUNC(pow_ext) { 
     assert(valueCount == 2);
@@ -95,28 +129,21 @@ extern "C" {
     }
   }
 
-  EXT_INST_FUNC(exp_ext) { return values [0]; }
-  EXT_INST_FUNC(log_ext) { return values [0]; }
-  EXT_INST_FUNC(exp2_ext) { return values [0]; }
-  EXT_INST_FUNC(log2_ext) { return values [0]; }
-  EXT_INST_FUNC(sqrt_ext) { return values [0]; }
-  EXT_INST_FUNC(inverseSqrt_ext) { return values [0]; }
+  EXT_INST_FUNC(exp_ext) { ONE_ARG_OP(expf); }
+  EXT_INST_FUNC(log_ext) { ONE_ARG_OP(logf); }
+  EXT_INST_FUNC(exp2_ext) { ONE_ARG_OP(exp2f); }
+  EXT_INST_FUNC(log2_ext) { ONE_ARG_OP(log2f); }
+  EXT_INST_FUNC(sqrt_ext) { ONE_ARG_OP(sqrtf); }
+  EXT_INST_FUNC(inverseSqrt_ext) { ONE_ARG_OP([](float f) {return 1.0f / sqrtf(f);}) }
 
   EXT_INST_FUNC(determinant_ext) { return values [0]; }
   EXT_INST_FUNC(matrixInverse_ext) { return values [0]; }
 
-  EXT_INST_FUNC(modf_ext) { return values [0]; }          
+  EXT_INST_FUNC(modf_ext) { TWO_ARG_OP(fmodf); }
   EXT_INST_FUNC(min_ext) { return values [0]; }
   EXT_INST_FUNC(max_ext) { return values [0]; }
-  EXT_INST_FUNC(clamp_ext) { 
-    assert(valueCount == 3);
-    Value toClamp = values[0];
-    Value min = values[1];
-    Value max = values[2];
 
-    Value result = vm->DoOp(resultTypeId, Clamp<float>, toClamp, min, max);
-    return result;
-  }
+  EXT_INST_FUNC(clamp_ext) { THREE_ARG_OP_D(Clamp<float>); }
   EXT_INST_FUNC(mix_ext) { return values [0]; }
   EXT_INST_FUNC(step_ext) { return values [0]; }
   EXT_INST_FUNC(smoothStep_ext) { return values [0]; }
