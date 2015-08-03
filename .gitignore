@@ -2,6 +2,7 @@
 *.filters
 *.sdf
 *.opensdf
+/compile
 /build/intermediate
 /build/output
 *.user
