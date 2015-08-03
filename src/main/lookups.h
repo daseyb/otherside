@@ -1,5 +1,5 @@
 #pragma once
-#include "Khronos\spirv.h"
+#include "Khronos/spirv.h"
 #include <string>
 
 using namespace spv;
