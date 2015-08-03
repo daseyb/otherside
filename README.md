@@ -1,4 +1,6 @@
 # otherside
+
+[![Join the chat at https://gitter.im/bonus2113/otherside](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bonus2113/otherside?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A VM running SPIR-V code on the CPU
 
 This is an implementation of the SPIR-V, the new intermediate language defined by Khronos.  
