@@ -392,4 +392,5 @@ bool genCode(const char* outFileName, const Program& prog) {
   outFile.open(outFileName, std::ofstream::out);
   outFile << out.str();
   outFile.close();
+  return true;
 }
