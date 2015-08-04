@@ -109,9 +109,9 @@ uint32 InterpretedVM::ElementCount(uint32 typeId) const {
 Value InterpretedVM::VmInit(uint32 typeId, void* value) {
   Value val = { typeId, VmAlloc(typeId) };
   if (value) {
-    memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
+    std::memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
   } else {
-    memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
+    std::memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
   }
   return val;
 }
@@ -340,7 +340,7 @@ uint32 InterpretedVM::Execute(Function* func) {
         }
 
         Value elToCopy = IndexMemberValue(toCopy, index);
-        memcpy(IndexMemberValue(result, i).Memory, elToCopy.Memory, GetTypeByteSize(elToCopy.TypeId));
+        std::memcpy(IndexMemberValue(result, i).Memory, elToCopy.Memory, GetTypeByteSize(elToCopy.TypeId));
       }
 
       env.Values[vecShuffle->ResultId] = result;
@@ -352,7 +352,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       auto composite = env.Values[extract->CompositeId];
       byte* mem = GetPointerInComposite(composite.TypeId, composite.Memory, extract->IndexesCount, extract->Indexes);
       Value val = { extract->ResultTypeId, VmAlloc(extract->ResultTypeId) };
-      memcpy(val.Memory, mem, GetTypeByteSize(val.TypeId));
+      std::memcpy(val.Memory, mem, GetTypeByteSize(val.TypeId));
       env.Values[extract->ResultId] = val;
       break;
     }
@@ -361,7 +361,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       auto composite = Dereference(env.Values[insert->CompositeId]);
       Value val = Dereference(env.Values.at(insert->ObjectId));
       byte* mem = GetPointerInComposite(composite.TypeId, composite.Memory, insert->IndexesCount, insert->Indexes);
-      memcpy(mem, val.Memory, GetTypeByteSize(val.TypeId));
+      std::memcpy(mem, val.Memory, GetTypeByteSize(val.TypeId));
       env.Values[insert->ResultId] = VmInit(composite.TypeId, composite.Memory);
       break;
     }
@@ -373,7 +373,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       for (int i = 0; i < construct->ConstituentsIdsCount; i++) {
         auto memVal = env.Values[construct->ConstituentsIds[i]];
         uint32 memSize = GetTypeByteSize(memVal.TypeId);
-        memcpy(memPtr, memVal.Memory, memSize);
+        std::memcpy(memPtr, memVal.Memory, memSize);
         memPtr += memSize;
       }
       assert(memPtr - val.Memory == GetTypeByteSize(construct->ResultTypeId));
@@ -383,7 +383,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       auto var = (SVariable*)op.Memory;
       Value val = { var->ResultTypeId, VmAlloc(var->ResultTypeId) };
       if (var->InitializerId) {
-        memcpy(val.Memory, env.Values[var->InitializerId].Memory, GetTypeByteSize(val.TypeId));
+        std::memcpy(val.Memory, env.Values[var->InitializerId].Memory, GetTypeByteSize(val.TypeId));
       }
       else {
         memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
@@ -436,14 +436,14 @@ bool InterpretedVM::SetVariable(uint32 id, void* value) {
   if (env.Values.find(var.ResultId) == env.Values.end()) {
     Value val = { var.ResultTypeId, VmAlloc(var.ResultTypeId) };
     if (value) {
-      memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
+      std::memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
     } else {
       memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
     }
     env.Values[var.ResultId] = val;
   } else {
     Value val = env.Values[var.ResultId];
-    memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
+    std::memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
   }
   return true;
 }
@@ -532,7 +532,7 @@ bool InterpretedVM::InitializeConstants() {
       for (int i = 0; i < constant->ConstituentsIdsCount; i++) {
         auto memVal = env.Values[constant->ConstituentsIds[i]];
         uint32 memSize = GetTypeByteSize(memVal.TypeId);
-        memcpy(memPtr, memVal.Memory, memSize);
+        std::memcpy(memPtr, memVal.Memory, memSize);
         memPtr += memSize;
       }
       assert( memPtr - val.Memory == GetTypeByteSize(constant->ResultTypeId));
