@@ -1,5 +1,6 @@
 #include "interpreted_vm.h"
 #include "parser.h"
+#include <cstring>
 #include <iostream>
 
 #ifdef _WIN32 // note the underscore: without it, it's not msdn official!
@@ -8,7 +9,11 @@
 #define LOAD_SYMBOL GetProcAddress
 #define HANDLE_TYPE HINSTANCE
 #elif __unix__ // all unices, not all compilers
-    // Unix
+#include <stdlib.h>
+#include <dlfcn.h>
+#define LOAD_LIBRARY dlopen
+#define LOAD_SYMBOL dlsym
+#define HANDLE_TYPE void*
 #elif __linux__
 #include <stdlib.h>
 #include <dlfcn.h>
