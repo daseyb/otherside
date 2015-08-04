@@ -3,8 +3,7 @@
 *.sdf
 *.opensdf
 /compile
-/build/intermediate
-/build/output
+/build
 *.user
 /FFTs/Debug
 /bcryptprimitives.pdb/D2918AA6339744EDA39204642A7D65E71
