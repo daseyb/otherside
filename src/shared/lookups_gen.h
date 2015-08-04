@@ -10,7 +10,7 @@ struct SNop {
 
 void HandleSource(void* op, Program* prog);
 struct SSource {
-  SourceLanguage SourceLanguage;
+  spv::SourceLanguage SourceLanguage;
   uint32 Version;
 };
 
@@ -32,20 +32,20 @@ struct SExtInstImport {
 
 void HandleMemoryModel(void* op, Program* prog);
 struct SMemoryModel {
-  AddressingModel AddressingModel;
-  MemoryModel MemoryModel;
+  spv::AddressingModel AddressingModel;
+  spv::MemoryModel MemoryModel;
 };
 
 void HandleEntryPoint(void* op, Program* prog);
 struct SEntryPoint {
-  ExecutionModel ExecutionModel;
+  spv::ExecutionModel ExecutionModel;
   uint32 EntryPointId;
 };
 
 void HandleExecutionMode(void* op, Program* prog);
 struct SExecutionMode {
   uint32 EntryPointId;
-  ExecutionMode Mode;
+  spv::ExecutionMode Mode;
   uint32 ExecutionModesCount;
   uint32* ExecutionModes;
 };
@@ -91,7 +91,7 @@ void HandleTypeSampler(void* op, Program* prog);
 struct STypeSampler {
   uint32 ResultId;
   uint32 SampledTypeId;
-  Dim Dim;
+  spv::Dim Dim;
   uint32 Content;
   uint32 Arrayed;
   uint32 Compare;
@@ -133,7 +133,7 @@ struct STypeOpaque {
 void HandleTypePointer(void* op, Program* prog);
 struct STypePointer {
   uint32 ResultId;
-  StorageClass StorageClass;
+  spv::StorageClass StorageClass;
   uint32 TypeId;
 };
 
@@ -169,7 +169,7 @@ void HandleTypePipe(void* op, Program* prog);
 struct STypePipe {
   uint32 ResultId;
   uint32 TypeId;
-  AccessQualifier Qualifier;
+  spv::AccessQualifier Qualifier;
 };
 
 void HandleConstantTrue(void* op, Program* prog);
@@ -253,7 +253,7 @@ void HandleVariable(void* op, Program* prog);
 struct SVariable {
   uint32 ResultTypeId;
   uint32 ResultId;
-  StorageClass StorageClass;
+  spv::StorageClass StorageClass;
   uint32 InitializerId;
 };
 
@@ -261,7 +261,7 @@ void HandleVariableArray(void* op, Program* prog);
 struct SVariableArray {
   uint32 ResultTypeId;
   uint32 ResultId;
-  StorageClass StorageClass;
+  spv::StorageClass StorageClass;
   uint32 NId;
 };
 
@@ -269,7 +269,7 @@ void HandleFunction(void* op, Program* prog);
 struct SFunction {
   uint32 ResultTypeId;
   uint32 ResultId;
-  FunctionControl FunctionControl;
+  spv::FunctionControl FunctionControl;
   uint32 FunctionTypeId;
 };
 
@@ -341,7 +341,7 @@ struct SDecorationGroup {
 void HandleDecorate(void* op, Program* prog);
 struct SDecorate {
   uint32 TargetId;
-  Decoration Decoration;
+  spv::Decoration Decoration;
   uint32 DecorationsCount;
   uint32* Decorations;
 };
@@ -350,7 +350,7 @@ void HandleMemberDecorate(void* op, Program* prog);
 struct SMemberDecorate {
   uint32 StructuretypeId;
   uint32 Member;
-  Decoration Decoration;
+  spv::Decoration Decoration;
   uint32 DecorationsCount;
   uint32* Decorations;
 };
@@ -1429,13 +1429,13 @@ struct SEndStreamPrimitive {
 
 void HandleControlBarrier(void* op, Program* prog);
 struct SControlBarrier {
-  ExecutionScope Scope;
+  spv::ExecutionScope Scope;
 };
 
 void HandleMemoryBarrier(void* op, Program* prog);
 struct SMemoryBarrier {
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
 };
 
 void HandleImagePointer(void* op, Program* prog);
@@ -1458,15 +1458,15 @@ struct SAtomicLoad {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
 };
 
 void HandleAtomicStore(void* op, Program* prog);
 struct SAtomicStore {
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
@@ -1475,8 +1475,8 @@ struct SAtomicExchange {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
@@ -1485,8 +1485,8 @@ struct SAtomicCompareExchange {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
   uint32 ComparatorId;
 };
@@ -1496,8 +1496,8 @@ struct SAtomicCompareExchangeWeak {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
   uint32 ComparatorId;
 };
@@ -1507,8 +1507,8 @@ struct SAtomicIIncrement {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
 };
 
 void HandleAtomicIDecrement(void* op, Program* prog);
@@ -1516,8 +1516,8 @@ struct SAtomicIDecrement {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
 };
 
 void HandleAtomicIAdd(void* op, Program* prog);
@@ -1525,8 +1525,8 @@ struct SAtomicIAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
@@ -1535,8 +1535,8 @@ struct SAtomicISub {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
@@ -1545,8 +1545,8 @@ struct SAtomicUMin {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
@@ -1555,8 +1555,8 @@ struct SAtomicUMax {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
@@ -1565,8 +1565,8 @@ struct SAtomicAnd {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
@@ -1575,8 +1575,8 @@ struct SAtomicOr {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
@@ -1585,21 +1585,21 @@ struct SAtomicXor {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
 void HandleLoopMerge(void* op, Program* prog);
 struct SLoopMerge {
   uint32 LabelId;
-  LoopControl LoopControl;
+  spv::LoopControl LoopControl;
 };
 
 void HandleSelectionMerge(void* op, Program* prog);
 struct SSelectionMerge {
   uint32 LabelId;
-  SelectionControl SelectionControl;
+  spv::SelectionControl SelectionControl;
 };
 
 void HandleLabel(void* op, Program* prog);
@@ -1667,7 +1667,7 @@ void HandleAsyncGroupCopy(void* op, Program* prog);
 struct SAsyncGroupCopy {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
+  spv::ExecutionScope Scope;
   uint32 DestinationId;
   uint32 SourceId;
   uint32 NumElementsId;
@@ -1679,7 +1679,7 @@ void HandleWaitGroupEvents(void* op, Program* prog);
 struct SWaitGroupEvents {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
+  spv::ExecutionScope Scope;
   uint32 NumEventsId;
   uint32 EventsListId;
 };
@@ -1688,7 +1688,7 @@ void HandleGroupAll(void* op, Program* prog);
 struct SGroupAll {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
+  spv::ExecutionScope Scope;
   uint32 PredicateId;
 };
 
@@ -1696,7 +1696,7 @@ void HandleGroupAny(void* op, Program* prog);
 struct SGroupAny {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
+  spv::ExecutionScope Scope;
   uint32 PredicateId;
 };
 
@@ -1704,7 +1704,7 @@ void HandleGroupBroadcast(void* op, Program* prog);
 struct SGroupBroadcast {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
+  spv::ExecutionScope Scope;
   uint32 ValueId;
   uint32 LocalIdId;
 };
@@ -1713,8 +1713,8 @@ void HandleGroupIAdd(void* op, Program* prog);
 struct SGroupIAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
-  GroupOperation Operation;
+  spv::ExecutionScope Scope;
+  spv::GroupOperation Operation;
   uint32 XId;
 };
 
@@ -1722,8 +1722,8 @@ void HandleGroupFAdd(void* op, Program* prog);
 struct SGroupFAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
-  GroupOperation Operation;
+  spv::ExecutionScope Scope;
+  spv::GroupOperation Operation;
   uint32 XId;
 };
 
@@ -1731,8 +1731,8 @@ void HandleGroupFMin(void* op, Program* prog);
 struct SGroupFMin {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
-  GroupOperation Operation;
+  spv::ExecutionScope Scope;
+  spv::GroupOperation Operation;
   uint32 XId;
 };
 
@@ -1740,8 +1740,8 @@ void HandleGroupUMin(void* op, Program* prog);
 struct SGroupUMin {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
-  GroupOperation Operation;
+  spv::ExecutionScope Scope;
+  spv::GroupOperation Operation;
   uint32 XId;
 };
 
@@ -1749,8 +1749,8 @@ void HandleGroupSMin(void* op, Program* prog);
 struct SGroupSMin {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
-  GroupOperation Operation;
+  spv::ExecutionScope Scope;
+  spv::GroupOperation Operation;
   uint32 XId;
 };
 
@@ -1758,8 +1758,8 @@ void HandleGroupFMax(void* op, Program* prog);
 struct SGroupFMax {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
-  GroupOperation Operation;
+  spv::ExecutionScope Scope;
+  spv::GroupOperation Operation;
   uint32 XId;
 };
 
@@ -1767,8 +1767,8 @@ void HandleGroupUMax(void* op, Program* prog);
 struct SGroupUMax {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
-  GroupOperation Operation;
+  spv::ExecutionScope Scope;
+  spv::GroupOperation Operation;
   uint32 XId;
 };
 
@@ -1776,8 +1776,8 @@ void HandleGroupSMax(void* op, Program* prog);
 struct SGroupSMax {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
-  GroupOperation Operation;
+  spv::ExecutionScope Scope;
+  spv::GroupOperation Operation;
   uint32 XId;
 };
 
@@ -1786,7 +1786,7 @@ struct SGenericCastToPtrExplicit {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SourcepointerId;
-  StorageClass storage;
+  spv::StorageClass storage;
 };
 
 void HandleGenericPtrMemSemantics(void* op, Program* prog);
@@ -1885,7 +1885,7 @@ void HandleGroupReserveReadPipePackets(void* op, Program* prog);
 struct SGroupReserveReadPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
+  spv::ExecutionScope Scope;
   uint32 pId;
   uint32 num_packetsId;
 };
@@ -1894,21 +1894,21 @@ void HandleGroupReserveWritePipePackets(void* op, Program* prog);
 struct SGroupReserveWritePipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
-  ExecutionScope Scope;
+  spv::ExecutionScope Scope;
   uint32 pId;
   uint32 num_packetsId;
 };
 
 void HandleGroupCommitReadPipe(void* op, Program* prog);
 struct SGroupCommitReadPipe {
-  ExecutionScope Scope;
+  spv::ExecutionScope Scope;
   uint32 pId;
   uint32 reserve_idId;
 };
 
 void HandleGroupCommitWritePipe(void* op, Program* prog);
 struct SGroupCommitWritePipe {
-  ExecutionScope Scope;
+  spv::ExecutionScope Scope;
   uint32 pId;
   uint32 reserve_idId;
 };
@@ -2041,8 +2041,8 @@ struct SAtomicIMin {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
@@ -2051,8 +2051,8 @@ struct SAtomicIMax {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  ExecutionScope Scope;
-  MemorySemantics Semantics;
+  spv::ExecutionScope Scope;
+  spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
 
