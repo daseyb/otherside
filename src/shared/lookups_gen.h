@@ -10,7 +10,7 @@ struct SNop {
 
 void HandleSource(void* op, Program* prog);
 struct SSource {
-  SourceLanguage SourceLanguage;
+  spv::SourceLanguage SourceLanguage;
   uint32 Version;
 };
 
