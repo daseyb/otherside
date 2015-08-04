@@ -8,3 +8,5 @@ include_directories(${SHARED_LIB_INCLUDE_DIR})
 set(SRCS glsl.std.450.cpp)
 add_library(glsl.std.450 MODULE ${SRCS})
 target_link_libraries(glsl.std.450 shared)
+
+set_property(TARGET glsl.std.450 PROPERTY CXX_STANDARD 11)

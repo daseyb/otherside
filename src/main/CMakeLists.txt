@@ -9,3 +9,5 @@ set(SRCS otherside_main.cpp parser.cpp codegen.cpp interpreted_vm.cpp)
 add_executable(otherside ${SRCS})
 
 target_link_libraries(otherside shared)
+
+set_property(TARGET otherside PROPERTY CXX_STANDARD 11)
