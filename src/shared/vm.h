@@ -54,6 +54,31 @@ public:
   virtual uint32 ElementCount(uint32 typeId) const abstract;
 };
 
+#if defined _WIN32 || defined __CYGWIN__
+  #ifdef BUILDING_DLL
+    #ifdef __GNUC__
+      #define DLL_PUBLIC __attribute__ ((dllexport))
+    #else
+      #define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
+    #endif
+  #else
+    #ifdef __GNUC__
+      #define DLL_PUBLIC __attribute__ ((dllimport))
+    #else
+      #define DLL_PUBLIC __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
+    #endif
+  #endif
+  #define DLL_LOCAL
+#else
+  #if __GNUC__ >= 4
+    #define DLL_PUBLIC __attribute__ ((visibility ("default")))
+    #define DLL_LOCAL  __attribute__ ((visibility ("hidden")))
+  #else
+    #define DLL_PUBLIC
+    #define DLL_LOCAL
+  #endif
+#endif
+
 #define EXT_INST_FUNC(x) Value x(VM* vm, uint32 resultTypeId, int valueCount, Value* values)
 typedef EXT_INST_FUNC(ExtInstFunc);
 typedef ExtInstFunc** GetExtTableFunc(void);
@@ -61,7 +86,7 @@ typedef ExtInstFunc** GetExtTableFunc(void);
 #define xstr(s) str(s)
 #define str(s) #s
 #define EXT_EXPORT_TABLE_FUNC_NAME GetExtTable
-#define EXT_EXPORT_TABLE_FUNC(x) __declspec(dllexport) ExtInstFunc** EXT_EXPORT_TABLE_FUNC_NAME(void) { return x; }
+#define EXT_EXPORT_TABLE_FUNC(x) DLL_PUBLIC ExtInstFunc** EXT_EXPORT_TABLE_FUNC_NAME(void) { return x; }
 
 struct Environment {
   std::map<int, Value> Values;

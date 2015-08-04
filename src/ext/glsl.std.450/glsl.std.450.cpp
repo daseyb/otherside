@@ -1,5 +1,6 @@
 #include "vm.h"
 #include <assert.h>
+#include <math.h>
 
 #ifdef __cplusplus
 extern "C" {
