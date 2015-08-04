@@ -54,6 +54,7 @@ public:
   virtual uint32 ElementCount(uint32 typeId) const abstract;
 };
 
+#define BUILDING_DLL
 #if defined _WIN32 || defined __CYGWIN__
   #ifdef BUILDING_DLL
     #ifdef __GNUC__

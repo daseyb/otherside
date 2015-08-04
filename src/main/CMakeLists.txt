@@ -12,4 +12,9 @@ include_directories(${SHARED_LIB_INCLUDE_DIR})
 set(SRCS otherside_main.cpp parser.cpp codegen.cpp interpreted_vm.cpp)
 add_executable(otherside ${SRCS})
 
-target_link_libraries(otherside shared dl)
+IF (WIN32)
+	target_link_libraries(otherside shared)
+ELSE()
+	target_link_libraries(otherside shared dl)
+ENDIF()
+

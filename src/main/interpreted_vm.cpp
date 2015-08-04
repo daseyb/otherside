@@ -8,12 +8,14 @@
 #define LOAD_LIBRARY(path) LoadLibrary(path)
 #define LOAD_SYMBOL GetProcAddress
 #define LIBRARY_EXT ".dll"
+#define LIB_NAME(name) name
 #define HANDLE_TYPE HINSTANCE
 #elif __unix__ // all unices, not all compilers
 #include <dlfcn.h>
 #define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
 #define LOAD_SYMBOL dlsym
 #define LIBRARY_EXT ".so"
+#define LIB_NAME(name) ("lib" + name)
 #define HANDLE_TYPE void*
 #define TEXT(txt) txt
 #elif __linux__
@@ -21,6 +23,7 @@
 #define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
 #define LOAD_SYMBOL dlsym
 #define LIBRARY_EXT ".so"
+#define LIB_NAME(name) ("lib" + name)
 #define TEXT(txt) txt
 #define HANDLE_TYPE void*
 #elif __APPLE__
@@ -564,7 +567,7 @@ bool InterpretedVM::InitializeConstants() {
 
 void InterpretedVM::ImportExt(SExtInstImport import) {
   std::string name(import.Name);
-  HANDLE_TYPE extInst = LOAD_LIBRARY(("ext\\" + name + LIBRARY_EXT).c_str());
+  HANDLE_TYPE extInst = LOAD_LIBRARY(("ext\\" + LIB_NAME(name) + LIBRARY_EXT).c_str());
   
   if (extInst) {
     const char* funcName = xstr(EXT_EXPORT_TABLE_FUNC_NAME);
