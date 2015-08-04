@@ -1,7 +1,24 @@
 #include "interpreted_vm.h"
 #include "parser.h"
 #include <iostream>
+
+#ifdef _WIN32 // note the underscore: without it, it's not msdn official!
 #include <Windows.h>
+#define LOAD_LIBRARY LoadLibrary
+#define LOAD_SYMBOL GetProcAddress
+#define HANDLE_TYPE HINSTANCE
+#elif __unix__ // all unices, not all compilers
+    // Unix
+#elif __linux__
+#include <stdlib.h>
+#include <dlfcn.h>
+#define LOAD_LIBRARY dlopen
+#define LOAD_SYMBOL dlsym
+#define HANDLE_TYPE void*
+#elif __APPLE__
+    // Mac OS, not sure if this is covered by __posix__ and/or __unix__ though...
+#endif
+
 
 byte* InterpretedVM::VmAlloc(uint32 typeId) {
   uint32 compositeSize = GetTypeByteSize(typeId);
@@ -115,7 +132,7 @@ Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint3
   for (int d = 0; d < s->DimCount; d++) {
     uint32 dd = s->Dims[d];
     uint32 add = (uint32)(*(float*)IndexMemberValue(coord, d).Memory * (dd - 1) + 0.5f);
-    switch (s->WrapMode) {
+    switch (s->Wrap) {
     case WrapMode::WMClamp: add = add < 0 ? 0 : add > dd - 1 ? dd - 1 : add; break;
     case WrapMode::WMRepeat: add = add % dd; break;
     }
@@ -539,11 +556,11 @@ bool InterpretedVM::InitializeConstants() {
 
 void InterpretedVM::ImportExt(SExtInstImport import) {
   std::string name(import.Name);
-  HINSTANCE extInst = LoadLibrary( ("ext\\" + name + ".dll").c_str());
+  HANDLE_TYPE extInst = LOAD_LIBRARY( ("ext\\" + name + ".dll").c_str());
   
   if (extInst) {
     const char* funcName = xstr(EXT_EXPORT_TABLE_FUNC_NAME);
-    GetExtTableFunc* func = (GetExtTableFunc*)GetProcAddress(extInst, TEXT(funcName));
+    GetExtTableFunc* func = (GetExtTableFunc*)LOAD_SYMBOL(extInst, TEXT(funcName));
     if (func) {
       auto res = func();
       env.Extensions[import.ResultId] = res;
