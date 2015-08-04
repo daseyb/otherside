@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.1)
 
 set(SHARED_LIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -14,8 +14,6 @@ include_directories(${SHARED_LIB_INCLUDE_DIR})
 
 set(SRCS lookups.cpp lookups_gen.cpp)
 add_library(shared STATIC ${SRCS})
-
-set_property(TARGET shared PROPERTY CXX_STANDARD 11)
 
 endif()
 
