@@ -10,7 +10,6 @@
 #define LIBRARY_EXT ".dll"
 #define HANDLE_TYPE HINSTANCE
 #elif __unix__ // all unices, not all compilers
-#include <stdlib.h>
 #include <dlfcn.h>
 #define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
 #define LOAD_SYMBOL dlsym
@@ -18,7 +17,6 @@
 #define HANDLE_TYPE void*
 #define TEXT(txt) txt
 #elif __linux__
-#include <stdlib.h>
 #include <dlfcn.h>
 #define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
 #define LOAD_SYMBOL dlsym
