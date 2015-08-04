@@ -165,6 +165,7 @@ void writeName(std::stringstream* name, const Program& prog, int id, const std::
 }
 
 bool g_literal(std::stringstream* ss, const Program& prog, int typeId, int valuesCount, uint32* values) {
+  assert(values);
   auto type = prog.DefinedTypes.at(typeId);
 
   switch (type.Op)
