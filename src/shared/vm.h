@@ -24,8 +24,8 @@ struct Sampler {
   uint32 DimCount;
   uint32* Dims;
   void* Data;
-  FilterMode FilterMode;
-  WrapMode WrapMode;
+  FilterMode Filter;
+  WrapMode Wrap;
 };
 
 

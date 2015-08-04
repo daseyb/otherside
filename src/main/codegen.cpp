@@ -2,7 +2,7 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
-
+#include <cstring>
 #include "parser_definitions.h"
 #include "lookups_gen.h"
 #include "parser.h"

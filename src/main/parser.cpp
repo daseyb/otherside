@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip> 
+#include <cstring>
 #include "types.h"
 #include "parser_definitions.h"
 
