@@ -5,20 +5,25 @@
 
 #ifdef _WIN32 // note the underscore: without it, it's not msdn official!
 #include <Windows.h>
-#define LOAD_LIBRARY LoadLibrary
+#define LOAD_LIBRARY(path) LoadLibrary(path)
 #define LOAD_SYMBOL GetProcAddress
+#define LIBRARY_EXT ".dll"
 #define HANDLE_TYPE HINSTANCE
 #elif __unix__ // all unices, not all compilers
 #include <stdlib.h>
 #include <dlfcn.h>
-#define LOAD_LIBRARY dlopen
+#define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
 #define LOAD_SYMBOL dlsym
+#define LIBRARY_EXT ".so"
 #define HANDLE_TYPE void*
+#define TEXT(txt) txt
 #elif __linux__
 #include <stdlib.h>
 #include <dlfcn.h>
-#define LOAD_LIBRARY dlopen
+#define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
 #define LOAD_SYMBOL dlsym
+#define LIBRARY_EXT ".so"
+#define TEXT(txt) txt
 #define HANDLE_TYPE void*
 #elif __APPLE__
     // Mac OS, not sure if this is covered by __posix__ and/or __unix__ though...
@@ -561,7 +566,7 @@ bool InterpretedVM::InitializeConstants() {
 
 void InterpretedVM::ImportExt(SExtInstImport import) {
   std::string name(import.Name);
-  HANDLE_TYPE extInst = LOAD_LIBRARY( ("ext\\" + name + ".dll").c_str());
+  HANDLE_TYPE extInst = LOAD_LIBRARY(("ext\\" + name + LIBRARY_EXT).c_str());
   
   if (extInst) {
     const char* funcName = xstr(EXT_EXPORT_TABLE_FUNC_NAME);
