@@ -31,7 +31,14 @@
 #define TEXT(txt) txt
 #define HANDLE_TYPE void*
 #elif __APPLE__
-    // Mac OS, not sure if this is covered by __posix__ and/or __unix__ though...
+#include <dlfcn.h>
+#define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
+#define LOAD_SYMBOL dlsym
+#define LIBRARY_EXT ".so" // .dylib may be better
+#define LIB_NAME(name) ("lib" + name)
+#define LIB_ERROR dlerror()
+#define TEXT(txt) txt
+#define HANDLE_TYPE void*
 #endif
 
 
