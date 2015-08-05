@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include "types.h"
+#include <cstring>
 
 struct Program;
 struct SOp;
@@ -24,8 +25,8 @@ struct Sampler {
   uint32 DimCount;
   uint32* Dims;
   void* Data;
-  FilterMode FilterMode;
-  WrapMode WrapMode;
+  FilterMode Filter;
+  WrapMode Wrap;
 };
 
 
@@ -53,6 +54,32 @@ public:
   virtual uint32 ElementCount(uint32 typeId) const abstract;
 };
 
+#define BUILDING_DLL
+#if defined _WIN32 || defined __CYGWIN__
+  #ifdef BUILDING_DLL
+    #ifdef __GNUC__
+      #define DLL_PUBLIC __attribute__ ((dllexport))
+    #else
+      #define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
+    #endif
+  #else
+    #ifdef __GNUC__
+      #define DLL_PUBLIC __attribute__ ((dllimport))
+    #else
+      #define DLL_PUBLIC __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
+    #endif
+  #endif
+  #define DLL_LOCAL
+#else
+  #if __GNUC__ >= 4
+    #define DLL_PUBLIC __attribute__ ((visibility ("default")))
+    #define DLL_LOCAL  __attribute__ ((visibility ("hidden")))
+  #else
+    #define DLL_PUBLIC
+    #define DLL_LOCAL
+  #endif
+#endif
+
 #define EXT_INST_FUNC(x) Value x(VM* vm, uint32 resultTypeId, int valueCount, Value* values)
 typedef EXT_INST_FUNC(ExtInstFunc);
 typedef ExtInstFunc** GetExtTableFunc(void);
@@ -60,7 +87,7 @@ typedef ExtInstFunc** GetExtTableFunc(void);
 #define xstr(s) str(s)
 #define str(s) #s
 #define EXT_EXPORT_TABLE_FUNC_NAME GetExtTable
-#define EXT_EXPORT_TABLE_FUNC(x) __declspec(dllexport) ExtInstFunc** EXT_EXPORT_TABLE_FUNC_NAME(void) { return x; }
+#define EXT_EXPORT_TABLE_FUNC(x) DLL_PUBLIC ExtInstFunc** EXT_EXPORT_TABLE_FUNC_NAME(void) { return x; }
 
 struct Environment {
   std::map<int, Value> Values;
@@ -75,11 +102,11 @@ inline Value VM::DoOp(uint32 resultTypeId, Func op, Arg op1, Args && ...args) {
     int elCount = ElementCount(op1.TypeId);
     for (int i = 0; i < elCount; i++) {
       auto result = op(IndexMemberValue(op1, i), IndexMemberValue(args, i)...);
-      memcpy(IndexMemberValue(val, i).Memory, &result, GetTypeByteSize(resultTypeId) / elCount);
+      std::memcpy(IndexMemberValue(val, i).Memory, &result, GetTypeByteSize(resultTypeId) / elCount);
     }
   } else {
     auto result = op(op1, std::forward<Args>(args)...);
-    memcpy(val.Memory, &result, GetTypeByteSize(resultTypeId));
+    std::memcpy(val.Memory, &result, GetTypeByteSize(resultTypeId));
   }
 
   return val;

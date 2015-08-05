@@ -1,7 +1,39 @@
 #include "interpreted_vm.h"
 #include "parser.h"
+#include <cstring>
 #include <iostream>
+#include <algorithm>
+
+#ifdef _WIN32 // note the underscore: without it, it's not msdn official!
 #include <Windows.h>
+#define LOAD_LIBRARY(path) LoadLibrary(path)
+#define LOAD_SYMBOL GetProcAddress
+#define LIBRARY_EXT ".dll"
+#define LIB_NAME(name) name
+#define LIB_ERROR ""
+#define HANDLE_TYPE HINSTANCE
+#elif __unix__ // all unices, not all compilers
+#include <dlfcn.h>
+#define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
+#define LOAD_SYMBOL dlsym
+#define LIBRARY_EXT ".so"
+#define LIB_NAME(name) ("lib" + name)
+#define LIB_ERROR dlerror()
+#define HANDLE_TYPE void*
+#define TEXT(txt) txt
+#elif __linux__
+#include <dlfcn.h>
+#define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
+#define LOAD_SYMBOL dlsym
+#define LIBRARY_EXT ".so"
+#define LIB_NAME(name) ("lib" + name)
+#define LIB_ERROR dlerror()
+#define TEXT(txt) txt
+#define HANDLE_TYPE void*
+#elif __APPLE__
+    // Mac OS, not sure if this is covered by __posix__ and/or __unix__ though...
+#endif
+
 
 byte* InterpretedVM::VmAlloc(uint32 typeId) {
   uint32 compositeSize = GetTypeByteSize(typeId);
@@ -87,9 +119,9 @@ uint32 InterpretedVM::ElementCount(uint32 typeId) const {
 Value InterpretedVM::VmInit(uint32 typeId, void* value) {
   Value val = { typeId, VmAlloc(typeId) };
   if (value) {
-    memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
+    std::memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
   } else {
-    memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
+    std::memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
   }
   return val;
 }
@@ -115,7 +147,7 @@ Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint3
   for (int d = 0; d < s->DimCount; d++) {
     uint32 dd = s->Dims[d];
     uint32 add = (uint32)(*(float*)IndexMemberValue(coord, d).Memory * (dd - 1) + 0.5f);
-    switch (s->WrapMode) {
+    switch (s->Wrap) {
     case WrapMode::WMClamp: add = add < 0 ? 0 : add > dd - 1 ? dd - 1 : add; break;
     case WrapMode::WMRepeat: add = add % dd; break;
     }
@@ -318,7 +350,7 @@ uint32 InterpretedVM::Execute(Function* func) {
         }
 
         Value elToCopy = IndexMemberValue(toCopy, index);
-        memcpy(IndexMemberValue(result, i).Memory, elToCopy.Memory, GetTypeByteSize(elToCopy.TypeId));
+        std::memcpy(IndexMemberValue(result, i).Memory, elToCopy.Memory, GetTypeByteSize(elToCopy.TypeId));
       }
 
       env.Values[vecShuffle->ResultId] = result;
@@ -330,7 +362,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       auto composite = env.Values[extract->CompositeId];
       byte* mem = GetPointerInComposite(composite.TypeId, composite.Memory, extract->IndexesCount, extract->Indexes);
       Value val = { extract->ResultTypeId, VmAlloc(extract->ResultTypeId) };
-      memcpy(val.Memory, mem, GetTypeByteSize(val.TypeId));
+      std::memcpy(val.Memory, mem, GetTypeByteSize(val.TypeId));
       env.Values[extract->ResultId] = val;
       break;
     }
@@ -339,7 +371,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       auto composite = Dereference(env.Values[insert->CompositeId]);
       Value val = Dereference(env.Values.at(insert->ObjectId));
       byte* mem = GetPointerInComposite(composite.TypeId, composite.Memory, insert->IndexesCount, insert->Indexes);
-      memcpy(mem, val.Memory, GetTypeByteSize(val.TypeId));
+      std::memcpy(mem, val.Memory, GetTypeByteSize(val.TypeId));
       env.Values[insert->ResultId] = VmInit(composite.TypeId, composite.Memory);
       break;
     }
@@ -351,7 +383,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       for (int i = 0; i < construct->ConstituentsIdsCount; i++) {
         auto memVal = env.Values[construct->ConstituentsIds[i]];
         uint32 memSize = GetTypeByteSize(memVal.TypeId);
-        memcpy(memPtr, memVal.Memory, memSize);
+        std::memcpy(memPtr, memVal.Memory, memSize);
         memPtr += memSize;
       }
       assert(memPtr - val.Memory == GetTypeByteSize(construct->ResultTypeId));
@@ -361,7 +393,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       auto var = (SVariable*)op.Memory;
       Value val = { var->ResultTypeId, VmAlloc(var->ResultTypeId) };
       if (var->InitializerId) {
-        memcpy(val.Memory, env.Values[var->InitializerId].Memory, GetTypeByteSize(val.TypeId));
+        std::memcpy(val.Memory, env.Values[var->InitializerId].Memory, GetTypeByteSize(val.TypeId));
       }
       else {
         memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
@@ -414,14 +446,14 @@ bool InterpretedVM::SetVariable(uint32 id, void* value) {
   if (env.Values.find(var.ResultId) == env.Values.end()) {
     Value val = { var.ResultTypeId, VmAlloc(var.ResultTypeId) };
     if (value) {
-      memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
+      std::memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
     } else {
       memset(val.Memory, 0, GetTypeByteSize(val.TypeId));
     }
     env.Values[var.ResultId] = val;
   } else {
     Value val = env.Values[var.ResultId];
-    memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
+    std::memcpy(val.Memory, value, GetTypeByteSize(val.TypeId));
   }
   return true;
 }
@@ -510,7 +542,7 @@ bool InterpretedVM::InitializeConstants() {
       for (int i = 0; i < constant->ConstituentsIdsCount; i++) {
         auto memVal = env.Values[constant->ConstituentsIds[i]];
         uint32 memSize = GetTypeByteSize(memVal.TypeId);
-        memcpy(memPtr, memVal.Memory, memSize);
+        std::memcpy(memPtr, memVal.Memory, memSize);
         memPtr += memSize;
       }
       assert( memPtr - val.Memory == GetTypeByteSize(constant->ResultTypeId));
@@ -539,15 +571,21 @@ bool InterpretedVM::InitializeConstants() {
 
 void InterpretedVM::ImportExt(SExtInstImport import) {
   std::string name(import.Name);
-  HINSTANCE extInst = LoadLibrary( ("ext\\" + name + ".dll").c_str());
-  
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+  auto filename = ("ext/" + LIB_NAME(name) + LIBRARY_EXT).c_str();
+  HANDLE_TYPE extInst = LOAD_LIBRARY(filename);
+
   if (extInst) {
     const char* funcName = xstr(EXT_EXPORT_TABLE_FUNC_NAME);
-    GetExtTableFunc* func = (GetExtTableFunc*)GetProcAddress(extInst, TEXT(funcName));
+    GetExtTableFunc* func = (GetExtTableFunc*)LOAD_SYMBOL(extInst, TEXT(funcName));
     if (func) {
       auto res = func();
       env.Extensions[import.ResultId] = res;
+    } else {
+      std::cout << LIB_ERROR << std::endl;
     }
+  } else {
+    std::cout << LIB_ERROR << std::endl;
   }
 }
 

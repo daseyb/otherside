@@ -10,7 +10,7 @@
 #include "lookups_gen.h"
 
 struct SOp {
-  Op Op;
+  spv::Op Op;
   void* Memory;
 };
 

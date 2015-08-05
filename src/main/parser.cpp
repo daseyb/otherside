@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip> 
+#include <cstring>
 #include "types.h"
 #include "parser_definitions.h"
 
@@ -43,11 +44,11 @@ SOp Parser::readInstruction() {
   uint32* opData = buffer;
   uint32 word = getAndEat();
   spv::Op op = (spv::Op)(word & spv::OpCodeMask);
-  uint16 wordCount = (uint16)(word >> spv::WordCountShift);
+  uint32 wordCount = (uint32)(word >> spv::WordCountShift);
 
   WordType wordTypes[255];
 
-  uint16 opWordCount = wordCount;
+  uint32 opWordCount = wordCount;
 
   if (sizeof(LUTOpWordTypes) / sizeof(void*) <= op) {
     wordTypes[0] = WordType::TOp;
