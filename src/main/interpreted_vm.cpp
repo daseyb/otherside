@@ -2,6 +2,7 @@
 #include "parser.h"
 #include <cstring>
 #include <iostream>
+#include <algorithm>
 
 #ifdef _WIN32 // note the underscore: without it, it's not msdn official!
 #include <Windows.h>
@@ -9,6 +10,7 @@
 #define LOAD_SYMBOL GetProcAddress
 #define LIBRARY_EXT ".dll"
 #define LIB_NAME(name) name
+#define LIB_ERROR ""
 #define HANDLE_TYPE HINSTANCE
 #elif __unix__ // all unices, not all compilers
 #include <dlfcn.h>
@@ -16,6 +18,7 @@
 #define LOAD_SYMBOL dlsym
 #define LIBRARY_EXT ".so"
 #define LIB_NAME(name) ("lib" + name)
+#define LIB_ERROR dlerror()
 #define HANDLE_TYPE void*
 #define TEXT(txt) txt
 #elif __linux__
@@ -24,6 +27,7 @@
 #define LOAD_SYMBOL dlsym
 #define LIBRARY_EXT ".so"
 #define LIB_NAME(name) ("lib" + name)
+#define LIB_ERROR dlerror()
 #define TEXT(txt) txt
 #define HANDLE_TYPE void*
 #elif __APPLE__
@@ -567,15 +571,21 @@ bool InterpretedVM::InitializeConstants() {
 
 void InterpretedVM::ImportExt(SExtInstImport import) {
   std::string name(import.Name);
-  HANDLE_TYPE extInst = LOAD_LIBRARY(("ext\\" + LIB_NAME(name) + LIBRARY_EXT).c_str());
-  
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+  auto filename = ("ext/" + LIB_NAME(name) + LIBRARY_EXT).c_str();
+  HANDLE_TYPE extInst = LOAD_LIBRARY(filename);
+
   if (extInst) {
     const char* funcName = xstr(EXT_EXPORT_TABLE_FUNC_NAME);
     GetExtTableFunc* func = (GetExtTableFunc*)LOAD_SYMBOL(extInst, TEXT(funcName));
     if (func) {
       auto res = func();
       env.Extensions[import.ResultId] = res;
+    } else {
+      std::cout << LIB_ERROR << std::endl;
     }
+  } else {
+    std::cout << LIB_ERROR << std::endl;
   }
 }
 
