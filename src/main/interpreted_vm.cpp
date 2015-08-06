@@ -4,7 +4,7 @@
 #include <iostream>
 #include <algorithm>
 
-#ifdef _WIN32 // note the underscore: without it, it's not msdn official!
+#if defined(_WIN32) || defined(_WIN64)   // note the underscore: without it, it's not msdn official!
 #include <Windows.h>
 #define LOAD_LIBRARY(path) LoadLibrary(path)
 #define LOAD_SYMBOL GetProcAddress
@@ -12,7 +12,7 @@
 #define LIB_NAME(name) name
 #define LIB_ERROR ""
 #define HANDLE_TYPE HINSTANCE
-#elif __unix__ // all unices, not all compilers
+#elif defined(__unix__) || defined(__linux__) || defined(__APPLE__) // all unices, not all compilers
 #include <dlfcn.h>
 #define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
 #define LOAD_SYMBOL dlsym
@@ -21,24 +21,6 @@
 #define LIB_ERROR dlerror()
 #define HANDLE_TYPE void*
 #define TEXT(txt) txt
-#elif __linux__
-#include <dlfcn.h>
-#define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
-#define LOAD_SYMBOL dlsym
-#define LIBRARY_EXT ".so"
-#define LIB_NAME(name) ("lib" + name)
-#define LIB_ERROR dlerror()
-#define TEXT(txt) txt
-#define HANDLE_TYPE void*
-#elif __APPLE__
-#include <dlfcn.h>
-#define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
-#define LOAD_SYMBOL dlsym
-#define LIBRARY_EXT ".so" // .dylib may be better
-#define LIB_NAME(name) ("lib" + name)
-#define LIB_ERROR dlerror()
-#define TEXT(txt) txt
-#define HANDLE_TYPE void*
 #endif
 
 

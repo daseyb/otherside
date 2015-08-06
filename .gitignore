@@ -4,6 +4,7 @@
 *.opensdf
 /compile
 /build
+/build64
 *.user
 /FFTs/Debug
 /bcryptprimitives.pdb/D2918AA6339744EDA39204642A7D65E71
@@ -22,3 +23,6 @@
 /src/tools/SpecParser/bin/Release
 /src/tools/SpecParser/obj/Debug
 /src/tools/SpecParser/obj/Release
+
+/.idea
+*.stackdump

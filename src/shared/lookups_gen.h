@@ -4,6 +4,7 @@
 
 struct Program;
 
+#pragma pack(push, 1)
 void HandleNop(void* op, Program* prog);
 struct SNop {
 };
@@ -2055,6 +2056,8 @@ struct SAtomicIMax {
   spv::MemorySemantics Semantics;
   uint32 ValueId;
 };
+
+#pragma pack(pop)
 
 
 static WordType NopWordTypes[]{

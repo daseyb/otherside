@@ -68,28 +68,27 @@ SOp Parser::readInstruction() {
   uint32* opMem = new uint32[opWordCount + 1];
   memset(opMem, 0, sizeof(uint32) * (opWordCount + 1));
   SOp Result = { op, opMem };
-
+  auto bufferBegin = buffer;
   for (int i = 1; i < wordCount; i++) {
     word = getAndEat();
-    uint32* currMem = opMem + i - 1;
-
-    if (wordTypes[i] == WordType::TLiteralNumber || wordTypes[i] == WordType::TId) {
-      *currMem = word;
-    } else if (wordTypes[i] == WordType::TIdList || wordTypes[i] == WordType::TLiteralNumberList) {
-      if (i + 1 == opWordCount) {
-        *(currMem++) = (uint32)(wordCount - opWordCount + 1);
-        *(uint32**)currMem = (uint32*)(buffer - 1);
-      } else if (i < opWordCount) {
-        *currMem = word;
-      }
+    void* currMem = opMem + i - 1;
+    uint32* currMemU32 = (uint32*)currMem;
+    if (wordTypes[i] == WordType::TIdList || wordTypes[i] == WordType::TLiteralNumberList) {
+      assert(i + 1 == opWordCount);
+      *currMemU32++ = (uint32) (wordCount - opWordCount + 1);
+      currMem = currMemU32;
+      *(uint32 **) currMem = (uint32 *) (buffer - 1);
+      break;
     } else if (wordTypes[i] == WordType::TLiteralString) {
-      if (wordTypes[i - 1] != WordType::TLiteralString) {
-        *(char**)currMem = (char*)(buffer - 1);
-      }
+      assert(i + 1 == opWordCount);
+      *(char **) currMem = (char *) (buffer - 1);
+      break;
     } else {
-      *currMem = word;
+      *currMemU32 = word;
     }
   }
+
+  buffer = bufferBegin + wordCount - 1;
 
   return Result;
 }
@@ -170,7 +169,7 @@ std::string writeOp(SOp op) {
     }
     else if (wordTypes[i] == WordType::TIdList) {
       uint32 count = word;
-      uint32* ptr = (uint32*)*((uint32*)op.Memory + i);
+      uint32* ptr = *(uint32**)((uint32*)op.Memory + i);
       opline << " [";
       for (int j = 0; j < count; j++) {
         word = ptr[j];
@@ -182,11 +181,11 @@ std::string writeOp(SOp op) {
     }
     else if (wordTypes[i] == WordType::TLiteralNumberList) {
       uint32 count = word;
-      uint32* ptr = (uint32*)*((uint32*)op.Memory + i);
+      uint32* ptr = *(uint32**)((uint32*)op.Memory + i);
       opline << " [";
       for (int j = 0; j < count; j++) {
         word = ptr[j];
-        opline << (j != count - 1 ? ", " : "") << word;
+        opline << word << (j != count - 1 ? ", " : "");
       }
       opline << "]";
 
@@ -194,7 +193,8 @@ std::string writeOp(SOp op) {
     }
     else if (wordTypes[i] == WordType::TLiteralString) {
       if (wordTypes[i - 1] != WordType::TLiteralString) {
-        opline << " " << (char*)word;
+        char* str = *((char**)((uint32*)op.Memory + i - 1));
+        opline << " " << str;
       }
     }
     else {
