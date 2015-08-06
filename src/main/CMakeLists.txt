@@ -10,12 +10,15 @@ add_subdirectory(./../shared shared)
 include_directories(${CMAKE_SOURCE_DIR}/src/main)
 include_directories(${SHARED_LIB_INCLUDE_DIR})
 
-set(SRCS otherside_main.cpp parser.cpp codegen.cpp interpreted_vm.cpp)
-add_executable(otherside ${SRCS})
+set(SRCS parser.cpp codegen.cpp interpreted_vm.cpp)
+add_library(otherside STATIC ${SRCS})
+
+add_executable(otherside_exe otherside_main.cpp)
+SET_TARGET_PROPERTIES ( otherside_exe PROPERTIES OUTPUT_NAME otherside)
 
 IF (WIN32)
-	target_link_libraries(otherside shared)
+	target_link_libraries(otherside_exe otherside shared)
 ELSE()
-	target_link_libraries(otherside shared dl)
+	target_link_libraries(otherside_exe otherside shared dl)
 ENDIF()
 
