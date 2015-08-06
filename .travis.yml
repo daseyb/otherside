@@ -21,3 +21,4 @@ install:
 script:
   - cmake -G "Unix Makefiles"
   - make
+  - make test
