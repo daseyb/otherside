@@ -22,3 +22,6 @@ ELSE()
 	target_link_libraries(otherside_exe otherside shared dl)
 ENDIF()
 
+add_test(NAME otherside_exe_end2end COMMAND otherside_exe -i data/light.frag.spv -o data/light.frag.cpp WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+
