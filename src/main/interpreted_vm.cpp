@@ -128,7 +128,7 @@ Value InterpretedVM::Dereference(Value val) const {
 Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint32 resultTypeId) {
   STypeSampledImage* samplerType =(STypeSampledImage*)GetType(sampler.TypeId).Memory;
   STypeImage* imageType = (STypeImage*)GetType(samplerType->ImageTypeId).Memory;
-  assert(imageType->Sampled == 2);
+  assert(imageType->Sampled == 1);
   assert(ElementCount(coord.TypeId) >= (int)imageType->Dim + imageType->Arrayed);
   Sampler* s = ((Sampler*)sampler.Memory);
   

@@ -95,6 +95,7 @@ static std::string ExecutionModeStrings[] {
   "VertexOrderCcw",
   "PixelCenterInteger",
   "OriginUpperLeft",
+  "OriginLowerLeft",
   "EarlyFragmentTests",
   "PointMode",
   "Xfb",
@@ -579,7 +580,7 @@ static std::string CapabilityStrings[] {
   "SampleRateShading",
 };
 
-static std::string OpStrings[]{
+static std::string OpStrings[(int)spv::Op::COUNT+1]{
   "Nop",
   "Undef",
   "",
@@ -627,6 +628,7 @@ static std::string OpStrings[]{
   "ConstantComposite",
   "ConstantSampler",
   "ConstantNull",
+  "",
   "SpecConstantTrue",
   "SpecConstantFalse",
   "SpecConstant",
@@ -861,9 +863,6 @@ static std::string OpStrings[]{
   "ReserveWritePipePackets",
   "CommitReadPipe",
   "CommitWritePipe",
-  "",
-  "",
-  "",
   "IsValidReserveId",
   "GetNumPipePackets",
   "GetMaxPipePackets",
@@ -871,6 +870,9 @@ static std::string OpStrings[]{
   "GroupReserveWritePipePackets",
   "GroupCommitReadPipe",
   "GroupCommitWritePipe",
+  "",
+  "",
+  "",  
   "EnqueueMarker",
   "EnqueueKernel",
   "GetKernelNDrangeSubGroupCount",

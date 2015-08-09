@@ -69,6 +69,8 @@ SOp Parser::readInstruction() {
   memset(opMem, 0, sizeof(uint32) * (opWordCount + 1));
   SOp Result = { op, opMem };
   auto bufferBegin = buffer;
+  int indexBegin = index;
+
   for (int i = 1; i < wordCount; i++) {
     word = getAndEat();
     void* currMem = opMem + i - 1;
@@ -89,6 +91,7 @@ SOp Parser::readInstruction() {
   }
 
   buffer = bufferBegin + wordCount - 1;
+  index = indexBegin + wordCount - 1;
 
   return Result;
 }

@@ -2124,9 +2124,9 @@ struct SBuildNDRange {
 
 #pragma pack(pop)
 
-extern void* LUTOpWordTypes[Op::COUNT];
+extern void* LUTOpWordTypes[(uint32)Op::COUNT+1];
 
-extern uint32 LUTOpWordTypesCount[Op::COUNT];
+extern uint32 LUTOpWordTypesCount[(uint32)Op::COUNT+1];
 
 typedef void(*OpHandler)(void*, Program*);
-extern OpHandler LUTHandlerMethods[Op::COUNT];
+extern OpHandler LUTHandlerMethods[(uint32)Op::COUNT+1];
