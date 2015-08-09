@@ -42,8 +42,8 @@ Value InterpretedVM::IndexMemberValue(uint32 typeId, byte* val, uint32 index) co
   switch (compDef.Op) {
   case Op::OpTypeVector: {
     auto vec = (STypeVector*)compDef.Memory;
-    uint32 offset = GetTypeByteSize(vec->ComponenttypeId) * index;
-    result.TypeId = vec->ComponenttypeId;
+    uint32 offset = GetTypeByteSize(vec->ComponentTypeId) * index;
+    result.TypeId = vec->ComponentTypeId;
     result.Memory = val + offset;
     break;
   }
@@ -98,7 +98,7 @@ uint32 InterpretedVM::ElementCount(uint32 typeId) const {
   }
   case Op::OpTypeVector: {
     auto vec = (STypeVector*)def.Memory;
-    return vec->Componentcount;
+    return vec->ComponentCount;
   }
   default:
     return 0;
@@ -125,12 +125,13 @@ Value InterpretedVM::Dereference(Value val) const {
   return res;
 }
 
-
 Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint32 resultTypeId) {
-  STypeSampler* samplerType =(STypeSampler*)GetType(sampler.TypeId).Memory;
-  assert(samplerType->Content == 2);
-  assert(ElementCount(coord.TypeId) >= samplerType->Dim + samplerType->Arrayed);
+  STypeSampledImage* samplerType =(STypeSampledImage*)GetType(sampler.TypeId).Memory;
+  STypeImage* imageType = (STypeImage*)GetType(samplerType->ImageTypeId).Memory;
+  assert(imageType->Sampled == 2);
+  assert(ElementCount(coord.TypeId) >= (int)imageType->Dim + imageType->Arrayed);
   Sampler* s = ((Sampler*)sampler.Memory);
+  
   uint32 index = 0;
   uint32 acc = 1;
   for (int d = 0; d < s->DimCount; d++) {
@@ -289,16 +290,14 @@ uint32 InterpretedVM::Execute(Function* func) {
       }
       break;
     }
-    case Op::OpTextureSample: {
-      auto sample = (STextureSample*)op.Memory;
-      auto sampler = Dereference(env.Values.at(sample->SamplerId));
+    case Op::OpImageSampleImplicitLod: {
+      auto sample = (SImageSampleImplicitLod*)op.Memory;
+      auto sampledImage = Dereference(env.Values.at(sample->SampledImageId));
       auto coord = Dereference(env.Values.at(sample->CoordinateId));
       Value bias = { 0, 0 };
-      if (sample->BiasId != 0) {
-        bias = Dereference(env.Values.at(sample->BiasId));
-      }
 
-      env.Values[sample->ResultId] = TextureSample(sampler, coord, bias, sample->ResultTypeId);
+      //TODO (Dario): Use sample->ImageOperandsIds
+      env.Values[sample->ResultId] = TextureSample(sampledImage, coord, bias, sample->ResultTypeId);
       break;
     }
     case Op::OpLabel:
@@ -501,7 +500,7 @@ uint32 InterpretedVM::GetTypeByteSize(uint32 typeId) const {
   }
   case Op::OpTypeVector: {
     auto v = (STypeVector*)definedType.Memory;
-    size = GetTypeByteSize(v->ComponenttypeId) * v->Componentcount;
+    size = GetTypeByteSize(v->ComponentTypeId) * v->ComponentCount;
     break;
   }
   default:

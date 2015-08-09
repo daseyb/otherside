@@ -9,6 +9,12 @@ void HandleNop(void* op, Program* prog);
 struct SNop {
 };
 
+void HandleUndef(void* op, Program* prog);
+struct SUndef {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+};
+
 void HandleSource(void* op, Program* prog);
 struct SSource {
   spv::SourceLanguage SourceLanguage;
@@ -18,6 +24,33 @@ struct SSource {
 void HandleSourceExtension(void* op, Program* prog);
 struct SSourceExtension {
   char* Extension;
+};
+
+void HandleName(void* op, Program* prog);
+struct SName {
+  uint32 TargetId;
+  char* Name;
+};
+
+void HandleMemberName(void* op, Program* prog);
+struct SMemberName {
+  uint32 TypeId;
+  uint32 Member;
+  char* Name;
+};
+
+void HandleString(void* op, Program* prog);
+struct SString {
+  uint32 ResultId;
+  char* String;
+};
+
+void HandleLine(void* op, Program* prog);
+struct SLine {
+  uint32 TargetId;
+  uint32 FileId;
+  uint32 Line;
+  uint32 Column;
 };
 
 void HandleExtension(void* op, Program* prog);
@@ -31,6 +64,16 @@ struct SExtInstImport {
   char* Name;
 };
 
+void HandleExtInst(void* op, Program* prog);
+struct SExtInst {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 SetId;
+  uint32 Instruction;
+  uint32 OperandIdsCount;
+  uint32* OperandIds;
+};
+
 void HandleMemoryModel(void* op, Program* prog);
 struct SMemoryModel {
   spv::AddressingModel AddressingModel;
@@ -41,6 +84,7 @@ void HandleEntryPoint(void* op, Program* prog);
 struct SEntryPoint {
   spv::ExecutionModel ExecutionModel;
   uint32 EntryPointId;
+  char* Name;
 };
 
 void HandleExecutionMode(void* op, Program* prog);
@@ -49,6 +93,11 @@ struct SExecutionMode {
   spv::ExecutionMode Mode;
   uint32 ExecutionModesCount;
   uint32* ExecutionModes;
+};
+
+void HandleCapability(void* op, Program* prog);
+struct SCapability {
+  spv::Capability Capability;
 };
 
 void HandleTypeVoid(void* op, Program* prog);
@@ -77,45 +126,53 @@ struct STypeFloat {
 void HandleTypeVector(void* op, Program* prog);
 struct STypeVector {
   uint32 ResultId;
-  uint32 ComponenttypeId;
-  uint32 Componentcount;
+  uint32 ComponentTypeId;
+  uint32 ComponentCount;
 };
 
 void HandleTypeMatrix(void* op, Program* prog);
 struct STypeMatrix {
   uint32 ResultId;
-  uint32 ColumntypeId;
-  uint32 Columncount;
+  uint32 ColumnTypeId;
+  uint32 ColumnCount;
+};
+
+void HandleTypeImage(void* op, Program* prog);
+struct STypeImage {
+  uint32 ResultId;
+  uint32 SampledTypeId;
+  spv::Dim Dim;
+  uint32 Depth;
+  uint32 Arrayed;
+  uint32 MS;
+  uint32 Sampled;
+  spv::ImageFormat ImageFormat;
+  uint32 AccessQualifiersCount;
+  uint32* AccessQualifiers;
 };
 
 void HandleTypeSampler(void* op, Program* prog);
 struct STypeSampler {
   uint32 ResultId;
-  uint32 SampledTypeId;
-  spv::Dim Dim;
-  uint32 Content;
-  uint32 Arrayed;
-  uint32 Compare;
-  uint32 MS;
-  uint32 QualifierId;
 };
 
-void HandleTypeFilter(void* op, Program* prog);
-struct STypeFilter {
+void HandleTypeSampledImage(void* op, Program* prog);
+struct STypeSampledImage {
   uint32 ResultId;
+  uint32 ImageTypeId;
 };
 
 void HandleTypeArray(void* op, Program* prog);
 struct STypeArray {
   uint32 ResultId;
-  uint32 ElementtypeId;
+  uint32 ElementTypeId;
   uint32 LengthId;
 };
 
 void HandleTypeRuntimeArray(void* op, Program* prog);
 struct STypeRuntimeArray {
   uint32 ResultId;
-  uint32 ElementtypeId;
+  uint32 ElementTypeId;
 };
 
 void HandleTypeStruct(void* op, Program* prog);
@@ -205,19 +262,13 @@ void HandleConstantSampler(void* op, Program* prog);
 struct SConstantSampler {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 Mode;
+  spv::SamplerAddressingMode SamplerAddressingMode;
   uint32 Param;
-  uint32 Filter;
+  spv::SamplerFilterMode SamplerFilterMode;
 };
 
-void HandleConstantNullPointer(void* op, Program* prog);
-struct SConstantNullPointer {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-};
-
-void HandleConstantNullObject(void* op, Program* prog);
-struct SConstantNullObject {
+void HandleConstantNull(void* op, Program* prog);
+struct SConstantNull {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
@@ -250,27 +301,20 @@ struct SSpecConstantComposite {
   uint32* ConstituentsIds;
 };
 
-void HandleVariable(void* op, Program* prog);
-struct SVariable {
+void HandleSpecConstantOp(void* op, Program* prog);
+struct SSpecConstantOp {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::StorageClass StorageClass;
-  uint32 InitializerId;
-};
-
-void HandleVariableArray(void* op, Program* prog);
-struct SVariableArray {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  spv::StorageClass StorageClass;
-  uint32 NId;
+  uint32 Opcode;
+  uint32 OperandsIdsCount;
+  uint32* OperandsIds;
 };
 
 void HandleFunction(void* op, Program* prog);
 struct SFunction {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::FunctionControl FunctionControl;
+  spv::FunctionControlMask FunctionControl;
   uint32 FunctionTypeId;
 };
 
@@ -293,20 +337,21 @@ struct SFunctionCall {
   uint32* ArgumentIds;
 };
 
-void HandleExtInst(void* op, Program* prog);
-struct SExtInst {
+void HandleVariable(void* op, Program* prog);
+struct SVariable {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SetId;
-  uint32 Instruction;
-  uint32 OperandIdsCount;
-  uint32* OperandIds;
+  spv::StorageClass StorageClass;
+  uint32 InitializerId;
 };
 
-void HandleUndef(void* op, Program* prog);
-struct SUndef {
+void HandleImageTexelPointer(void* op, Program* prog);
+struct SImageTexelPointer {
   uint32 ResultTypeId;
   uint32 ResultId;
+  uint32 ImageId;
+  uint32 CoordinateId;
+  uint32 SampleId;
 };
 
 void HandleLoad(void* op, Program* prog);
@@ -326,17 +371,64 @@ struct SStore {
   uint32* MemoryAccess;
 };
 
-void HandlePhi(void* op, Program* prog);
-struct SPhi {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Id2sCount;
-  uint32* Id2s;
+void HandleCopyMemory(void* op, Program* prog);
+struct SCopyMemory {
+  uint32 TargetId;
+  uint32 SourceId;
+  uint32 MemoryAccessCount;
+  uint32* MemoryAccess;
 };
 
-void HandleDecorationGroup(void* op, Program* prog);
-struct SDecorationGroup {
+void HandleCopyMemorySized(void* op, Program* prog);
+struct SCopyMemorySized {
+  uint32 TargetId;
+  uint32 SourceId;
+  uint32 SizeId;
+  uint32 MemoryAccessCount;
+  uint32* MemoryAccess;
+};
+
+void HandleAccessChain(void* op, Program* prog);
+struct SAccessChain {
+  uint32 ResultTypeId;
   uint32 ResultId;
+  uint32 BaseId;
+  uint32 IndexesIdsCount;
+  uint32* IndexesIds;
+};
+
+void HandleInBoundsAccessChain(void* op, Program* prog);
+struct SInBoundsAccessChain {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 BaseId;
+  uint32 IndexesIdsCount;
+  uint32* IndexesIds;
+};
+
+void HandlePtrAccessChain(void* op, Program* prog);
+struct SPtrAccessChain {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 BaseId;
+  uint32 ElementId;
+  uint32 IndexesIdsCount;
+  uint32* IndexesIds;
+};
+
+void HandleArrayLength(void* op, Program* prog);
+struct SArrayLength {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 StructureId;
+  uint32 Arraymember;
+};
+
+void HandleGenericPtrMemSemantics(void* op, Program* prog);
+struct SGenericPtrMemSemantics {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 PointerId;
 };
 
 void HandleDecorate(void* op, Program* prog);
@@ -349,52 +441,30 @@ struct SDecorate {
 
 void HandleMemberDecorate(void* op, Program* prog);
 struct SMemberDecorate {
-  uint32 StructuretypeId;
+  uint32 StructureTypeId;
   uint32 Member;
   spv::Decoration Decoration;
   uint32 DecorationsCount;
   uint32* Decorations;
 };
 
+void HandleDecorationGroup(void* op, Program* prog);
+struct SDecorationGroup {
+  uint32 ResultId;
+};
+
 void HandleGroupDecorate(void* op, Program* prog);
 struct SGroupDecorate {
-  uint32 DecorationgroupId;
-  uint32 TargetIdsCount;
-  uint32* TargetIds;
+  uint32 DecorationGroupId;
+  uint32 TargetsIdsCount;
+  uint32* TargetsIds;
 };
 
 void HandleGroupMemberDecorate(void* op, Program* prog);
 struct SGroupMemberDecorate {
-  uint32 DecorationgroupId;
-  uint32 TargetIdsCount;
-  uint32* TargetIds;
-};
-
-void HandleName(void* op, Program* prog);
-struct SName {
-  uint32 TargetId;
-  char* Name;
-};
-
-void HandleMemberName(void* op, Program* prog);
-struct SMemberName {
-  uint32 TypeId;
-  uint32 Member;
-  char* Name;
-};
-
-void HandleString(void* op, Program* prog);
-struct SString {
-  uint32 ResultId;
-  char* String;
-};
-
-void HandleLine(void* op, Program* prog);
-struct SLine {
-  uint32 TargetId;
-  uint32 FileId;
-  uint32 Line;
-  uint32 Column;
+  uint32 DecorationGroupId;
+  uint32 IdsCount;
+  uint32* Ids;
 };
 
 void HandleVectorExtractDynamic(void* op, Program* prog);
@@ -458,310 +528,208 @@ struct SCopyObject {
   uint32 OperandId;
 };
 
-void HandleCopyMemory(void* op, Program* prog);
-struct SCopyMemory {
-  uint32 TargetId;
-  uint32 SourceId;
-  uint32 MemoryAccessCount;
-  uint32* MemoryAccess;
-};
-
-void HandleCopyMemorySized(void* op, Program* prog);
-struct SCopyMemorySized {
-  uint32 TargetId;
-  uint32 SourceId;
-  uint32 SizeId;
-  uint32 MemoryAccessCount;
-  uint32* MemoryAccess;
-};
-
-void HandleSampler(void* op, Program* prog);
-struct SSampler {
+void HandleTranspose(void* op, Program* prog);
+struct STranspose {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
-  uint32 FilterId;
+  uint32 MatrixId;
 };
 
-void HandleTextureSample(void* op, Program* prog);
-struct STextureSample {
+void HandleSampledImage(void* op, Program* prog);
+struct SSampledImage {
   uint32 ResultTypeId;
   uint32 ResultId;
+  uint32 ImageId;
   uint32 SamplerId;
+};
+
+void HandleImageSampleImplicitLod(void* op, Program* prog);
+struct SImageSampleImplicitLod {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 SampledImageId;
   uint32 CoordinateId;
-  uint32 BiasId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
 };
 
-void HandleTextureSampleDref(void* op, Program* prog);
-struct STextureSampleDref {
+void HandleImageSampleExplicitLod(void* op, Program* prog);
+struct SImageSampleExplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 SampledImageId;
+  uint32 CoordinateId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
+};
+
+void HandleImageSampleDrefImplicitLod(void* op, Program* prog);
+struct SImageSampleDrefImplicitLod {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 SampledImageId;
   uint32 CoordinateId;
   uint32 DrefId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
 };
 
-void HandleTextureSampleLod(void* op, Program* prog);
-struct STextureSampleLod {
+void HandleImageSampleDrefExplicitLod(void* op, Program* prog);
+struct SImageSampleDrefExplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 SampledImageId;
   uint32 CoordinateId;
-  uint32 LevelofDetailId;
+  uint32 DrefId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
 };
 
-void HandleTextureSampleProj(void* op, Program* prog);
-struct STextureSampleProj {
+void HandleImageSampleProjImplicitLod(void* op, Program* prog);
+struct SImageSampleProjImplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 SampledImageId;
   uint32 CoordinateId;
-  uint32 BiasId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
 };
 
-void HandleTextureSampleGrad(void* op, Program* prog);
-struct STextureSampleGrad {
+void HandleImageSampleProjExplicitLod(void* op, Program* prog);
+struct SImageSampleProjExplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 SampledImageId;
   uint32 CoordinateId;
-  uint32 dxId;
-  uint32 dyId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
 };
 
-void HandleTextureSampleOffset(void* op, Program* prog);
-struct STextureSampleOffset {
+void HandleImageSampleProjDrefImplicitLod(void* op, Program* prog);
+struct SImageSampleProjDrefImplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 SampledImageId;
   uint32 CoordinateId;
-  uint32 OffsetId;
-  uint32 BiasId;
+  uint32 DrefId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
 };
 
-void HandleTextureSampleProjLod(void* op, Program* prog);
-struct STextureSampleProjLod {
+void HandleImageSampleProjDrefExplicitLod(void* op, Program* prog);
+struct SImageSampleProjDrefExplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 SampledImageId;
   uint32 CoordinateId;
-  uint32 LevelofDetailId;
+  uint32 DrefId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
 };
 
-void HandleTextureSampleProjGrad(void* op, Program* prog);
-struct STextureSampleProjGrad {
+void HandleImageFetch(void* op, Program* prog);
+struct SImageFetch {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 SampledImageId;
   uint32 CoordinateId;
-  uint32 dxId;
-  uint32 dyId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
 };
 
-void HandleTextureSampleLodOffset(void* op, Program* prog);
-struct STextureSampleLodOffset {
+void HandleImageGather(void* op, Program* prog);
+struct SImageGather {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
-  uint32 CoordinateId;
-  uint32 LevelofDetailId;
-  uint32 OffsetId;
-};
-
-void HandleTextureSampleProjOffset(void* op, Program* prog);
-struct STextureSampleProjOffset {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SamplerId;
-  uint32 CoordinateId;
-  uint32 OffsetId;
-  uint32 BiasId;
-};
-
-void HandleTextureSampleGradOffset(void* op, Program* prog);
-struct STextureSampleGradOffset {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SamplerId;
-  uint32 CoordinateId;
-  uint32 dxId;
-  uint32 dyId;
-  uint32 OffsetId;
-};
-
-void HandleTextureSampleProjLodOffset(void* op, Program* prog);
-struct STextureSampleProjLodOffset {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SamplerId;
-  uint32 CoordinateId;
-  uint32 LevelofDetailId;
-  uint32 OffsetId;
-};
-
-void HandleTextureSampleProjGradOffset(void* op, Program* prog);
-struct STextureSampleProjGradOffset {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SamplerId;
-  uint32 CoordinateId;
-  uint32 dxId;
-  uint32 dyId;
-  uint32 OffsetId;
-};
-
-void HandleTextureFetchTexelLod(void* op, Program* prog);
-struct STextureFetchTexelLod {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SamplerId;
-  uint32 CoordinateId;
-  uint32 LevelofDetailId;
-};
-
-void HandleTextureFetchTexelOffset(void* op, Program* prog);
-struct STextureFetchTexelOffset {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SamplerId;
-  uint32 CoordinateId;
-  uint32 OffsetId;
-};
-
-void HandleTextureFetchSample(void* op, Program* prog);
-struct STextureFetchSample {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SamplerId;
-  uint32 CoordinateId;
-  uint32 SampleId;
-};
-
-void HandleTextureFetchTexel(void* op, Program* prog);
-struct STextureFetchTexel {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SamplerId;
-  uint32 ElementId;
-};
-
-void HandleTextureGather(void* op, Program* prog);
-struct STextureGather {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SamplerId;
+  uint32 SampledImageId;
   uint32 CoordinateId;
   uint32 ComponentId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
 };
 
-void HandleTextureGatherOffset(void* op, Program* prog);
-struct STextureGatherOffset {
+void HandleImageDrefGather(void* op, Program* prog);
+struct SImageDrefGather {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 SampledImageId;
   uint32 CoordinateId;
-  uint32 ComponentId;
-  uint32 OffsetId;
+  uint32 DrefId;
+  uint32 ImageOperandsIdsCount;
+  uint32* ImageOperandsIds;
 };
 
-void HandleTextureGatherOffsets(void* op, Program* prog);
-struct STextureGatherOffsets {
+void HandleImageRead(void* op, Program* prog);
+struct SImageRead {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 ImageId;
   uint32 CoordinateId;
-  uint32 ComponentId;
-  uint32 OffsetsId;
 };
 
-void HandleTextureQuerySizeLod(void* op, Program* prog);
-struct STextureQuerySizeLod {
+void HandleImageWrite(void* op, Program* prog);
+struct SImageWrite {
+  uint32 ImageId;
+  uint32 CoordinateId;
+  uint32 TexelId;
+};
+
+void HandleImageQueryDim(void* op, Program* prog);
+struct SImageQueryDim {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 ImageId;
+};
+
+void HandleImageQueryFormat(void* op, Program* prog);
+struct SImageQueryFormat {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 ImageId;
+};
+
+void HandleImageQueryOrder(void* op, Program* prog);
+struct SImageQueryOrder {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 ImageId;
+};
+
+void HandleImageQuerySizeLod(void* op, Program* prog);
+struct SImageQuerySizeLod {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 ImageId;
   uint32 LevelofDetailId;
 };
 
-void HandleTextureQuerySize(void* op, Program* prog);
-struct STextureQuerySize {
+void HandleImageQuerySize(void* op, Program* prog);
+struct SImageQuerySize {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 ImageId;
 };
 
-void HandleTextureQueryLod(void* op, Program* prog);
-struct STextureQueryLod {
+void HandleImageQueryLod(void* op, Program* prog);
+struct SImageQueryLod {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 ImageId;
   uint32 CoordinateId;
 };
 
-void HandleTextureQueryLevels(void* op, Program* prog);
-struct STextureQueryLevels {
+void HandleImageQueryLevels(void* op, Program* prog);
+struct SImageQueryLevels {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
+  uint32 ImageId;
 };
 
-void HandleTextureQuerySamples(void* op, Program* prog);
-struct STextureQuerySamples {
+void HandleImageQuerySamples(void* op, Program* prog);
+struct SImageQuerySamples {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SamplerId;
-};
-
-void HandleAccessChain(void* op, Program* prog);
-struct SAccessChain {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 BaseId;
-  uint32 IndexesIdsCount;
-  uint32* IndexesIds;
-};
-
-void HandleInBoundsAccessChain(void* op, Program* prog);
-struct SInBoundsAccessChain {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 BaseId;
-  uint32 IndexesIdsCount;
-  uint32* IndexesIds;
-};
-
-void HandleSNegate(void* op, Program* prog);
-struct SSNegate {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 OperandId;
-};
-
-void HandleFNegate(void* op, Program* prog);
-struct SFNegate {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 OperandId;
-};
-
-void HandleNot(void* op, Program* prog);
-struct SNot {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 OperandId;
-};
-
-void HandleAny(void* op, Program* prog);
-struct SAny {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 VectorId;
-};
-
-void HandleAll(void* op, Program* prog);
-struct SAll {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 VectorId;
+  uint32 ImageId;
 };
 
 void HandleConvertFToU(void* op, Program* prog);
@@ -789,14 +757,14 @@ void HandleConvertUToF(void* op, Program* prog);
 struct SConvertUToF {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 UnsignedvalueId;
+  uint32 UnsignedValueId;
 };
 
 void HandleUConvert(void* op, Program* prog);
 struct SUConvert {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 UnsignedvalueId;
+  uint32 UnsignedValueId;
 };
 
 void HandleSConvert(void* op, Program* prog);
@@ -813,6 +781,13 @@ struct SFConvert {
   uint32 FloatValueId;
 };
 
+void HandleQuantizeToF16(void* op, Program* prog);
+struct SQuantizeToF16 {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 ValueId;
+};
+
 void HandleConvertPtrToU(void* op, Program* prog);
 struct SConvertPtrToU {
   uint32 ResultTypeId;
@@ -820,25 +795,47 @@ struct SConvertPtrToU {
   uint32 PointerId;
 };
 
+void HandleSatConvertSToU(void* op, Program* prog);
+struct SSatConvertSToU {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 SignedValueId;
+};
+
+void HandleSatConvertUToS(void* op, Program* prog);
+struct SSatConvertUToS {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 UnsignedValueId;
+};
+
 void HandleConvertUToPtr(void* op, Program* prog);
 struct SConvertUToPtr {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 IntegervalueId;
+  uint32 IntegerValueId;
 };
 
 void HandlePtrCastToGeneric(void* op, Program* prog);
 struct SPtrCastToGeneric {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SourcepointerId;
+  uint32 PointerId;
 };
 
 void HandleGenericCastToPtr(void* op, Program* prog);
 struct SGenericCastToPtr {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 SourcepointerId;
+  uint32 PointerId;
+};
+
+void HandleGenericCastToPtrExplicit(void* op, Program* prog);
+struct SGenericCastToPtrExplicit {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 PointerId;
+  spv::StorageClass Storage;
 };
 
 void HandleBitcast(void* op, Program* prog);
@@ -848,78 +845,18 @@ struct SBitcast {
   uint32 OperandId;
 };
 
-void HandleTranspose(void* op, Program* prog);
-struct STranspose {
+void HandleSNegate(void* op, Program* prog);
+struct SSNegate {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 MatrixId;
+  uint32 OperandId;
 };
 
-void HandleIsNan(void* op, Program* prog);
-struct SIsNan {
+void HandleFNegate(void* op, Program* prog);
+struct SFNegate {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 xId;
-};
-
-void HandleIsInf(void* op, Program* prog);
-struct SIsInf {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 xId;
-};
-
-void HandleIsFinite(void* op, Program* prog);
-struct SIsFinite {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 xId;
-};
-
-void HandleIsNormal(void* op, Program* prog);
-struct SIsNormal {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 xId;
-};
-
-void HandleSignBitSet(void* op, Program* prog);
-struct SSignBitSet {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 xId;
-};
-
-void HandleLessOrGreater(void* op, Program* prog);
-struct SLessOrGreater {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 xId;
-  uint32 yId;
-};
-
-void HandleOrdered(void* op, Program* prog);
-struct SOrdered {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 xId;
-  uint32 yId;
-};
-
-void HandleUnordered(void* op, Program* prog);
-struct SUnordered {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 xId;
-  uint32 yId;
-};
-
-void HandleArrayLength(void* op, Program* prog);
-struct SArrayLength {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 StructureId;
-  uint32 Arraymember;
+  uint32 OperandId;
 };
 
 void HandleIAdd(void* op, Program* prog);
@@ -1090,24 +1027,107 @@ struct SDot {
   uint32 Vector2Id;
 };
 
-void HandleShiftRightLogical(void* op, Program* prog);
-struct SShiftRightLogical {
+void HandleIAddCarry(void* op, Program* prog);
+struct SIAddCarry {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+};
+
+void HandleISubBorrow(void* op, Program* prog);
+struct SISubBorrow {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+};
+
+void HandleIMulExtended(void* op, Program* prog);
+struct SIMulExtended {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+};
+
+void HandleAny(void* op, Program* prog);
+struct SAny {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 VectorId;
+};
+
+void HandleAll(void* op, Program* prog);
+struct SAll {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 VectorId;
+};
+
+void HandleIsNan(void* op, Program* prog);
+struct SIsNan {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 xId;
+};
+
+void HandleIsInf(void* op, Program* prog);
+struct SIsInf {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 xId;
+};
+
+void HandleIsFinite(void* op, Program* prog);
+struct SIsFinite {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 xId;
+};
+
+void HandleIsNormal(void* op, Program* prog);
+struct SIsNormal {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 xId;
+};
+
+void HandleSignBitSet(void* op, Program* prog);
+struct SSignBitSet {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 xId;
+};
+
+void HandleLessOrGreater(void* op, Program* prog);
+struct SLessOrGreater {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 xId;
+  uint32 yId;
+};
+
+void HandleOrdered(void* op, Program* prog);
+struct SOrdered {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 xId;
+  uint32 yId;
+};
+
+void HandleUnordered(void* op, Program* prog);
+struct SUnordered {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 xId;
+  uint32 yId;
+};
+
+void HandleLogicalEqual(void* op, Program* prog);
+struct SLogicalEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 Operand1Id;
   uint32 Operand2Id;
 };
 
-void HandleShiftRightArithmetic(void* op, Program* prog);
-struct SShiftRightArithmetic {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleShiftLeftLogical(void* op, Program* prog);
-struct SShiftLeftLogical {
+void HandleLogicalNotEqual(void* op, Program* prog);
+struct SLogicalNotEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 Operand1Id;
@@ -1122,20 +1142,228 @@ struct SLogicalOr {
   uint32 Operand2Id;
 };
 
-void HandleLogicalXor(void* op, Program* prog);
-struct SLogicalXor {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
 void HandleLogicalAnd(void* op, Program* prog);
 struct SLogicalAnd {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 Operand1Id;
   uint32 Operand2Id;
+};
+
+void HandleLogicalNot(void* op, Program* prog);
+struct SLogicalNot {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 OperandId;
+};
+
+void HandleSelect(void* op, Program* prog);
+struct SSelect {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 ConditionId;
+  uint32 Object1Id;
+  uint32 Object2Id;
+};
+
+void HandleIEqual(void* op, Program* prog);
+struct SIEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleINotEqual(void* op, Program* prog);
+struct SINotEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleUGreaterThan(void* op, Program* prog);
+struct SUGreaterThan {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleSGreaterThan(void* op, Program* prog);
+struct SSGreaterThan {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleUGreaterThanEqual(void* op, Program* prog);
+struct SUGreaterThanEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleSGreaterThanEqual(void* op, Program* prog);
+struct SSGreaterThanEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleULessThan(void* op, Program* prog);
+struct SULessThan {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleSLessThan(void* op, Program* prog);
+struct SSLessThan {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleULessThanEqual(void* op, Program* prog);
+struct SULessThanEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleSLessThanEqual(void* op, Program* prog);
+struct SSLessThanEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFOrdEqual(void* op, Program* prog);
+struct SFOrdEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFUnordEqual(void* op, Program* prog);
+struct SFUnordEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFOrdNotEqual(void* op, Program* prog);
+struct SFOrdNotEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFUnordNotEqual(void* op, Program* prog);
+struct SFUnordNotEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFOrdLessThan(void* op, Program* prog);
+struct SFOrdLessThan {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFUnordLessThan(void* op, Program* prog);
+struct SFUnordLessThan {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFOrdGreaterThan(void* op, Program* prog);
+struct SFOrdGreaterThan {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFUnordGreaterThan(void* op, Program* prog);
+struct SFUnordGreaterThan {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFOrdLessThanEqual(void* op, Program* prog);
+struct SFOrdLessThanEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFUnordLessThanEqual(void* op, Program* prog);
+struct SFUnordLessThanEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFOrdGreaterThanEqual(void* op, Program* prog);
+struct SFOrdGreaterThanEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleFUnordGreaterThanEqual(void* op, Program* prog);
+struct SFUnordGreaterThanEqual {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 Operand1Id;
+  uint32 Operand2Id;
+};
+
+void HandleShiftRightLogical(void* op, Program* prog);
+struct SShiftRightLogical {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 BaseId;
+  uint32 ShiftId;
+};
+
+void HandleShiftRightArithmetic(void* op, Program* prog);
+struct SShiftRightArithmetic {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 BaseId;
+  uint32 ShiftId;
+};
+
+void HandleShiftLeftLogical(void* op, Program* prog);
+struct SShiftLeftLogical {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 BaseId;
+  uint32 ShiftId;
 };
 
 void HandleBitwiseOr(void* op, Program* prog);
@@ -1162,189 +1390,53 @@ struct SBitwiseAnd {
   uint32 Operand2Id;
 };
 
-void HandleSelect(void* op, Program* prog);
-struct SSelect {
+void HandleNot(void* op, Program* prog);
+struct SNot {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 ConditionId;
-  uint32 Object1Id;
-  uint32 Object2Id;
+  uint32 OperandId;
 };
 
-void HandleIEqual(void* op, Program* prog);
-struct SIEqual {
+void HandleBitFieldInsert(void* op, Program* prog);
+struct SBitFieldInsert {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
+  uint32 BaseId;
+  uint32 InsertId;
+  uint32 OffsetId;
+  uint32 CountId;
 };
 
-void HandleFOrdEqual(void* op, Program* prog);
-struct SFOrdEqual {
+void HandleBitFieldSExtract(void* op, Program* prog);
+struct SBitFieldSExtract {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
+  uint32 BaseId;
+  uint32 OffsetId;
+  uint32 CountId;
 };
 
-void HandleFUnordEqual(void* op, Program* prog);
-struct SFUnordEqual {
+void HandleBitFieldUExtract(void* op, Program* prog);
+struct SBitFieldUExtract {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
+  uint32 BaseId;
+  uint32 OffsetId;
+  uint32 CountId;
 };
 
-void HandleINotEqual(void* op, Program* prog);
-struct SINotEqual {
+void HandleBitReverse(void* op, Program* prog);
+struct SBitReverse {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
+  uint32 BaseId;
 };
 
-void HandleFOrdNotEqual(void* op, Program* prog);
-struct SFOrdNotEqual {
+void HandleBitCount(void* op, Program* prog);
+struct SBitCount {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleFUnordNotEqual(void* op, Program* prog);
-struct SFUnordNotEqual {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleULessThan(void* op, Program* prog);
-struct SULessThan {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleSLessThan(void* op, Program* prog);
-struct SSLessThan {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleFOrdLessThan(void* op, Program* prog);
-struct SFOrdLessThan {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleFUnordLessThan(void* op, Program* prog);
-struct SFUnordLessThan {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleUGreaterThan(void* op, Program* prog);
-struct SUGreaterThan {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleSGreaterThan(void* op, Program* prog);
-struct SSGreaterThan {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleFOrdGreaterThan(void* op, Program* prog);
-struct SFOrdGreaterThan {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleFUnordGreaterThan(void* op, Program* prog);
-struct SFUnordGreaterThan {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleULessThanEqual(void* op, Program* prog);
-struct SULessThanEqual {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleSLessThanEqual(void* op, Program* prog);
-struct SSLessThanEqual {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleFOrdLessThanEqual(void* op, Program* prog);
-struct SFOrdLessThanEqual {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleFUnordLessThanEqual(void* op, Program* prog);
-struct SFUnordLessThanEqual {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleUGreaterThanEqual(void* op, Program* prog);
-struct SUGreaterThanEqual {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleSGreaterThanEqual(void* op, Program* prog);
-struct SSGreaterThanEqual {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleFOrdGreaterThanEqual(void* op, Program* prog);
-struct SFOrdGreaterThanEqual {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
-};
-
-void HandleFUnordGreaterThanEqual(void* op, Program* prog);
-struct SFUnordGreaterThanEqual {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 Operand1Id;
-  uint32 Operand2Id;
+  uint32 BaseId;
 };
 
 void HandleDPdx(void* op, Program* prog);
@@ -1430,28 +1522,15 @@ struct SEndStreamPrimitive {
 
 void HandleControlBarrier(void* op, Program* prog);
 struct SControlBarrier {
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
+  uint32 MemoryId;
+  uint32 SemanticsId;
 };
 
 void HandleMemoryBarrier(void* op, Program* prog);
 struct SMemoryBarrier {
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
-};
-
-void HandleImagePointer(void* op, Program* prog);
-struct SImagePointer {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 ImageId;
-  uint32 CoordinateId;
-  uint32 SampleId;
-};
-
-void HandleAtomicInit(void* op, Program* prog);
-struct SAtomicInit {
-  uint32 PointerId;
-  uint32 ValueId;
+  uint32 MemoryId;
+  uint32 SemanticsId;
 };
 
 void HandleAtomicLoad(void* op, Program* prog);
@@ -1459,15 +1538,15 @@ struct SAtomicLoad {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
 };
 
 void HandleAtomicStore(void* op, Program* prog);
 struct SAtomicStore {
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
   uint32 ValueId;
 };
 
@@ -1476,8 +1555,8 @@ struct SAtomicExchange {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
   uint32 ValueId;
 };
 
@@ -1486,8 +1565,9 @@ struct SAtomicCompareExchange {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 EqualId;
+  uint32 UnequalId;
   uint32 ValueId;
   uint32 ComparatorId;
 };
@@ -1497,8 +1577,9 @@ struct SAtomicCompareExchangeWeak {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 EqualId;
+  uint32 UnequalId;
   uint32 ValueId;
   uint32 ComparatorId;
 };
@@ -1508,8 +1589,8 @@ struct SAtomicIIncrement {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
 };
 
 void HandleAtomicIDecrement(void* op, Program* prog);
@@ -1517,8 +1598,8 @@ struct SAtomicIDecrement {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
 };
 
 void HandleAtomicIAdd(void* op, Program* prog);
@@ -1526,8 +1607,8 @@ struct SAtomicIAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
   uint32 ValueId;
 };
 
@@ -1536,8 +1617,18 @@ struct SAtomicISub {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
+  uint32 ValueId;
+};
+
+void HandleAtomicSMin(void* op, Program* prog);
+struct SAtomicSMin {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 PointerId;
+  uint32 ScopeId;
+  uint32 SemanticsId;
   uint32 ValueId;
 };
 
@@ -1546,8 +1637,18 @@ struct SAtomicUMin {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
+  uint32 ValueId;
+};
+
+void HandleAtomicSMax(void* op, Program* prog);
+struct SAtomicSMax {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 PointerId;
+  uint32 ScopeId;
+  uint32 SemanticsId;
   uint32 ValueId;
 };
 
@@ -1556,8 +1657,8 @@ struct SAtomicUMax {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
   uint32 ValueId;
 };
 
@@ -1566,8 +1667,8 @@ struct SAtomicAnd {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
   uint32 ValueId;
 };
 
@@ -1576,8 +1677,8 @@ struct SAtomicOr {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
   uint32 ValueId;
 };
 
@@ -1586,21 +1687,29 @@ struct SAtomicXor {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
+  uint32 ScopeId;
+  uint32 SemanticsId;
   uint32 ValueId;
+};
+
+void HandlePhi(void* op, Program* prog);
+struct SPhi {
+  uint32 ResultTypeId;
+  uint32 ResultId;
+  uint32 VariableIdsCount;
+  uint32* VariableIds;
 };
 
 void HandleLoopMerge(void* op, Program* prog);
 struct SLoopMerge {
-  uint32 LabelId;
-  spv::LoopControl LoopControl;
+  uint32 MergeBlockId;
+  spv::LoopControlMask LoopControl;
 };
 
 void HandleSelectionMerge(void* op, Program* prog);
 struct SSelectionMerge {
-  uint32 LabelId;
-  spv::SelectionControl SelectionControl;
+  uint32 MergeBlockId;
+  spv::SelectionControlMask SelectionControl;
 };
 
 void HandleLabel(void* op, Program* prog);
@@ -1649,26 +1758,21 @@ struct SUnreachable {
 
 void HandleLifetimeStart(void* op, Program* prog);
 struct SLifetimeStart {
-  uint32 Id0;
-  uint32 LiteralNumber;
+  uint32 PointerId;
+  uint32 Size;
 };
 
 void HandleLifetimeStop(void* op, Program* prog);
 struct SLifetimeStop {
-  uint32 Id0;
-  uint32 LiteralNumber;
-};
-
-void HandleCompileFlag(void* op, Program* prog);
-struct SCompileFlag {
-  char* Flag;
+  uint32 PointerId;
+  uint32 Size;
 };
 
 void HandleAsyncGroupCopy(void* op, Program* prog);
 struct SAsyncGroupCopy {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   uint32 DestinationId;
   uint32 SourceId;
   uint32 NumElementsId;
@@ -1678,9 +1782,7 @@ struct SAsyncGroupCopy {
 
 void HandleWaitGroupEvents(void* op, Program* prog);
 struct SWaitGroupEvents {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   uint32 NumEventsId;
   uint32 EventsListId;
 };
@@ -1689,7 +1791,7 @@ void HandleGroupAll(void* op, Program* prog);
 struct SGroupAll {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   uint32 PredicateId;
 };
 
@@ -1697,7 +1799,7 @@ void HandleGroupAny(void* op, Program* prog);
 struct SGroupAny {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   uint32 PredicateId;
 };
 
@@ -1705,7 +1807,7 @@ void HandleGroupBroadcast(void* op, Program* prog);
 struct SGroupBroadcast {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   uint32 ValueId;
   uint32 LocalIdId;
 };
@@ -1714,7 +1816,7 @@ void HandleGroupIAdd(void* op, Program* prog);
 struct SGroupIAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   spv::GroupOperation Operation;
   uint32 XId;
 };
@@ -1723,7 +1825,7 @@ void HandleGroupFAdd(void* op, Program* prog);
 struct SGroupFAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   spv::GroupOperation Operation;
   uint32 XId;
 };
@@ -1732,7 +1834,7 @@ void HandleGroupFMin(void* op, Program* prog);
 struct SGroupFMin {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   spv::GroupOperation Operation;
   uint32 XId;
 };
@@ -1741,7 +1843,7 @@ void HandleGroupUMin(void* op, Program* prog);
 struct SGroupUMin {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   spv::GroupOperation Operation;
   uint32 XId;
 };
@@ -1750,7 +1852,7 @@ void HandleGroupSMin(void* op, Program* prog);
 struct SGroupSMin {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   spv::GroupOperation Operation;
   uint32 XId;
 };
@@ -1759,7 +1861,7 @@ void HandleGroupFMax(void* op, Program* prog);
 struct SGroupFMax {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   spv::GroupOperation Operation;
   uint32 XId;
 };
@@ -1768,7 +1870,7 @@ void HandleGroupUMax(void* op, Program* prog);
 struct SGroupUMax {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   spv::GroupOperation Operation;
   uint32 XId;
 };
@@ -1777,148 +1879,133 @@ void HandleGroupSMax(void* op, Program* prog);
 struct SGroupSMax {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
+  uint32 ExecutionId;
   spv::GroupOperation Operation;
   uint32 XId;
-};
-
-void HandleGenericCastToPtrExplicit(void* op, Program* prog);
-struct SGenericCastToPtrExplicit {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SourcepointerId;
-  spv::StorageClass storage;
-};
-
-void HandleGenericPtrMemSemantics(void* op, Program* prog);
-struct SGenericPtrMemSemantics {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 ptrId;
 };
 
 void HandleReadPipe(void* op, Program* prog);
 struct SReadPipe {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 pId;
-  uint32 ptrId;
+  uint32 PipeId;
+  uint32 PointerId;
 };
 
 void HandleWritePipe(void* op, Program* prog);
 struct SWritePipe {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 pId;
-  uint32 ptrId;
+  uint32 PipeId;
+  uint32 PointerId;
 };
 
 void HandleReservedReadPipe(void* op, Program* prog);
 struct SReservedReadPipe {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 pId;
-  uint32 reserve_idId;
-  uint32 indexId;
-  uint32 ptrId;
+  uint32 PipeId;
+  uint32 ReserveIdId;
+  uint32 IndexId;
+  uint32 PointerId;
 };
 
 void HandleReservedWritePipe(void* op, Program* prog);
 struct SReservedWritePipe {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 pId;
-  uint32 reserve_idId;
-  uint32 indexId;
-  uint32 ptrId;
+  uint32 PipeId;
+  uint32 ReserveIdId;
+  uint32 IndexId;
+  uint32 PointerId;
 };
 
 void HandleReserveReadPipePackets(void* op, Program* prog);
 struct SReserveReadPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 pId;
-  uint32 num_packetsId;
+  uint32 PipeId;
+  uint32 NumPacketsId;
 };
 
 void HandleReserveWritePipePackets(void* op, Program* prog);
 struct SReserveWritePipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 pId;
-  uint32 num_packetsId;
+  uint32 PipeId;
+  uint32 NumPacketsId;
 };
 
 void HandleCommitReadPipe(void* op, Program* prog);
 struct SCommitReadPipe {
-  uint32 pId;
-  uint32 reserve_idId;
+  uint32 PipeId;
+  uint32 ReserveIdId;
 };
 
 void HandleCommitWritePipe(void* op, Program* prog);
 struct SCommitWritePipe {
-  uint32 pId;
-  uint32 reserve_idId;
+  uint32 PipeId;
+  uint32 ReserveIdId;
 };
 
 void HandleIsValidReserveId(void* op, Program* prog);
 struct SIsValidReserveId {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 reserve_idId;
+  uint32 ReserveIdId;
 };
 
 void HandleGetNumPipePackets(void* op, Program* prog);
 struct SGetNumPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 pId;
+  uint32 PipeId;
 };
 
 void HandleGetMaxPipePackets(void* op, Program* prog);
 struct SGetMaxPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 pId;
+  uint32 PipeId;
 };
 
 void HandleGroupReserveReadPipePackets(void* op, Program* prog);
 struct SGroupReserveReadPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
-  uint32 pId;
-  uint32 num_packetsId;
+  uint32 ExecutionId;
+  uint32 PipeId;
+  uint32 NumPacketsId;
 };
 
 void HandleGroupReserveWritePipePackets(void* op, Program* prog);
 struct SGroupReserveWritePipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
-  spv::ExecutionScope Scope;
-  uint32 pId;
-  uint32 num_packetsId;
+  uint32 ExecutionId;
+  uint32 PipeId;
+  uint32 NumPacketsId;
 };
 
 void HandleGroupCommitReadPipe(void* op, Program* prog);
 struct SGroupCommitReadPipe {
-  spv::ExecutionScope Scope;
-  uint32 pId;
-  uint32 reserve_idId;
+  uint32 ExecutionId;
+  uint32 PipeId;
+  uint32 ReserveIdId;
 };
 
 void HandleGroupCommitWritePipe(void* op, Program* prog);
 struct SGroupCommitWritePipe {
-  spv::ExecutionScope Scope;
-  uint32 pId;
-  uint32 reserve_idId;
+  uint32 ExecutionId;
+  uint32 PipeId;
+  uint32 ReserveIdId;
 };
 
 void HandleEnqueueMarker(void* op, Program* prog);
 struct SEnqueueMarker {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 qId;
+  uint32 QueueId;
   uint32 NumEventsId;
   uint32 WaitEventsId;
   uint32 RetEventId;
@@ -1928,8 +2015,8 @@ void HandleEnqueueKernel(void* op, Program* prog);
 struct SEnqueueKernel {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 qId;
-  KernelEnqueueFlags flags;
+  uint32 QueueId;
+  uint32 FlagsId;
   uint32 NDRangeId;
   uint32 NumEventsId;
   uint32 WaitEventsId;
@@ -1948,6 +2035,9 @@ struct SGetKernelNDrangeSubGroupCount {
   uint32 ResultId;
   uint32 NDRangeId;
   uint32 InvokeId;
+  uint32 ParamId;
+  uint32 ParamSizeId;
+  uint32 ParamAlignId;
 };
 
 void HandleGetKernelNDrangeMaxSubGroupSize(void* op, Program* prog);
@@ -1956,6 +2046,9 @@ struct SGetKernelNDrangeMaxSubGroupSize {
   uint32 ResultId;
   uint32 NDRangeId;
   uint32 InvokeId;
+  uint32 ParamId;
+  uint32 ParamSizeId;
+  uint32 ParamAlignId;
 };
 
 void HandleGetKernelWorkGroupSize(void* op, Program* prog);
@@ -1963,6 +2056,9 @@ struct SGetKernelWorkGroupSize {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 InvokeId;
+  uint32 ParamId;
+  uint32 ParamSizeId;
+  uint32 ParamAlignId;
 };
 
 void HandleGetKernelPreferredWorkGroupSizeMultiple(void* op, Program* prog);
@@ -1970,16 +2066,19 @@ struct SGetKernelPreferredWorkGroupSizeMultiple {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 InvokeId;
+  uint32 ParamId;
+  uint32 ParamSizeId;
+  uint32 ParamAlignId;
 };
 
 void HandleRetainEvent(void* op, Program* prog);
 struct SRetainEvent {
-  uint32 eventId;
+  uint32 EventId;
 };
 
 void HandleReleaseEvent(void* op, Program* prog);
 struct SReleaseEvent {
-  uint32 eventId;
+  uint32 EventId;
 };
 
 void HandleCreateUserEvent(void* op, Program* prog);
@@ -1992,20 +2091,20 @@ void HandleIsValidEvent(void* op, Program* prog);
 struct SIsValidEvent {
   uint32 ResultTypeId;
   uint32 ResultId;
-  uint32 eventId;
+  uint32 EventId;
 };
 
 void HandleSetUserEventStatus(void* op, Program* prog);
 struct SSetUserEventStatus {
-  uint32 eventId;
-  uint32 statusId;
+  uint32 EventId;
+  uint32 StatusId;
 };
 
 void HandleCaptureEventProfilingInfo(void* op, Program* prog);
 struct SCaptureEventProfilingInfo {
-  uint32 eventId;
-  KernelProfilingInfo info;
-  uint32 valueId;
+  uint32 EventId;
+  uint32 ProfilingInfoId;
+  uint32 ValueId;
 };
 
 void HandleGetDefaultQueue(void* op, Program* prog);
@@ -2023,2337 +2122,11 @@ struct SBuildNDRange {
   uint32 GlobalWorkOffsetId;
 };
 
-void HandleSatConvertSToU(void* op, Program* prog);
-struct SSatConvertSToU {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 SignedValueId;
-};
-
-void HandleSatConvertUToS(void* op, Program* prog);
-struct SSatConvertUToS {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 UnsignedValueId;
-};
-
-void HandleAtomicIMin(void* op, Program* prog);
-struct SAtomicIMin {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
-  uint32 ValueId;
-};
-
-void HandleAtomicIMax(void* op, Program* prog);
-struct SAtomicIMax {
-  uint32 ResultTypeId;
-  uint32 ResultId;
-  uint32 PointerId;
-  spv::ExecutionScope Scope;
-  spv::MemorySemantics Semantics;
-  uint32 ValueId;
-};
-
 #pragma pack(pop)
 
+extern void* LUTOpWordTypes[Op::COUNT];
 
-static WordType NopWordTypes[]{
-  WordType::TOp,
-};
-static uint32 NopWordTypesCount = 1;
-
-static WordType SourceWordTypes[]{
-  WordType::TOp,
-  WordType::TSourceLanguage,
-  WordType::TLiteralNumber,
-};
-static uint32 SourceWordTypesCount = 3;
-
-static WordType SourceExtensionWordTypes[]{
-  WordType::TOp,
-  WordType::TLiteralString,
-};
-static uint32 SourceExtensionWordTypesCount = 2;
-
-static WordType ExtensionWordTypes[]{
-  WordType::TOp,
-  WordType::TLiteralString,
-};
-static uint32 ExtensionWordTypesCount = 2;
-
-static WordType ExtInstImportWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLiteralString,
-};
-static uint32 ExtInstImportWordTypesCount = 3;
-
-static WordType MemoryModelWordTypes[]{
-  WordType::TOp,
-  WordType::TAddressingModel,
-  WordType::TMemoryModel,
-};
-static uint32 MemoryModelWordTypesCount = 3;
-
-static WordType EntryPointWordTypes[]{
-  WordType::TOp,
-  WordType::TExecutionModel,
-  WordType::TId,
-};
-static uint32 EntryPointWordTypesCount = 3;
-
-static WordType ExecutionModeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TExecutionMode,
-  WordType::TLiteralNumberList,
-};
-static uint32 ExecutionModeWordTypesCount = 4;
-
-static WordType TypeVoidWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 TypeVoidWordTypesCount = 2;
-
-static WordType TypeBoolWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 TypeBoolWordTypesCount = 2;
-
-static WordType TypeIntWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLiteralNumber,
-  WordType::TLiteralNumber,
-};
-static uint32 TypeIntWordTypesCount = 4;
-
-static WordType TypeFloatWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLiteralNumber,
-};
-static uint32 TypeFloatWordTypesCount = 3;
-
-static WordType TypeVectorWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumber,
-};
-static uint32 TypeVectorWordTypesCount = 4;
-
-static WordType TypeMatrixWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumber,
-};
-static uint32 TypeMatrixWordTypesCount = 4;
-
-static WordType TypeSamplerWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TDim,
-  WordType::TLiteralNumber,
-  WordType::TLiteralNumber,
-  WordType::TLiteralNumber,
-  WordType::TLiteralNumber,
-  WordType::TId,
-};
-static uint32 TypeSamplerWordTypesCount = 9;
-
-static WordType TypeFilterWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 TypeFilterWordTypesCount = 2;
-
-static WordType TypeArrayWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TypeArrayWordTypesCount = 4;
-
-static WordType TypeRuntimeArrayWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TypeRuntimeArrayWordTypesCount = 3;
-
-static WordType TypeStructWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 TypeStructWordTypesCount = 3;
-
-static WordType TypeOpaqueWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLiteralString,
-};
-static uint32 TypeOpaqueWordTypesCount = 3;
-
-static WordType TypePointerWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TStorageClass,
-  WordType::TId,
-};
-static uint32 TypePointerWordTypesCount = 4;
-
-static WordType TypeFunctionWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 TypeFunctionWordTypesCount = 4;
-
-static WordType TypeEventWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 TypeEventWordTypesCount = 2;
-
-static WordType TypeDeviceEventWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 TypeDeviceEventWordTypesCount = 2;
-
-static WordType TypeReserveIdWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 TypeReserveIdWordTypesCount = 2;
-
-static WordType TypeQueueWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 TypeQueueWordTypesCount = 2;
-
-static WordType TypePipeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TAccessQualifier,
-};
-static uint32 TypePipeWordTypesCount = 4;
-
-static WordType ConstantTrueWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ConstantTrueWordTypesCount = 3;
-
-static WordType ConstantFalseWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ConstantFalseWordTypesCount = 3;
-
-static WordType ConstantWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumberList,
-};
-static uint32 ConstantWordTypesCount = 4;
-
-static WordType ConstantCompositeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 ConstantCompositeWordTypesCount = 4;
-
-static WordType ConstantSamplerWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumber,
-  WordType::TLiteralNumber,
-  WordType::TLiteralNumber,
-};
-static uint32 ConstantSamplerWordTypesCount = 6;
-
-static WordType ConstantNullPointerWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ConstantNullPointerWordTypesCount = 3;
-
-static WordType ConstantNullObjectWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ConstantNullObjectWordTypesCount = 3;
-
-static WordType SpecConstantTrueWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SpecConstantTrueWordTypesCount = 3;
-
-static WordType SpecConstantFalseWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SpecConstantFalseWordTypesCount = 3;
-
-static WordType SpecConstantWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumberList,
-};
-static uint32 SpecConstantWordTypesCount = 4;
-
-static WordType SpecConstantCompositeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 SpecConstantCompositeWordTypesCount = 4;
-
-static WordType VariableWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TStorageClass,
-  WordType::TId,
-};
-static uint32 VariableWordTypesCount = 5;
-
-static WordType VariableArrayWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TStorageClass,
-  WordType::TId,
-};
-static uint32 VariableArrayWordTypesCount = 5;
-
-static WordType FunctionWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TFunctionControl,
-  WordType::TId,
-};
-static uint32 FunctionWordTypesCount = 5;
-
-static WordType FunctionParameterWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FunctionParameterWordTypesCount = 3;
-
-static WordType FunctionEndWordTypes[]{
-  WordType::TOp,
-};
-static uint32 FunctionEndWordTypesCount = 1;
-
-static WordType FunctionCallWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 FunctionCallWordTypesCount = 5;
-
-static WordType ExtInstWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumber,
-  WordType::TIdList,
-};
-static uint32 ExtInstWordTypesCount = 6;
-
-static WordType UndefWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 UndefWordTypesCount = 3;
-
-static WordType LoadWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumberList,
-};
-static uint32 LoadWordTypesCount = 5;
-
-static WordType StoreWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumberList,
-};
-static uint32 StoreWordTypesCount = 4;
-
-static WordType PhiWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 PhiWordTypesCount = 4;
-
-static WordType DecorationGroupWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 DecorationGroupWordTypesCount = 2;
-
-static WordType DecorateWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TDecoration,
-  WordType::TLiteralNumberList,
-};
-static uint32 DecorateWordTypesCount = 4;
-
-static WordType MemberDecorateWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLiteralNumber,
-  WordType::TDecoration,
-  WordType::TLiteralNumberList,
-};
-static uint32 MemberDecorateWordTypesCount = 5;
-
-static WordType GroupDecorateWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 GroupDecorateWordTypesCount = 3;
-
-static WordType GroupMemberDecorateWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 GroupMemberDecorateWordTypesCount = 3;
-
-static WordType NameWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLiteralString,
-};
-static uint32 NameWordTypesCount = 3;
-
-static WordType MemberNameWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLiteralNumber,
-  WordType::TLiteralString,
-};
-static uint32 MemberNameWordTypesCount = 4;
-
-static WordType StringWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLiteralString,
-};
-static uint32 StringWordTypesCount = 3;
-
-static WordType LineWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumber,
-  WordType::TLiteralNumber,
-};
-static uint32 LineWordTypesCount = 5;
-
-static WordType VectorExtractDynamicWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 VectorExtractDynamicWordTypesCount = 5;
-
-static WordType VectorInsertDynamicWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 VectorInsertDynamicWordTypesCount = 6;
-
-static WordType VectorShuffleWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumberList,
-};
-static uint32 VectorShuffleWordTypesCount = 6;
-
-static WordType CompositeConstructWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 CompositeConstructWordTypesCount = 4;
-
-static WordType CompositeExtractWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumberList,
-};
-static uint32 CompositeExtractWordTypesCount = 5;
-
-static WordType CompositeInsertWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumberList,
-};
-static uint32 CompositeInsertWordTypesCount = 6;
-
-static WordType CopyObjectWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 CopyObjectWordTypesCount = 4;
-
-static WordType CopyMemoryWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumberList,
-};
-static uint32 CopyMemoryWordTypesCount = 4;
-
-static WordType CopyMemorySizedWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumberList,
-};
-static uint32 CopyMemorySizedWordTypesCount = 5;
-
-static WordType SamplerWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SamplerWordTypesCount = 5;
-
-static WordType TextureSampleWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleWordTypesCount = 6;
-
-static WordType TextureSampleDrefWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleDrefWordTypesCount = 6;
-
-static WordType TextureSampleLodWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleLodWordTypesCount = 6;
-
-static WordType TextureSampleProjWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleProjWordTypesCount = 6;
-
-static WordType TextureSampleGradWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleGradWordTypesCount = 7;
-
-static WordType TextureSampleOffsetWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleOffsetWordTypesCount = 7;
-
-static WordType TextureSampleProjLodWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleProjLodWordTypesCount = 6;
-
-static WordType TextureSampleProjGradWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleProjGradWordTypesCount = 7;
-
-static WordType TextureSampleLodOffsetWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleLodOffsetWordTypesCount = 7;
-
-static WordType TextureSampleProjOffsetWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleProjOffsetWordTypesCount = 7;
-
-static WordType TextureSampleGradOffsetWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleGradOffsetWordTypesCount = 8;
-
-static WordType TextureSampleProjLodOffsetWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleProjLodOffsetWordTypesCount = 7;
-
-static WordType TextureSampleProjGradOffsetWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureSampleProjGradOffsetWordTypesCount = 8;
-
-static WordType TextureFetchTexelLodWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureFetchTexelLodWordTypesCount = 6;
-
-static WordType TextureFetchTexelOffsetWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureFetchTexelOffsetWordTypesCount = 6;
-
-static WordType TextureFetchSampleWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureFetchSampleWordTypesCount = 6;
-
-static WordType TextureFetchTexelWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureFetchTexelWordTypesCount = 5;
-
-static WordType TextureGatherWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureGatherWordTypesCount = 6;
-
-static WordType TextureGatherOffsetWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureGatherOffsetWordTypesCount = 7;
-
-static WordType TextureGatherOffsetsWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureGatherOffsetsWordTypesCount = 7;
-
-static WordType TextureQuerySizeLodWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureQuerySizeLodWordTypesCount = 5;
-
-static WordType TextureQuerySizeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureQuerySizeWordTypesCount = 4;
-
-static WordType TextureQueryLodWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureQueryLodWordTypesCount = 5;
-
-static WordType TextureQueryLevelsWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureQueryLevelsWordTypesCount = 4;
-
-static WordType TextureQuerySamplesWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TextureQuerySamplesWordTypesCount = 4;
-
-static WordType AccessChainWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 AccessChainWordTypesCount = 5;
-
-static WordType InBoundsAccessChainWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 InBoundsAccessChainWordTypesCount = 5;
-
-static WordType SNegateWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SNegateWordTypesCount = 4;
-
-static WordType FNegateWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FNegateWordTypesCount = 4;
-
-static WordType NotWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 NotWordTypesCount = 4;
-
-static WordType AnyWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 AnyWordTypesCount = 4;
-
-static WordType AllWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 AllWordTypesCount = 4;
-
-static WordType ConvertFToUWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ConvertFToUWordTypesCount = 4;
-
-static WordType ConvertFToSWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ConvertFToSWordTypesCount = 4;
-
-static WordType ConvertSToFWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ConvertSToFWordTypesCount = 4;
-
-static WordType ConvertUToFWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ConvertUToFWordTypesCount = 4;
-
-static WordType UConvertWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 UConvertWordTypesCount = 4;
-
-static WordType SConvertWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SConvertWordTypesCount = 4;
-
-static WordType FConvertWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FConvertWordTypesCount = 4;
-
-static WordType ConvertPtrToUWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ConvertPtrToUWordTypesCount = 4;
-
-static WordType ConvertUToPtrWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ConvertUToPtrWordTypesCount = 4;
-
-static WordType PtrCastToGenericWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 PtrCastToGenericWordTypesCount = 4;
-
-static WordType GenericCastToPtrWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GenericCastToPtrWordTypesCount = 4;
-
-static WordType BitcastWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 BitcastWordTypesCount = 4;
-
-static WordType TransposeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 TransposeWordTypesCount = 4;
-
-static WordType IsNanWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 IsNanWordTypesCount = 4;
-
-static WordType IsInfWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 IsInfWordTypesCount = 4;
-
-static WordType IsFiniteWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 IsFiniteWordTypesCount = 4;
-
-static WordType IsNormalWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 IsNormalWordTypesCount = 4;
-
-static WordType SignBitSetWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SignBitSetWordTypesCount = 4;
-
-static WordType LessOrGreaterWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 LessOrGreaterWordTypesCount = 5;
-
-static WordType OrderedWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 OrderedWordTypesCount = 5;
-
-static WordType UnorderedWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 UnorderedWordTypesCount = 5;
-
-static WordType ArrayLengthWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumber,
-};
-static uint32 ArrayLengthWordTypesCount = 5;
-
-static WordType IAddWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 IAddWordTypesCount = 5;
-
-static WordType FAddWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FAddWordTypesCount = 5;
-
-static WordType ISubWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ISubWordTypesCount = 5;
-
-static WordType FSubWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FSubWordTypesCount = 5;
-
-static WordType IMulWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 IMulWordTypesCount = 5;
-
-static WordType FMulWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FMulWordTypesCount = 5;
-
-static WordType UDivWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 UDivWordTypesCount = 5;
-
-static WordType SDivWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SDivWordTypesCount = 5;
-
-static WordType FDivWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FDivWordTypesCount = 5;
-
-static WordType UModWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 UModWordTypesCount = 5;
-
-static WordType SRemWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SRemWordTypesCount = 5;
-
-static WordType SModWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SModWordTypesCount = 5;
-
-static WordType FRemWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FRemWordTypesCount = 5;
-
-static WordType FModWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FModWordTypesCount = 5;
-
-static WordType VectorTimesScalarWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 VectorTimesScalarWordTypesCount = 5;
-
-static WordType MatrixTimesScalarWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 MatrixTimesScalarWordTypesCount = 5;
-
-static WordType VectorTimesMatrixWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 VectorTimesMatrixWordTypesCount = 5;
-
-static WordType MatrixTimesVectorWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 MatrixTimesVectorWordTypesCount = 5;
-
-static WordType MatrixTimesMatrixWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 MatrixTimesMatrixWordTypesCount = 5;
-
-static WordType OuterProductWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 OuterProductWordTypesCount = 5;
-
-static WordType DotWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 DotWordTypesCount = 5;
-
-static WordType ShiftRightLogicalWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ShiftRightLogicalWordTypesCount = 5;
-
-static WordType ShiftRightArithmeticWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ShiftRightArithmeticWordTypesCount = 5;
-
-static WordType ShiftLeftLogicalWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ShiftLeftLogicalWordTypesCount = 5;
-
-static WordType LogicalOrWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 LogicalOrWordTypesCount = 5;
-
-static WordType LogicalXorWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 LogicalXorWordTypesCount = 5;
-
-static WordType LogicalAndWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 LogicalAndWordTypesCount = 5;
-
-static WordType BitwiseOrWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 BitwiseOrWordTypesCount = 5;
-
-static WordType BitwiseXorWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 BitwiseXorWordTypesCount = 5;
-
-static WordType BitwiseAndWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 BitwiseAndWordTypesCount = 5;
-
-static WordType SelectWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SelectWordTypesCount = 6;
-
-static WordType IEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 IEqualWordTypesCount = 5;
-
-static WordType FOrdEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FOrdEqualWordTypesCount = 5;
-
-static WordType FUnordEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FUnordEqualWordTypesCount = 5;
-
-static WordType INotEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 INotEqualWordTypesCount = 5;
-
-static WordType FOrdNotEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FOrdNotEqualWordTypesCount = 5;
-
-static WordType FUnordNotEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FUnordNotEqualWordTypesCount = 5;
-
-static WordType ULessThanWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ULessThanWordTypesCount = 5;
-
-static WordType SLessThanWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SLessThanWordTypesCount = 5;
-
-static WordType FOrdLessThanWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FOrdLessThanWordTypesCount = 5;
-
-static WordType FUnordLessThanWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FUnordLessThanWordTypesCount = 5;
-
-static WordType UGreaterThanWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 UGreaterThanWordTypesCount = 5;
-
-static WordType SGreaterThanWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SGreaterThanWordTypesCount = 5;
-
-static WordType FOrdGreaterThanWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FOrdGreaterThanWordTypesCount = 5;
-
-static WordType FUnordGreaterThanWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FUnordGreaterThanWordTypesCount = 5;
-
-static WordType ULessThanEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ULessThanEqualWordTypesCount = 5;
-
-static WordType SLessThanEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SLessThanEqualWordTypesCount = 5;
-
-static WordType FOrdLessThanEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FOrdLessThanEqualWordTypesCount = 5;
-
-static WordType FUnordLessThanEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FUnordLessThanEqualWordTypesCount = 5;
-
-static WordType UGreaterThanEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 UGreaterThanEqualWordTypesCount = 5;
-
-static WordType SGreaterThanEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SGreaterThanEqualWordTypesCount = 5;
-
-static WordType FOrdGreaterThanEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FOrdGreaterThanEqualWordTypesCount = 5;
-
-static WordType FUnordGreaterThanEqualWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FUnordGreaterThanEqualWordTypesCount = 5;
-
-static WordType DPdxWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 DPdxWordTypesCount = 4;
-
-static WordType DPdyWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 DPdyWordTypesCount = 4;
-
-static WordType FwidthWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FwidthWordTypesCount = 4;
-
-static WordType DPdxFineWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 DPdxFineWordTypesCount = 4;
-
-static WordType DPdyFineWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 DPdyFineWordTypesCount = 4;
-
-static WordType FwidthFineWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FwidthFineWordTypesCount = 4;
-
-static WordType DPdxCoarseWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 DPdxCoarseWordTypesCount = 4;
-
-static WordType DPdyCoarseWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 DPdyCoarseWordTypesCount = 4;
-
-static WordType FwidthCoarseWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 FwidthCoarseWordTypesCount = 4;
-
-static WordType EmitVertexWordTypes[]{
-  WordType::TOp,
-};
-static uint32 EmitVertexWordTypesCount = 1;
-
-static WordType EndPrimitiveWordTypes[]{
-  WordType::TOp,
-};
-static uint32 EndPrimitiveWordTypesCount = 1;
-
-static WordType EmitStreamVertexWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 EmitStreamVertexWordTypesCount = 2;
-
-static WordType EndStreamPrimitiveWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 EndStreamPrimitiveWordTypesCount = 2;
-
-static WordType ControlBarrierWordTypes[]{
-  WordType::TOp,
-  WordType::TExecutionScope,
-};
-static uint32 ControlBarrierWordTypesCount = 2;
-
-static WordType MemoryBarrierWordTypes[]{
-  WordType::TOp,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-};
-static uint32 MemoryBarrierWordTypesCount = 3;
-
-static WordType ImagePointerWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ImagePointerWordTypesCount = 6;
-
-static WordType AtomicInitWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 AtomicInitWordTypesCount = 3;
-
-static WordType AtomicLoadWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-};
-static uint32 AtomicLoadWordTypesCount = 6;
-
-static WordType AtomicStoreWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicStoreWordTypesCount = 5;
-
-static WordType AtomicExchangeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicExchangeWordTypesCount = 7;
-
-static WordType AtomicCompareExchangeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 AtomicCompareExchangeWordTypesCount = 8;
-
-static WordType AtomicCompareExchangeWeakWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 AtomicCompareExchangeWeakWordTypesCount = 8;
-
-static WordType AtomicIIncrementWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-};
-static uint32 AtomicIIncrementWordTypesCount = 6;
-
-static WordType AtomicIDecrementWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-};
-static uint32 AtomicIDecrementWordTypesCount = 6;
-
-static WordType AtomicIAddWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicIAddWordTypesCount = 7;
-
-static WordType AtomicISubWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicISubWordTypesCount = 7;
-
-static WordType AtomicUMinWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicUMinWordTypesCount = 7;
-
-static WordType AtomicUMaxWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicUMaxWordTypesCount = 7;
-
-static WordType AtomicAndWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicAndWordTypesCount = 7;
-
-static WordType AtomicOrWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicOrWordTypesCount = 7;
-
-static WordType AtomicXorWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicXorWordTypesCount = 7;
-
-static WordType LoopMergeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLoopControl,
-};
-static uint32 LoopMergeWordTypesCount = 3;
-
-static WordType SelectionMergeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TSelectionControl,
-};
-static uint32 SelectionMergeWordTypesCount = 3;
-
-static WordType LabelWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 LabelWordTypesCount = 2;
-
-static WordType BranchWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 BranchWordTypesCount = 2;
-
-static WordType BranchConditionalWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TLiteralNumberList,
-};
-static uint32 BranchConditionalWordTypesCount = 5;
-
-static WordType SwitchWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 SwitchWordTypesCount = 4;
-
-static WordType KillWordTypes[]{
-  WordType::TOp,
-};
-static uint32 KillWordTypesCount = 1;
-
-static WordType ReturnWordTypes[]{
-  WordType::TOp,
-};
-static uint32 ReturnWordTypesCount = 1;
-
-static WordType ReturnValueWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 ReturnValueWordTypesCount = 2;
-
-static WordType UnreachableWordTypes[]{
-  WordType::TOp,
-};
-static uint32 UnreachableWordTypesCount = 1;
-
-static WordType LifetimeStartWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLiteralNumber,
-};
-static uint32 LifetimeStartWordTypesCount = 3;
-
-static WordType LifetimeStopWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TLiteralNumber,
-};
-static uint32 LifetimeStopWordTypesCount = 3;
-
-static WordType CompileFlagWordTypes[]{
-  WordType::TOp,
-  WordType::TLiteralString,
-};
-static uint32 CompileFlagWordTypesCount = 2;
-
-static WordType AsyncGroupCopyWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 AsyncGroupCopyWordTypesCount = 9;
-
-static WordType WaitGroupEventsWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 WaitGroupEventsWordTypesCount = 6;
-
-static WordType GroupAllWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TId,
-};
-static uint32 GroupAllWordTypesCount = 5;
-
-static WordType GroupAnyWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TId,
-};
-static uint32 GroupAnyWordTypesCount = 5;
-
-static WordType GroupBroadcastWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GroupBroadcastWordTypesCount = 6;
-
-static WordType GroupIAddWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TGroupOperation,
-  WordType::TId,
-};
-static uint32 GroupIAddWordTypesCount = 6;
-
-static WordType GroupFAddWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TGroupOperation,
-  WordType::TId,
-};
-static uint32 GroupFAddWordTypesCount = 6;
-
-static WordType GroupFMinWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TGroupOperation,
-  WordType::TId,
-};
-static uint32 GroupFMinWordTypesCount = 6;
-
-static WordType GroupUMinWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TGroupOperation,
-  WordType::TId,
-};
-static uint32 GroupUMinWordTypesCount = 6;
-
-static WordType GroupSMinWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TGroupOperation,
-  WordType::TId,
-};
-static uint32 GroupSMinWordTypesCount = 6;
-
-static WordType GroupFMaxWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TGroupOperation,
-  WordType::TId,
-};
-static uint32 GroupFMaxWordTypesCount = 6;
-
-static WordType GroupUMaxWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TGroupOperation,
-  WordType::TId,
-};
-static uint32 GroupUMaxWordTypesCount = 6;
-
-static WordType GroupSMaxWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TGroupOperation,
-  WordType::TId,
-};
-static uint32 GroupSMaxWordTypesCount = 6;
-
-static WordType GenericCastToPtrExplicitWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TStorageClass,
-};
-static uint32 GenericCastToPtrExplicitWordTypesCount = 5;
-
-static WordType GenericPtrMemSemanticsWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GenericPtrMemSemanticsWordTypesCount = 4;
-
-static WordType ReadPipeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ReadPipeWordTypesCount = 5;
-
-static WordType WritePipeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 WritePipeWordTypesCount = 5;
-
-static WordType ReservedReadPipeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ReservedReadPipeWordTypesCount = 7;
-
-static WordType ReservedWritePipeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ReservedWritePipeWordTypesCount = 7;
-
-static WordType ReserveReadPipePacketsWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ReserveReadPipePacketsWordTypesCount = 5;
-
-static WordType ReserveWritePipePacketsWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 ReserveWritePipePacketsWordTypesCount = 5;
-
-static WordType CommitReadPipeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 CommitReadPipeWordTypesCount = 3;
-
-static WordType CommitWritePipeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 CommitWritePipeWordTypesCount = 3;
-
-static WordType IsValidReserveIdWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 IsValidReserveIdWordTypesCount = 4;
-
-static WordType GetNumPipePacketsWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GetNumPipePacketsWordTypesCount = 4;
-
-static WordType GetMaxPipePacketsWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GetMaxPipePacketsWordTypesCount = 4;
-
-static WordType GroupReserveReadPipePacketsWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GroupReserveReadPipePacketsWordTypesCount = 6;
-
-static WordType GroupReserveWritePipePacketsWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GroupReserveWritePipePacketsWordTypesCount = 6;
-
-static WordType GroupCommitReadPipeWordTypes[]{
-  WordType::TOp,
-  WordType::TExecutionScope,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GroupCommitReadPipeWordTypesCount = 4;
-
-static WordType GroupCommitWritePipeWordTypes[]{
-  WordType::TOp,
-  WordType::TExecutionScope,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GroupCommitWritePipeWordTypesCount = 4;
-
-static WordType EnqueueMarkerWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 EnqueueMarkerWordTypesCount = 7;
-
-static WordType EnqueueKernelWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TKernelEnqueueFlags,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TIdList,
-};
-static uint32 EnqueueKernelWordTypesCount = 14;
-
-static WordType GetKernelNDrangeSubGroupCountWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GetKernelNDrangeSubGroupCountWordTypesCount = 5;
-
-static WordType GetKernelNDrangeMaxSubGroupSizeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GetKernelNDrangeMaxSubGroupSizeWordTypesCount = 5;
-
-static WordType GetKernelWorkGroupSizeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GetKernelWorkGroupSizeWordTypesCount = 4;
-
-static WordType GetKernelPreferredWorkGroupSizeMultipleWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GetKernelPreferredWorkGroupSizeMultipleWordTypesCount = 4;
-
-static WordType RetainEventWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 RetainEventWordTypesCount = 2;
-
-static WordType ReleaseEventWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-};
-static uint32 ReleaseEventWordTypesCount = 2;
-
-static WordType CreateUserEventWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 CreateUserEventWordTypesCount = 3;
-
-static WordType IsValidEventWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 IsValidEventWordTypesCount = 4;
-
-static WordType SetUserEventStatusWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SetUserEventStatusWordTypesCount = 3;
-
-static WordType CaptureEventProfilingInfoWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TKernelProfilingInfo,
-  WordType::TId,
-};
-static uint32 CaptureEventProfilingInfoWordTypesCount = 4;
-
-static WordType GetDefaultQueueWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 GetDefaultQueueWordTypesCount = 3;
-
-static WordType BuildNDRangeWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 BuildNDRangeWordTypesCount = 6;
-
-static WordType SatConvertSToUWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SatConvertSToUWordTypesCount = 4;
-
-static WordType SatConvertUToSWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-};
-static uint32 SatConvertUToSWordTypesCount = 4;
-
-static WordType AtomicIMinWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicIMinWordTypesCount = 7;
-
-static WordType AtomicIMaxWordTypes[]{
-  WordType::TOp,
-  WordType::TId,
-  WordType::TId,
-  WordType::TId,
-  WordType::TExecutionScope,
-  WordType::TMemorySemantics,
-  WordType::TId,
-};
-static uint32 AtomicIMaxWordTypesCount = 7;
-
-extern void* LUTOpWordTypes[Op::Count];
-extern uint32 LUTOpWordTypesCount[Op::Count];
+extern uint32 LUTOpWordTypesCount[Op::COUNT];
 
 typedef void(*OpHandler)(void*, Program*);
-extern OpHandler LUTHandlerMethods[Op::Count];
+extern OpHandler LUTHandlerMethods[Op::COUNT];

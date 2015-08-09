@@ -114,9 +114,9 @@ bool g_types(std::stringstream* ss, const Program& prog) {
     case Op::OpTypeVector:
     {
       STypeVector* opVector = (STypeVector*)type.second.Memory;
-      idName << "v_" << ids[opVector->ComponenttypeId] << "_" << opVector->Componentcount << "_" << opVector->ResultId;
+      idName << "v_" << ids[opVector->ComponentTypeId] << "_" << opVector->ComponentCount << "_" << opVector->ResultId;
       *ss << "struct " << idName.str() << " {" << std::endl;
-      *ss << "  " << ids[opVector->ComponenttypeId] << " " << "v[" << opVector->Componentcount << "];" << std::endl;
+      *ss << "  " << ids[opVector->ComponentTypeId] << " " << "v[" << opVector->ComponentCount << "];" << std::endl;
       *ss << "};" << std::endl;
       break;
     }

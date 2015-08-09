@@ -50,15 +50,15 @@ SOp Parser::readInstruction() {
 
   uint32 opWordCount = wordCount;
 
-  if (sizeof(LUTOpWordTypes) / sizeof(void*) <= op) {
+  if (sizeof(LUTOpWordTypes) / sizeof(void*) <= (int)op) {
     wordTypes[0] = WordType::TOp;
     for (int i = 1; i < wordCount; i++) {
       wordTypes[i] = WordType::TLiteralNumber;
     }
   }
   else {
-    WordType* opWordTypes = (WordType*)LUTOpWordTypes[op];
-    opWordCount = LUTOpWordTypesCount[op];
+    WordType* opWordTypes = (WordType*)LUTOpWordTypes[(int)op];
+    opWordCount = LUTOpWordTypesCount[(int)op];
 
     for (int i = 0; i < wordCount; i++) {
       wordTypes[i] = opWordTypes[i > opWordCount - 1 ? opWordCount - 1 : i];
@@ -126,7 +126,7 @@ bool Parser::ParseProgram(Program* prog) {
       prog->NextOp = SOp{ Op::OpNop, nullptr };
     }
 
-    LUTHandlerMethods[op.Op]((void*)op.Memory, prog);
+    LUTHandlerMethods[(int)op.Op]((void*)op.Memory, prog);
 
     if (prog->InFunction && prog->CurrentFunction->InBlock) {
       addOp(prog, op);
@@ -140,18 +140,18 @@ bool Parser::ParseProgram(Program* prog) {
 std::string writeOp(SOp op) {
   std::stringstream opline;
 
-  opline << OpStrings[op.Op];
+  opline << OpStrings[(int)op.Op];
 
   WordType wordTypes[255];
 
   uint32 opWordCount = 0;
 
-  if (sizeof(LUTOpWordTypes) / sizeof(void*) <= op.Op) {
+  if (sizeof(LUTOpWordTypes) / sizeof(void*) <= (int)op.Op) {
     return "";
   }
   else {
-    WordType* opWordTypes = (WordType*)LUTOpWordTypes[op.Op];
-    opWordCount = LUTOpWordTypesCount[op.Op];
+    WordType* opWordTypes = (WordType*)LUTOpWordTypes[(int)op.Op];
+    opWordCount = LUTOpWordTypesCount[(int)op.Op];
 
     for (int i = 0; i < opWordCount; i++) {
       wordTypes[i] = opWordTypes[i];
