@@ -61,7 +61,7 @@ int main(int argc, const char** argv) {
     return -1;
   }
 
-  std::cout << "Validation program:...";
+  std::cout << "Validating program:...";
   if(!validate(prog, std::cout)) {
     std::cout << "Validation failed." << std::endl;
     return -1;
