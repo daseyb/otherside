@@ -14,7 +14,7 @@ else()
 
 include_directories(${SHARED_LIB_INCLUDE_DIR})
 
-set(SRCS lookups.cpp lookups_gen.cpp)
+set(SRCS lookups.cpp lookups_gen.cpp utils.cpp)
 
 # We need C++ 11
 set(CMAKE_CXX_STANDARD 11)
