@@ -6,24 +6,33 @@
 extern "C" {
 #endif
 
-  #define ONE_ARG_OP(func) \
+  #define ONE_ARG_OP(func, type) \
     assert(valueCount == 1); \
-    return vm->DoOp(resultTypeId, [](Value val) {return func(*(float*)val.Memory); }, values[0]); \
+    return vm->DoOp(resultTypeId, [](Value val) {return func(*(type*)val.Memory); }, values[0]); \
 
-  #define TWO_ARG_OP(func) \
+  #define TWO_ARG_OP(func, type) \
     assert(valueCount == 2); \
-    return vm->DoOp(resultTypeId, [](Value op1, Value op2) {return func(*(float*)op1.Memory, *(float*)op2.Memory); }, values[0], values[1]); \
+    return vm->DoOp(resultTypeId, [](Value op1, Value op2) {return func(*(type*)op1.Memory, *(type*)op2.Memory); }, values[0], values[1]); \
 
-  #define THREE_ARG_OP(func) \
+  #define THREE_ARG_OP(func, type) \
     assert(valueCount == 3); \
-    return vm->DoOp(resultTypeId, [](Value op1, Value op2, Value op3) {return func(*(float*)op1.Memory, *(float*)op2.Memory, *(float*)op3.Memory); }, values[0], values[1], values[2]); \
+    return vm->DoOp(resultTypeId, [](Value op1, Value op2, Value op3) {return func(*(type*)op1.Memory, *(type*)op2.Memory, *(type*)op3.Memory); }, values[0], values[1], values[2]); \
 
+
+  #define ONE_ARG_OP_F(func) ONE_ARG_OP(func, float)
+  #define TWO_ARG_OP_F(func) TWO_ARG_OP(func, float)
+  #define THREE_ARG_OP_F(func) TWO_ARG_OP(func, float)
+  
+  #define ONE_ARG_OP_S(func) ONE_ARG_OP(func, int)
+  #define TWO_ARG_OP_S(func) TWO_ARG_OP(func, int)
+  #define THREE_ARG_OP_S(func) TWO_ARG_OP(func, int)
+  
   #define THREE_ARG_OP_D(func) \
     assert(valueCount == 3); \
     return vm->DoOp(resultTypeId, func, values[0], values[1], values[2]); \
 
   EXT_INST_FUNC(round_ext) {
-    ONE_ARG_OP(roundf);
+    ONE_ARG_OP_F(roundf);
   };
 
   EXT_INST_FUNC(roundEven_ext) {
@@ -31,23 +40,31 @@ extern "C" {
   };
 
   EXT_INST_FUNC(trunc_ext) {
-    ONE_ARG_OP(trunc);
+    ONE_ARG_OP_F(trunc);
   };
 
-  EXT_INST_FUNC(abs_ext) {
-    ONE_ARG_OP(fabsf);
+  EXT_INST_FUNC(fabs_ext) {
+    ONE_ARG_OP_F(fabsf);
   };
 
-  EXT_INST_FUNC(sign_ext) {
-    ONE_ARG_OP([](float f) { return signbit(f) ? 0 : 1;})
+  EXT_INST_FUNC(sabs_ext) {
+    ONE_ARG_OP_S(abs);
+  };
+
+  EXT_INST_FUNC(fsign_ext) {
+    ONE_ARG_OP_F([](float f) { return signbit(f) ? 0 : 1;})
+  };
+
+  EXT_INST_FUNC(ssign_ext) {
+    ONE_ARG_OP_S([](int s) { return s < 0 ? 0 : 1;})
   };
 
   EXT_INST_FUNC(floor_ext) {
-    ONE_ARG_OP(floorf);
+    ONE_ARG_OP_F(floorf);
   };
 
   EXT_INST_FUNC(ceil_ext) {
-    ONE_ARG_OP(ceilf);
+    ONE_ARG_OP_F(ceilf);
   };
 
   EXT_INST_FUNC(fract_ext) {
@@ -63,55 +80,55 @@ extern "C" {
   };
 
   EXT_INST_FUNC(sin_ext) {
-    ONE_ARG_OP(sinf);
+    ONE_ARG_OP_F(sinf);
   };
 
   EXT_INST_FUNC(cos_ext) {
-    ONE_ARG_OP(cosf);
+    ONE_ARG_OP_F(cosf);
   };
 
   EXT_INST_FUNC(tan_ext) {
-    ONE_ARG_OP(tanf);
+    ONE_ARG_OP_F(tanf);
   };
 
   EXT_INST_FUNC(asin_ext) {
-    ONE_ARG_OP(asinf);
+    ONE_ARG_OP_F(asinf);
   };
 
   EXT_INST_FUNC(acos_ext) {
-    ONE_ARG_OP(acosf);
+    ONE_ARG_OP_F(acosf);
   };
 
   EXT_INST_FUNC(atan_ext) {
-    ONE_ARG_OP(atanf);
+    ONE_ARG_OP_F(atanf);
   };
 
   EXT_INST_FUNC(sinh_ext) {
-    ONE_ARG_OP(sinhf);
+    ONE_ARG_OP_F(sinhf);
   }
 
   EXT_INST_FUNC(cosh_ext) {
-    ONE_ARG_OP(coshf);
+    ONE_ARG_OP_F(coshf);
   }
 
   EXT_INST_FUNC(tanh_ext) {
-    ONE_ARG_OP(tanhf);
+    ONE_ARG_OP_F(tanhf);
   }
   
   EXT_INST_FUNC(asinh_ext) {
-    ONE_ARG_OP(asinhf);
+    ONE_ARG_OP_F(asinhf);
   }
   
   EXT_INST_FUNC(acosh_ext) {
-    ONE_ARG_OP(acoshf);
+    ONE_ARG_OP_F(acoshf);
   }
 
   EXT_INST_FUNC(atanh_ext) {
-    ONE_ARG_OP(atanhf);
+    ONE_ARG_OP_F(atanhf);
   }
 
   EXT_INST_FUNC(atan2_ext) { 
-    TWO_ARG_OP(atan2f); 
+    TWO_ARG_OP_F(atan2f); 
   }
 
   EXT_INST_FUNC(pow_ext) { 
@@ -130,21 +147,32 @@ extern "C" {
     }
   }
 
-  EXT_INST_FUNC(exp_ext) { ONE_ARG_OP(expf); }
-  EXT_INST_FUNC(log_ext) { ONE_ARG_OP(logf); }
-  EXT_INST_FUNC(exp2_ext) { ONE_ARG_OP(exp2f); }
-  EXT_INST_FUNC(log2_ext) { ONE_ARG_OP(log2f); }
-  EXT_INST_FUNC(sqrt_ext) { ONE_ARG_OP(sqrtf); }
-  EXT_INST_FUNC(inverseSqrt_ext) { ONE_ARG_OP([](float f) {return 1.0f / sqrtf(f);}) }
+  EXT_INST_FUNC(exp_ext) { ONE_ARG_OP_F(expf); }
+  EXT_INST_FUNC(log_ext) { ONE_ARG_OP_F(logf); }
+  EXT_INST_FUNC(exp2_ext) { ONE_ARG_OP_F(exp2f); }
+  EXT_INST_FUNC(log2_ext) { ONE_ARG_OP_F(log2f); }
+  EXT_INST_FUNC(sqrt_ext) { ONE_ARG_OP_F(sqrtf); }
+  EXT_INST_FUNC(inverseSqrt_ext) { ONE_ARG_OP_F([](float f) {return 1.0f / sqrtf(f);}) }
 
   EXT_INST_FUNC(determinant_ext) { return values [0]; }
   EXT_INST_FUNC(matrixInverse_ext) { return values [0]; }
 
-  EXT_INST_FUNC(modf_ext) { TWO_ARG_OP(fmodf); }
-  EXT_INST_FUNC(min_ext) { return values [0]; }
-  EXT_INST_FUNC(max_ext) { return values [0]; }
+  EXT_INST_FUNC(modf_ext) { TWO_ARG_OP_F(fmodf); }
 
-  EXT_INST_FUNC(clamp_ext) { THREE_ARG_OP_D(Clamp<float>); }
+  EXT_INST_FUNC(modf_struct_ext) { TWO_ARG_OP_F(fmodf); }
+
+  EXT_INST_FUNC(fmin_ext) { return values [0]; }
+  EXT_INST_FUNC(umin_ext) { return values [0]; }
+  EXT_INST_FUNC(smin_ext) { return values [0]; }
+
+  EXT_INST_FUNC(fmax_ext) { return values [0]; }
+  EXT_INST_FUNC(umax_ext) { return values [0]; }
+  EXT_INST_FUNC(smax_ext) { return values [0]; }
+
+  EXT_INST_FUNC(fclamp_ext) { THREE_ARG_OP_D(Clamp<float>); }
+  EXT_INST_FUNC(uclamp_ext) { THREE_ARG_OP_D(Clamp<unsigned int>); }
+  EXT_INST_FUNC(sclamp_ext) { THREE_ARG_OP_D(Clamp<int>); }
+
   EXT_INST_FUNC(mix_ext) { return values [0]; }
   EXT_INST_FUNC(step_ext) { return values [0]; }
   EXT_INST_FUNC(smoothStep_ext) { return values [0]; }
@@ -156,6 +184,7 @@ extern "C" {
 
   EXT_INST_FUNC(fma_ext) { return values [0]; }
   EXT_INST_FUNC(frexp_ext) { return values [0]; }
+  EXT_INST_FUNC(frexp_struct_ext) { return values [0]; }
   EXT_INST_FUNC(ldexp_ext) { return values [0]; }
 
   EXT_INST_FUNC(packSnorm4x8_ext) { return values [0]; }
@@ -198,32 +227,33 @@ extern "C" {
 
   EXT_INST_FUNC(cross_ext) { return values [0]; }
   EXT_INST_FUNC(normalize_ext) { return values [0]; }
-  EXT_INST_FUNC(ftransform_ext) { return values [0]; }
   EXT_INST_FUNC(faceForward_ext) { return values [0]; }
   EXT_INST_FUNC(reflect_ext) { return values [0]; }
   EXT_INST_FUNC(refract_ext) { return values [0]; }
 
-  EXT_INST_FUNC(uaddCarry_ext) { return values [0]; }
-  EXT_INST_FUNC(usubBorrow_ext) { return values [0]; }
-  EXT_INST_FUNC(umulExtended_ext) { return values [0]; }
-  EXT_INST_FUNC(imulExtended_ext) { return values [0]; }
-  EXT_INST_FUNC(bitfieldExtract_ext) { return values [0]; }
-  EXT_INST_FUNC(bitfieldInsert_ext) { return values [0]; }
-  EXT_INST_FUNC(bitfieldReverse_ext) { return values [0]; }
-  EXT_INST_FUNC(bitCount_ext) { return values [0]; }
-  EXT_INST_FUNC(findLSB_ext) { return values [0]; }
-  EXT_INST_FUNC(findMSB_ext) { return values [0]; }
+  EXT_INST_FUNC(findILSB_ext) { return values [0]; }
+  EXT_INST_FUNC(findSMSB_ext) { return values [0]; }
+  EXT_INST_FUNC(findUMSB_ext) { return values [0]; }
 
   EXT_INST_FUNC(interpolateAtCentroid_ext) { return values [0]; }
   EXT_INST_FUNC(interpolateAtSample_ext) { return values [0]; }
   EXT_INST_FUNC(interpolateAtOffset_ext) { return values [0]; }
 
+  EXT_INST_FUNC(addCarry_ext) { return values [0]; }
+  EXT_INST_FUNC(subBorrow_ext) { return values [0]; }
+  EXT_INST_FUNC(mulExtended_ext) { return values [0]; }
+
+
   ExtInstFunc* exports[]{
+    nullptr,
+    
     round_ext,
     roundEven_ext,
     trunc_ext,
-    abs_ext,
-    sign_ext,
+    fabs_ext,
+    sabs_ext,
+    fsign_ext,
+    ssign_ext,
     floor_ext,
     ceil_ext,
     fract_ext,
@@ -256,20 +286,23 @@ extern "C" {
     matrixInverse_ext,
 
     modf_ext,            // second argument needs the OpVariable_ext, not an OpLoad
-    min_ext,
-    max_ext,
-    clamp_ext,
+    modf_struct_ext,
+    fmin_ext,
+    umin_ext,
+    smin_ext,
+    fmax_ext,
+    umax_ext,
+    smax_ext,
+    fclamp_ext,
+    uclamp_ext,
+    sclamp_ext,
     mix_ext,
     step_ext,
     smoothStep_ext,
 
-    floatBitsToInt_ext,
-    floatBitsToUint_ext,
-    intBitsToFloat_ext,
-    uintBitsToFloat_ext,
-
     fma_ext,
     frexp_ext,
+    frexp_struct_ext,
     ldexp_ext,
 
     packSnorm4x8_ext,
@@ -289,25 +322,21 @@ extern "C" {
     distance_ext,
     cross_ext,
     normalize_ext,
-    ftransform_ext,
     faceForward_ext,
     reflect_ext,
     refract_ext,
 
-    uaddCarry_ext,
-    usubBorrow_ext,
-    umulExtended_ext,
-    imulExtended_ext,
-    bitfieldExtract_ext,
-    bitfieldInsert_ext,
-    bitfieldReverse_ext,
-    bitCount_ext,
-    findLSB_ext,
-    findMSB_ext,
+    findILSB_ext,
+    findSMSB_ext,
+    findUMSB_ext,
 
     interpolateAtCentroid_ext,
     interpolateAtSample_ext,
     interpolateAtOffset_ext,
+
+    addCarry_ext,
+    subBorrow_ext,
+    mulExtended_ext,
   };
 
   EXT_EXPORT_TABLE_FUNC(exports)
