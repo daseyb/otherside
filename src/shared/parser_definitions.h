@@ -62,6 +62,7 @@ struct Program {
 
   std::map<uint32, Function> FunctionDeclarations;
   std::map<uint32, Function> FunctionDefinitions;
+  std::vector<SOp> Ops;
 
   SOp NextOp;
   Function* CurrentFunction;

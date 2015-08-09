@@ -3,4 +3,4 @@
 
 struct Program;
 
-bool validate(Program prog, std::ostream& errorOut);
+bool validate(const Program& prog, std::ostream& errorOut);
