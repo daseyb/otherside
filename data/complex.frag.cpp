@@ -1,7 +1,7 @@
 /*
 Version: 99
 Generator Magic: 85590203
-ID Bound: 90
+ID Bound: 89
 Instruction Schema: 0
 =================================================
 */
@@ -43,89 +43,88 @@ typedef bool bool_36;
 typedef bool_36* p_bool_36_37;
 typedef int32 int_42;
 typedef int_42* p_int_42_43;
-typedef int_42* p_int_42_49;
-struct v_float_7_4_82 {
+typedef int_42* p_int_42_50;
+struct v_float_7_4_81 {
   float_7 v[4];
 };
-typedef v_float_7_4_82* p_v_float_7_4_82_83;
+typedef v_float_7_4_81* p_v_float_7_4_81_82;
 
 static p_v_float_7_3_8_33 color;
 static p_bool_36_37 loopFlag;
-static p_int_42_49 iterations;
-static p_v_float_7_4_82_83 gl_FragColor;
+static p_int_42_50 iterations;
+static p_v_float_7_4_81_82 gl_FragColor;
 
 float_7 c_20 = 0;
 int_42 c_45 = 0;
-int_42 c_58 = 1;
-float_7 c_80 = 1;
+int_42 c_66 = 1;
+float_7 c_79 = 1;
 
 static void_2 main() {
 //Label [5]
 //Variable [9] [32] Function [0]
 //Variable [43] [44] Function [0]
 //Variable [18] [54] Function [0]
+//Variable [9] [60] Function [0]
 //Variable [9] [62] Function [0]
-//Variable [9] [64] Function [0]
-//Variable [10] [66] Function [0]
+//Variable [10] [64] Function [0]
 //Load [8] [35] [34] []
 //Store [32] [35] []
 //Load [36] [39] [38] []
 //SelectionMerge [41] Flatten
-//BranchConditional [39] [40] [74] []
+//BranchConditional [39] [40] [73] []
 //  Label [40]
 //  Store [44] [45] []
 //  Branch [46]
 //  Label [46]
-//  Load [42] [48] [44] []
-//  Load [42] [51] [50] []
-//  SLessThan [36] [52] [48] [51]
+//  Load [42] [49] [44] []
+//  Load [42] [52] [51] []
+//  SLessThan [36] [53] [49] [52]
 //  LoopMerge [47] Unroll
-//  BranchConditional [52] [53] [47] []
-//    Label [53]
+//  BranchConditional [53] [48] [47] []
+//    Label [48]
 //    Load [42] [55] [44] []
 //    ConvertSToF [7] [56] [55]
-//    Load [42] [57] [50] []
-//    IAdd [42] [59] [57] [58]
-//    ConvertSToF [7] [60] [59]
-//    FDiv [7] [61] [56] [60]
-//    Load [8] [63] [32] []
+//    Load [42] [57] [51] []
+//    ConvertSToF [7] [58] [57]
+//    FDiv [7] [59] [56] [58]
+//    Load [8] [61] [32] []
+//    Store [60] [61] []
+//    Load [8] [63] [34] []
 //    Store [62] [63] []
-//    Load [8] [65] [34] []
-//    Store [64] [65] []
-//    Store [66] [61] []
-//    FunctionCall [11] [67] [16] [[62], [64], [66]]
-//    Store [54] [67] []
-//    AccessChain [9] [68] [54] [[58]]
-//    Load [8] [69] [68] []
-//    Load [8] [70] [32] []
-//    FAdd [8] [71] [70] [69]
-//    Store [32] [71] []
-//    Load [42] [72] [44] []
-//    IAdd [42] [73] [72] [58]
-//    Store [44] [73] []
+//    Store [64] [59] []
+//    FunctionCall [11] [65] [16] [[60], [62], [64]]
+//    Store [54] [65] []
+//    AccessChain [9] [67] [54] [[66]]
+//    Load [8] [68] [67] []
+//    Load [8] [69] [32] []
+//    FAdd [8] [70] [69] [68]
+//    Store [32] [70] []
+//    Load [42] [71] [44] []
+//    IAdd [42] [72] [71] [66]
+//    Store [44] [72] []
 //    Branch [46]
 //  Label [47]
 //  Branch [41]
-//  Label [74]
-//  Load [42] [75] [50] []
-//  SGreaterThan [36] [76] [75] [45]
-//  SelectionMerge [78] Flatten
-//  BranchConditional [76] [77] [79] []
-//    Label [77]
+//  Label [73]
+//  Load [42] [74] [51] []
+//  SGreaterThan [36] [75] [74] [45]
+//  SelectionMerge [77] Flatten
+//  BranchConditional [75] [76] [78] []
+//    Label [76]
 //    Store [32] [21] []
-//    Branch [78]
-//    Label [79]
-//    Store [32] [81] []
-//    Branch [78]
-//  Label [78]
+//    Branch [77]
+//    Label [78]
+//    Store [32] [80] []
+//    Branch [77]
+//  Label [77]
 //  Branch [41]
 //Label [41]
-//Load [8] [85] [32] []
-//CompositeExtract [7] [86] [85] [0]
-//CompositeExtract [7] [87] [85] [1]
-//CompositeExtract [7] [88] [85] [2]
-//CompositeConstruct [82] [89] [[86], [87], [88], [80]]
-//Store [84] [89] []
+//Load [8] [84] [32] []
+//CompositeExtract [7] [85] [84] [0]
+//CompositeExtract [7] [86] [84] [1]
+//CompositeExtract [7] [87] [84] [2]
+//CompositeConstruct [81] [88] [[85], [86], [87], [79]]
+//Store [83] [88] []
 //Branch [6]
 //Label [6]
 //Return

@@ -64,4 +64,5 @@ public:
 
 };
 
+std::string writeProgram(const Program& prog);
 std::string writeOp(SOp op);

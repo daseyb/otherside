@@ -144,6 +144,8 @@ int main(int argc, const char** argv) {
   }
   std::cout << "done" << std::endl;
 
+  //std::cout << writeProgram(prog);
+
   std::cout << "Generationg code:...";
   if (!genCode(args.OutputFile, prog)) {
     std::cout << "Could not generate code for program." << std::endl;
@@ -158,29 +160,33 @@ int main(int argc, const char** argv) {
       return -1;
   }
 
-  Color* col = new Color{ 1, 0.5f, 0.25f };
-  Vec2* uv = new Vec2{ 1.0f, 1.0f };
+  std::cout << "Running program:...";
 
   Texture inTex;
   int comps;
   BColor* inputData = (BColor*)stbi_load("data/testin.bmp", &inTex.width, &inTex.height, &comps, 4);
   inTex.data = ConvertToFloat(inTex.width, inTex.height, inputData);
+  free(inputData);
 
   Sampler* sampler = new Sampler{ 2, (uint32*)&inTex, inTex.data, FilterMode::FMPoint, WrapMode::WMRepeat };
-  Texture outTex = MakeFlatTexture(inTex.width, inTex.height, { 0, 0, 0, 1 });
-
-  std::cout << "Running program:...";
-
   Vec2* texSize = new Vec2{ (float)inTex.width, (float)inTex.height};
   Light* light = new Light{ {1, 0, 0, 1}, {0.5f, 0.5f} };
   Color* fragColor = new Color{ 0, 0, 0, 0 };
+  Vec2* uv = new Vec2{ 1.0f, 1.0f };
 
-  vm.SetVariable("uv", &uv);
-  vm.SetVariable("texSize", &texSize);
-  vm.SetVariable("testTex", &sampler);
-  vm.SetVariable("light", &light);
-  vm.SetVariable("gl_FragColor", &fragColor);
+  bool allVariablesSet = true;
+  allVariablesSet &= vm.SetVariable("uv", &uv);
+  allVariablesSet &= vm.SetVariable("texSize", &texSize);
+  allVariablesSet &= vm.SetVariable("testTex", &sampler);
+  allVariablesSet &= vm.SetVariable("light", &light);
+  allVariablesSet &= vm.SetVariable("gl_FragColor", &fragColor);
 
+  if(!allVariablesSet) {
+    std::cout << "Could not set all variables." << std::endl;
+    return -1;
+  }
+
+  Texture outTex = MakeFlatTexture(inTex.width, inTex.height, { 0, 0, 0, 1 });
   bool didFail = false;
   for (int x = 0; x < outTex.width && !didFail; x++) {
     for (int y = 0; y < outTex.height; y++) {

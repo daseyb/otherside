@@ -102,25 +102,15 @@ bool Parser::ParseProgram(Program* prog) {
   }
 
   prog->Version = getAndEat();
-  std::cout << "Version: " << prog->Version << std::endl;
-
   prog->GeneratorMagic = getAndEat();
-  std::cout << "Generator Magic: " << prog->GeneratorMagic << std::endl;
-
   prog->IDBound = getAndEat();
-  std::cout << "ID Bound: " << prog->IDBound << std::endl;
-
   prog->InstructionSchema = getAndEat();
-  std::cout << "Instruction Schema: " << prog->InstructionSchema << std::endl;
-  std::cout << "=================================================" << std::endl;
 
   int instructionIndex = 0;
-  
   prog->NextOp = readInstruction();
 
   do {
     SOp op = prog->NextOp;
-    std::cout << std::setw(3) << instructionIndex << ": " << writeOp(op);
     instructionIndex++;
     if (!end()) {
       prog->NextOp = readInstruction();
@@ -138,6 +128,21 @@ bool Parser::ParseProgram(Program* prog) {
   } while (prog->NextOp.Op != Op::OpNop);
 
   return true;
+}
+
+std::string writeProgram(const Program& prog) {
+  std::stringstream progStream;
+  progStream << "Version: " << prog.Version << std::endl;
+  progStream << "Generator Magic: " << prog.GeneratorMagic << std::endl;
+  progStream << "ID Bound: " << prog.IDBound << std::endl;
+  progStream << "Instruction Schema: " << prog.InstructionSchema << std::endl;
+  progStream << "=================================================" << std::endl;
+  int instructionIndex = 0;
+  for(auto& op : prog.Ops) {
+    progStream << std::setw(3) << instructionIndex << ": " << writeOp(op);
+    instructionIndex++;
+  }
+  return progStream.str();
 }
 
 std::string writeOp(SOp op) {
