@@ -137,15 +137,19 @@ int main(int argc, const char** argv) {
     return -1;
   }
 
+  std::cout << "Validation program:...";
   if(!validate(prog, std::cout)) {
     std::cout << "Validation failed." << std::endl;
     return -1;
   }
+  std::cout << "done" << std::endl;
 
+  std::cout << "Generationg code:...";
   if (!genCode(args.OutputFile, prog)) {
     std::cout << "Could not generate code for program." << std::endl;
     return -1;
   }
+  std::cout << "done" << std::endl;
 
   Environment env;
   InterpretedVM vm(prog, env);
@@ -165,7 +169,7 @@ int main(int argc, const char** argv) {
   Sampler* sampler = new Sampler{ 2, (uint32*)&inTex, inTex.data, FilterMode::FMPoint, WrapMode::WMRepeat };
   Texture outTex = MakeFlatTexture(inTex.width, inTex.height, { 0, 0, 0, 1 });
 
-  std::cout << "Running program: ...";
+  std::cout << "Running program:...";
 
   Vec2* texSize = new Vec2{ (float)inTex.width, (float)inTex.height};
   Light* light = new Light{ {1, 0, 0, 1}, {0.5f, 0.5f} };
