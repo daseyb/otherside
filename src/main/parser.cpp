@@ -131,22 +131,19 @@ bool Parser::Parse(Program *outProg) {
   return true;
 }
 
-std::string writeProgram(const Program& prog) {
-  std::stringstream progStream;
-  progStream << "Version: " << prog.Version << std::endl;
-  progStream << "Generator Magic: " << prog.GeneratorMagic << std::endl;
-  progStream << "ID Bound: " << prog.IDBound << std::endl;
-  progStream << "Instruction Schema: " << prog.InstructionSchema << std::endl;
-  progStream << "=================================================" << std::endl;
-  int instructionIndex = 0;
-  for(auto& op : prog.Ops) {
-    progStream << std::setw(3) << instructionIndex << ": " << writeOp(op);
-    instructionIndex++;
+
+
+std::string getDescriptor(uint32 id, const Program* prog) {
+  if(prog->Names.find(id) != prog->Names.end()) {
+    return prog->Names.at(id).Name;
+  } else if(prog->Variables.find(id) != prog->Variables.end()) {
+    SVariable variable = prog->Variables.at(id);
+    return getDescriptor(variable.ResultId, prog);
   }
-  return progStream.str();
+  return  "";
 }
 
-std::string writeOp(SOp op) {
+std::string writeOp(SOp op, const Program* prog) {
   std::stringstream opline;
 
   opline << OpStrings[(int)op.Op];
@@ -174,7 +171,14 @@ std::string writeOp(SOp op) {
       opline << " " << word;
     }
     else if (wordTypes[i] == WordType::TId) {
-      opline << " [" << word << "]";
+      opline << " [" << word;
+      if(prog != nullptr && op.Op != Op::OpName && op.Op != Op::OpMemberName) {
+        auto desc = getDescriptor(word, prog);
+        if(desc.size() > 0) {
+          opline << "(" << getDescriptor(word, prog) << ")";
+        }
+      }
+      opline << "]";
     }
     else if (wordTypes[i] == WordType::TIdList) {
       uint32 count = word;
@@ -182,7 +186,14 @@ std::string writeOp(SOp op) {
       opline << " [";
       for (int j = 0; j < count; j++) {
         word = ptr[j];
-        opline << "[" << word << "]" << (j != count - 1 ? ", " : "");
+        opline << "[" << word;
+        if(prog != nullptr && op.Op != Op::OpName && op.Op != Op::OpMemberName) {
+          auto desc = getDescriptor(word, prog);
+          if(desc.size() > 0) {
+            opline << "(" << getDescriptor(word, prog) << ")";
+          }
+        }
+        opline << "]" << (j != count - 1 ? ", " : "");
       }
       opline << "]";
 
@@ -215,4 +226,23 @@ std::string writeOp(SOp op) {
 
   opline << std::endl;
   return opline.str();
+}
+
+std::string writeProgram(const Program& prog) {
+  std::stringstream progStream;
+  progStream << "Version: " << prog.Version << std::endl;
+  progStream << "Generator Magic: " << prog.GeneratorMagic << std::endl;
+  progStream << "ID Bound: " << prog.IDBound << std::endl;
+  progStream << "Instruction Schema: " << prog.InstructionSchema << std::endl;
+  progStream << "=================================================" << std::endl;
+  int instructionIndex = 0;
+  for(auto& op : prog.Ops) {
+    progStream << std::setw(3) << instructionIndex << ": " << writeOp(op, &prog);
+    instructionIndex++;
+  }
+  return progStream.str();
+}
+
+std::string writeOp(SOp op) {
+  return writeOp(op, nullptr);
 }
