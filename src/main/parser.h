@@ -57,7 +57,7 @@ public:
     inputFile.close();
   }
 
-  bool ParseProgram(Program* prog);
+  bool Parse(Program *prog);
   uint32* GetBufferPtr() const {
     return bufferStart.get();
   }

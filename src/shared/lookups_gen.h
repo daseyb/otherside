@@ -2,50 +2,50 @@
 #include "types.h"
 #include "lookups.h"
 
-struct Program;
+struct ParseProgram;
 
 #pragma pack(push, 1)
-void HandleNop(void* op, Program* prog);
+void HandleNop(void* op, ParseProgram* prog);
 struct SNop {
 };
 
-void HandleUndef(void* op, Program* prog);
+void HandleUndef(void* op, ParseProgram* prog);
 struct SUndef {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleSource(void* op, Program* prog);
+void HandleSource(void* op, ParseProgram* prog);
 struct SSource {
   spv::SourceLanguage SourceLanguage;
   uint32 Version;
 };
 
-void HandleSourceExtension(void* op, Program* prog);
+void HandleSourceExtension(void* op, ParseProgram* prog);
 struct SSourceExtension {
   char* Extension;
 };
 
-void HandleName(void* op, Program* prog);
+void HandleName(void* op, ParseProgram* prog);
 struct SName {
   uint32 TargetId;
   char* Name;
 };
 
-void HandleMemberName(void* op, Program* prog);
+void HandleMemberName(void* op, ParseProgram* prog);
 struct SMemberName {
   uint32 TypeId;
   uint32 Member;
   char* Name;
 };
 
-void HandleString(void* op, Program* prog);
+void HandleString(void* op, ParseProgram* prog);
 struct SString {
   uint32 ResultId;
   char* String;
 };
 
-void HandleLine(void* op, Program* prog);
+void HandleLine(void* op, ParseProgram* prog);
 struct SLine {
   uint32 TargetId;
   uint32 FileId;
@@ -53,18 +53,18 @@ struct SLine {
   uint32 Column;
 };
 
-void HandleExtension(void* op, Program* prog);
+void HandleExtension(void* op, ParseProgram* prog);
 struct SExtension {
   char* Name;
 };
 
-void HandleExtInstImport(void* op, Program* prog);
+void HandleExtInstImport(void* op, ParseProgram* prog);
 struct SExtInstImport {
   uint32 ResultId;
   char* Name;
 };
 
-void HandleExtInst(void* op, Program* prog);
+void HandleExtInst(void* op, ParseProgram* prog);
 struct SExtInst {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -74,20 +74,20 @@ struct SExtInst {
   uint32* OperandIds;
 };
 
-void HandleMemoryModel(void* op, Program* prog);
+void HandleMemoryModel(void* op, ParseProgram* prog);
 struct SMemoryModel {
   spv::AddressingModel AddressingModel;
   spv::MemoryModel MemoryModel;
 };
 
-void HandleEntryPoint(void* op, Program* prog);
+void HandleEntryPoint(void* op, ParseProgram* prog);
 struct SEntryPoint {
   spv::ExecutionModel ExecutionModel;
   uint32 EntryPointId;
   char* Name;
 };
 
-void HandleExecutionMode(void* op, Program* prog);
+void HandleExecutionMode(void* op, ParseProgram* prog);
 struct SExecutionMode {
   uint32 EntryPointId;
   spv::ExecutionMode Mode;
@@ -95,49 +95,49 @@ struct SExecutionMode {
   uint32* ExecutionModes;
 };
 
-void HandleCapability(void* op, Program* prog);
+void HandleCapability(void* op, ParseProgram* prog);
 struct SCapability {
   spv::Capability Capability;
 };
 
-void HandleTypeVoid(void* op, Program* prog);
+void HandleTypeVoid(void* op, ParseProgram* prog);
 struct STypeVoid {
   uint32 ResultId;
 };
 
-void HandleTypeBool(void* op, Program* prog);
+void HandleTypeBool(void* op, ParseProgram* prog);
 struct STypeBool {
   uint32 ResultId;
 };
 
-void HandleTypeInt(void* op, Program* prog);
+void HandleTypeInt(void* op, ParseProgram* prog);
 struct STypeInt {
   uint32 ResultId;
   uint32 Width;
   uint32 Signedness;
 };
 
-void HandleTypeFloat(void* op, Program* prog);
+void HandleTypeFloat(void* op, ParseProgram* prog);
 struct STypeFloat {
   uint32 ResultId;
   uint32 Width;
 };
 
-void HandleTypeVector(void* op, Program* prog);
+void HandleTypeVector(void* op, ParseProgram* prog);
 struct STypeVector {
   uint32 ResultId;
   uint32 ComponentTypeId;
   uint32 ComponentCount;
 };
 
-void HandleTypeMatrix(void* op, Program* prog);
+void HandleTypeMatrix(void* op, ParseProgram* prog);
 struct STypeMatrix {
   uint32 ResultId;
   uint32 ColumnTypeId;
   uint32 ColumnCount;
 };
 
-void HandleTypeImage(void* op, Program* prog);
+void HandleTypeImage(void* op, ParseProgram* prog);
 struct STypeImage {
   uint32 ResultId;
   uint32 SampledTypeId;
@@ -151,51 +151,51 @@ struct STypeImage {
   uint32* AccessQualifiers;
 };
 
-void HandleTypeSampler(void* op, Program* prog);
+void HandleTypeSampler(void* op, ParseProgram* prog);
 struct STypeSampler {
   uint32 ResultId;
 };
 
-void HandleTypeSampledImage(void* op, Program* prog);
+void HandleTypeSampledImage(void* op, ParseProgram* prog);
 struct STypeSampledImage {
   uint32 ResultId;
   uint32 ImageTypeId;
 };
 
-void HandleTypeArray(void* op, Program* prog);
+void HandleTypeArray(void* op, ParseProgram* prog);
 struct STypeArray {
   uint32 ResultId;
   uint32 ElementTypeId;
   uint32 LengthId;
 };
 
-void HandleTypeRuntimeArray(void* op, Program* prog);
+void HandleTypeRuntimeArray(void* op, ParseProgram* prog);
 struct STypeRuntimeArray {
   uint32 ResultId;
   uint32 ElementTypeId;
 };
 
-void HandleTypeStruct(void* op, Program* prog);
+void HandleTypeStruct(void* op, ParseProgram* prog);
 struct STypeStruct {
   uint32 ResultId;
   uint32 MembertypeIdsCount;
   uint32* MembertypeIds;
 };
 
-void HandleTypeOpaque(void* op, Program* prog);
+void HandleTypeOpaque(void* op, ParseProgram* prog);
 struct STypeOpaque {
   uint32 ResultId;
   char* OpaqueTypeName;
 };
 
-void HandleTypePointer(void* op, Program* prog);
+void HandleTypePointer(void* op, ParseProgram* prog);
 struct STypePointer {
   uint32 ResultId;
   spv::StorageClass StorageClass;
   uint32 TypeId;
 };
 
-void HandleTypeFunction(void* op, Program* prog);
+void HandleTypeFunction(void* op, ParseProgram* prog);
 struct STypeFunction {
   uint32 ResultId;
   uint32 ReturnTypeId;
@@ -203,46 +203,46 @@ struct STypeFunction {
   uint32* ParameterTypeIds;
 };
 
-void HandleTypeEvent(void* op, Program* prog);
+void HandleTypeEvent(void* op, ParseProgram* prog);
 struct STypeEvent {
   uint32 ResultId;
 };
 
-void HandleTypeDeviceEvent(void* op, Program* prog);
+void HandleTypeDeviceEvent(void* op, ParseProgram* prog);
 struct STypeDeviceEvent {
   uint32 ResultId;
 };
 
-void HandleTypeReserveId(void* op, Program* prog);
+void HandleTypeReserveId(void* op, ParseProgram* prog);
 struct STypeReserveId {
   uint32 ResultId;
 };
 
-void HandleTypeQueue(void* op, Program* prog);
+void HandleTypeQueue(void* op, ParseProgram* prog);
 struct STypeQueue {
   uint32 ResultId;
 };
 
-void HandleTypePipe(void* op, Program* prog);
+void HandleTypePipe(void* op, ParseProgram* prog);
 struct STypePipe {
   uint32 ResultId;
   uint32 TypeId;
   spv::AccessQualifier Qualifier;
 };
 
-void HandleConstantTrue(void* op, Program* prog);
+void HandleConstantTrue(void* op, ParseProgram* prog);
 struct SConstantTrue {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleConstantFalse(void* op, Program* prog);
+void HandleConstantFalse(void* op, ParseProgram* prog);
 struct SConstantFalse {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleConstant(void* op, Program* prog);
+void HandleConstant(void* op, ParseProgram* prog);
 struct SConstant {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -250,7 +250,7 @@ struct SConstant {
   uint32* Values;
 };
 
-void HandleConstantComposite(void* op, Program* prog);
+void HandleConstantComposite(void* op, ParseProgram* prog);
 struct SConstantComposite {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -258,7 +258,7 @@ struct SConstantComposite {
   uint32* ConstituentsIds;
 };
 
-void HandleConstantSampler(void* op, Program* prog);
+void HandleConstantSampler(void* op, ParseProgram* prog);
 struct SConstantSampler {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -267,25 +267,25 @@ struct SConstantSampler {
   spv::SamplerFilterMode SamplerFilterMode;
 };
 
-void HandleConstantNull(void* op, Program* prog);
+void HandleConstantNull(void* op, ParseProgram* prog);
 struct SConstantNull {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleSpecConstantTrue(void* op, Program* prog);
+void HandleSpecConstantTrue(void* op, ParseProgram* prog);
 struct SSpecConstantTrue {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleSpecConstantFalse(void* op, Program* prog);
+void HandleSpecConstantFalse(void* op, ParseProgram* prog);
 struct SSpecConstantFalse {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleSpecConstant(void* op, Program* prog);
+void HandleSpecConstant(void* op, ParseProgram* prog);
 struct SSpecConstant {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -293,7 +293,7 @@ struct SSpecConstant {
   uint32* Values;
 };
 
-void HandleSpecConstantComposite(void* op, Program* prog);
+void HandleSpecConstantComposite(void* op, ParseProgram* prog);
 struct SSpecConstantComposite {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -301,7 +301,7 @@ struct SSpecConstantComposite {
   uint32* ConstituentsIds;
 };
 
-void HandleSpecConstantOp(void* op, Program* prog);
+void HandleSpecConstantOp(void* op, ParseProgram* prog);
 struct SSpecConstantOp {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -310,7 +310,7 @@ struct SSpecConstantOp {
   uint32* OperandsIds;
 };
 
-void HandleFunction(void* op, Program* prog);
+void HandleFunction(void* op, ParseProgram* prog);
 struct SFunction {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -318,17 +318,17 @@ struct SFunction {
   uint32 FunctionTypeId;
 };
 
-void HandleFunctionParameter(void* op, Program* prog);
+void HandleFunctionParameter(void* op, ParseProgram* prog);
 struct SFunctionParameter {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleFunctionEnd(void* op, Program* prog);
+void HandleFunctionEnd(void* op, ParseProgram* prog);
 struct SFunctionEnd {
 };
 
-void HandleFunctionCall(void* op, Program* prog);
+void HandleFunctionCall(void* op, ParseProgram* prog);
 struct SFunctionCall {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -337,7 +337,7 @@ struct SFunctionCall {
   uint32* ArgumentIds;
 };
 
-void HandleVariable(void* op, Program* prog);
+void HandleVariable(void* op, ParseProgram* prog);
 struct SVariable {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -345,7 +345,7 @@ struct SVariable {
   uint32 InitializerId;
 };
 
-void HandleImageTexelPointer(void* op, Program* prog);
+void HandleImageTexelPointer(void* op, ParseProgram* prog);
 struct SImageTexelPointer {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -354,7 +354,7 @@ struct SImageTexelPointer {
   uint32 SampleId;
 };
 
-void HandleLoad(void* op, Program* prog);
+void HandleLoad(void* op, ParseProgram* prog);
 struct SLoad {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -363,7 +363,7 @@ struct SLoad {
   uint32* MemoryAccess;
 };
 
-void HandleStore(void* op, Program* prog);
+void HandleStore(void* op, ParseProgram* prog);
 struct SStore {
   uint32 PointerId;
   uint32 ObjectId;
@@ -371,7 +371,7 @@ struct SStore {
   uint32* MemoryAccess;
 };
 
-void HandleCopyMemory(void* op, Program* prog);
+void HandleCopyMemory(void* op, ParseProgram* prog);
 struct SCopyMemory {
   uint32 TargetId;
   uint32 SourceId;
@@ -379,7 +379,7 @@ struct SCopyMemory {
   uint32* MemoryAccess;
 };
 
-void HandleCopyMemorySized(void* op, Program* prog);
+void HandleCopyMemorySized(void* op, ParseProgram* prog);
 struct SCopyMemorySized {
   uint32 TargetId;
   uint32 SourceId;
@@ -388,7 +388,7 @@ struct SCopyMemorySized {
   uint32* MemoryAccess;
 };
 
-void HandleAccessChain(void* op, Program* prog);
+void HandleAccessChain(void* op, ParseProgram* prog);
 struct SAccessChain {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -397,7 +397,7 @@ struct SAccessChain {
   uint32* IndexesIds;
 };
 
-void HandleInBoundsAccessChain(void* op, Program* prog);
+void HandleInBoundsAccessChain(void* op, ParseProgram* prog);
 struct SInBoundsAccessChain {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -406,7 +406,7 @@ struct SInBoundsAccessChain {
   uint32* IndexesIds;
 };
 
-void HandlePtrAccessChain(void* op, Program* prog);
+void HandlePtrAccessChain(void* op, ParseProgram* prog);
 struct SPtrAccessChain {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -416,7 +416,7 @@ struct SPtrAccessChain {
   uint32* IndexesIds;
 };
 
-void HandleArrayLength(void* op, Program* prog);
+void HandleArrayLength(void* op, ParseProgram* prog);
 struct SArrayLength {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -424,14 +424,14 @@ struct SArrayLength {
   uint32 Arraymember;
 };
 
-void HandleGenericPtrMemSemantics(void* op, Program* prog);
+void HandleGenericPtrMemSemantics(void* op, ParseProgram* prog);
 struct SGenericPtrMemSemantics {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
 };
 
-void HandleDecorate(void* op, Program* prog);
+void HandleDecorate(void* op, ParseProgram* prog);
 struct SDecorate {
   uint32 TargetId;
   spv::Decoration Decoration;
@@ -439,7 +439,7 @@ struct SDecorate {
   uint32* Decorations;
 };
 
-void HandleMemberDecorate(void* op, Program* prog);
+void HandleMemberDecorate(void* op, ParseProgram* prog);
 struct SMemberDecorate {
   uint32 StructureTypeId;
   uint32 Member;
@@ -448,26 +448,26 @@ struct SMemberDecorate {
   uint32* Decorations;
 };
 
-void HandleDecorationGroup(void* op, Program* prog);
+void HandleDecorationGroup(void* op, ParseProgram* prog);
 struct SDecorationGroup {
   uint32 ResultId;
 };
 
-void HandleGroupDecorate(void* op, Program* prog);
+void HandleGroupDecorate(void* op, ParseProgram* prog);
 struct SGroupDecorate {
   uint32 DecorationGroupId;
   uint32 TargetsIdsCount;
   uint32* TargetsIds;
 };
 
-void HandleGroupMemberDecorate(void* op, Program* prog);
+void HandleGroupMemberDecorate(void* op, ParseProgram* prog);
 struct SGroupMemberDecorate {
   uint32 DecorationGroupId;
   uint32 IdsCount;
   uint32* Ids;
 };
 
-void HandleVectorExtractDynamic(void* op, Program* prog);
+void HandleVectorExtractDynamic(void* op, ParseProgram* prog);
 struct SVectorExtractDynamic {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -475,7 +475,7 @@ struct SVectorExtractDynamic {
   uint32 IndexId;
 };
 
-void HandleVectorInsertDynamic(void* op, Program* prog);
+void HandleVectorInsertDynamic(void* op, ParseProgram* prog);
 struct SVectorInsertDynamic {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -484,7 +484,7 @@ struct SVectorInsertDynamic {
   uint32 IndexId;
 };
 
-void HandleVectorShuffle(void* op, Program* prog);
+void HandleVectorShuffle(void* op, ParseProgram* prog);
 struct SVectorShuffle {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -494,7 +494,7 @@ struct SVectorShuffle {
   uint32* Components;
 };
 
-void HandleCompositeConstruct(void* op, Program* prog);
+void HandleCompositeConstruct(void* op, ParseProgram* prog);
 struct SCompositeConstruct {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -502,7 +502,7 @@ struct SCompositeConstruct {
   uint32* ConstituentsIds;
 };
 
-void HandleCompositeExtract(void* op, Program* prog);
+void HandleCompositeExtract(void* op, ParseProgram* prog);
 struct SCompositeExtract {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -511,7 +511,7 @@ struct SCompositeExtract {
   uint32* Indexes;
 };
 
-void HandleCompositeInsert(void* op, Program* prog);
+void HandleCompositeInsert(void* op, ParseProgram* prog);
 struct SCompositeInsert {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -521,21 +521,21 @@ struct SCompositeInsert {
   uint32* Indexes;
 };
 
-void HandleCopyObject(void* op, Program* prog);
+void HandleCopyObject(void* op, ParseProgram* prog);
 struct SCopyObject {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-void HandleTranspose(void* op, Program* prog);
+void HandleTranspose(void* op, ParseProgram* prog);
 struct STranspose {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 MatrixId;
 };
 
-void HandleSampledImage(void* op, Program* prog);
+void HandleSampledImage(void* op, ParseProgram* prog);
 struct SSampledImage {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -543,7 +543,7 @@ struct SSampledImage {
   uint32 SamplerId;
 };
 
-void HandleImageSampleImplicitLod(void* op, Program* prog);
+void HandleImageSampleImplicitLod(void* op, ParseProgram* prog);
 struct SImageSampleImplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -553,7 +553,7 @@ struct SImageSampleImplicitLod {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageSampleExplicitLod(void* op, Program* prog);
+void HandleImageSampleExplicitLod(void* op, ParseProgram* prog);
 struct SImageSampleExplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -563,7 +563,7 @@ struct SImageSampleExplicitLod {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageSampleDrefImplicitLod(void* op, Program* prog);
+void HandleImageSampleDrefImplicitLod(void* op, ParseProgram* prog);
 struct SImageSampleDrefImplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -574,7 +574,7 @@ struct SImageSampleDrefImplicitLod {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageSampleDrefExplicitLod(void* op, Program* prog);
+void HandleImageSampleDrefExplicitLod(void* op, ParseProgram* prog);
 struct SImageSampleDrefExplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -585,7 +585,7 @@ struct SImageSampleDrefExplicitLod {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageSampleProjImplicitLod(void* op, Program* prog);
+void HandleImageSampleProjImplicitLod(void* op, ParseProgram* prog);
 struct SImageSampleProjImplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -595,7 +595,7 @@ struct SImageSampleProjImplicitLod {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageSampleProjExplicitLod(void* op, Program* prog);
+void HandleImageSampleProjExplicitLod(void* op, ParseProgram* prog);
 struct SImageSampleProjExplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -605,7 +605,7 @@ struct SImageSampleProjExplicitLod {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageSampleProjDrefImplicitLod(void* op, Program* prog);
+void HandleImageSampleProjDrefImplicitLod(void* op, ParseProgram* prog);
 struct SImageSampleProjDrefImplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -616,7 +616,7 @@ struct SImageSampleProjDrefImplicitLod {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageSampleProjDrefExplicitLod(void* op, Program* prog);
+void HandleImageSampleProjDrefExplicitLod(void* op, ParseProgram* prog);
 struct SImageSampleProjDrefExplicitLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -627,7 +627,7 @@ struct SImageSampleProjDrefExplicitLod {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageFetch(void* op, Program* prog);
+void HandleImageFetch(void* op, ParseProgram* prog);
 struct SImageFetch {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -637,7 +637,7 @@ struct SImageFetch {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageGather(void* op, Program* prog);
+void HandleImageGather(void* op, ParseProgram* prog);
 struct SImageGather {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -648,7 +648,7 @@ struct SImageGather {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageDrefGather(void* op, Program* prog);
+void HandleImageDrefGather(void* op, ParseProgram* prog);
 struct SImageDrefGather {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -659,7 +659,7 @@ struct SImageDrefGather {
   uint32* ImageOperandsIds;
 };
 
-void HandleImageRead(void* op, Program* prog);
+void HandleImageRead(void* op, ParseProgram* prog);
 struct SImageRead {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -667,35 +667,35 @@ struct SImageRead {
   uint32 CoordinateId;
 };
 
-void HandleImageWrite(void* op, Program* prog);
+void HandleImageWrite(void* op, ParseProgram* prog);
 struct SImageWrite {
   uint32 ImageId;
   uint32 CoordinateId;
   uint32 TexelId;
 };
 
-void HandleImageQueryDim(void* op, Program* prog);
+void HandleImageQueryDim(void* op, ParseProgram* prog);
 struct SImageQueryDim {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 ImageId;
 };
 
-void HandleImageQueryFormat(void* op, Program* prog);
+void HandleImageQueryFormat(void* op, ParseProgram* prog);
 struct SImageQueryFormat {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 ImageId;
 };
 
-void HandleImageQueryOrder(void* op, Program* prog);
+void HandleImageQueryOrder(void* op, ParseProgram* prog);
 struct SImageQueryOrder {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 ImageId;
 };
 
-void HandleImageQuerySizeLod(void* op, Program* prog);
+void HandleImageQuerySizeLod(void* op, ParseProgram* prog);
 struct SImageQuerySizeLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -703,14 +703,14 @@ struct SImageQuerySizeLod {
   uint32 LevelofDetailId;
 };
 
-void HandleImageQuerySize(void* op, Program* prog);
+void HandleImageQuerySize(void* op, ParseProgram* prog);
 struct SImageQuerySize {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 ImageId;
 };
 
-void HandleImageQueryLod(void* op, Program* prog);
+void HandleImageQueryLod(void* op, ParseProgram* prog);
 struct SImageQueryLod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -718,119 +718,119 @@ struct SImageQueryLod {
   uint32 CoordinateId;
 };
 
-void HandleImageQueryLevels(void* op, Program* prog);
+void HandleImageQueryLevels(void* op, ParseProgram* prog);
 struct SImageQueryLevels {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 ImageId;
 };
 
-void HandleImageQuerySamples(void* op, Program* prog);
+void HandleImageQuerySamples(void* op, ParseProgram* prog);
 struct SImageQuerySamples {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 ImageId;
 };
 
-void HandleConvertFToU(void* op, Program* prog);
+void HandleConvertFToU(void* op, ParseProgram* prog);
 struct SConvertFToU {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 FloatValueId;
 };
 
-void HandleConvertFToS(void* op, Program* prog);
+void HandleConvertFToS(void* op, ParseProgram* prog);
 struct SConvertFToS {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 FloatValueId;
 };
 
-void HandleConvertSToF(void* op, Program* prog);
+void HandleConvertSToF(void* op, ParseProgram* prog);
 struct SConvertSToF {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SignedValueId;
 };
 
-void HandleConvertUToF(void* op, Program* prog);
+void HandleConvertUToF(void* op, ParseProgram* prog);
 struct SConvertUToF {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 UnsignedValueId;
 };
 
-void HandleUConvert(void* op, Program* prog);
+void HandleUConvert(void* op, ParseProgram* prog);
 struct SUConvert {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 UnsignedValueId;
 };
 
-void HandleSConvert(void* op, Program* prog);
+void HandleSConvert(void* op, ParseProgram* prog);
 struct SSConvert {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SignedValueId;
 };
 
-void HandleFConvert(void* op, Program* prog);
+void HandleFConvert(void* op, ParseProgram* prog);
 struct SFConvert {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 FloatValueId;
 };
 
-void HandleQuantizeToF16(void* op, Program* prog);
+void HandleQuantizeToF16(void* op, ParseProgram* prog);
 struct SQuantizeToF16 {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 ValueId;
 };
 
-void HandleConvertPtrToU(void* op, Program* prog);
+void HandleConvertPtrToU(void* op, ParseProgram* prog);
 struct SConvertPtrToU {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
 };
 
-void HandleSatConvertSToU(void* op, Program* prog);
+void HandleSatConvertSToU(void* op, ParseProgram* prog);
 struct SSatConvertSToU {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 SignedValueId;
 };
 
-void HandleSatConvertUToS(void* op, Program* prog);
+void HandleSatConvertUToS(void* op, ParseProgram* prog);
 struct SSatConvertUToS {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 UnsignedValueId;
 };
 
-void HandleConvertUToPtr(void* op, Program* prog);
+void HandleConvertUToPtr(void* op, ParseProgram* prog);
 struct SConvertUToPtr {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 IntegerValueId;
 };
 
-void HandlePtrCastToGeneric(void* op, Program* prog);
+void HandlePtrCastToGeneric(void* op, ParseProgram* prog);
 struct SPtrCastToGeneric {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
 };
 
-void HandleGenericCastToPtr(void* op, Program* prog);
+void HandleGenericCastToPtr(void* op, ParseProgram* prog);
 struct SGenericCastToPtr {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PointerId;
 };
 
-void HandleGenericCastToPtrExplicit(void* op, Program* prog);
+void HandleGenericCastToPtrExplicit(void* op, ParseProgram* prog);
 struct SGenericCastToPtrExplicit {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -838,28 +838,28 @@ struct SGenericCastToPtrExplicit {
   spv::StorageClass Storage;
 };
 
-void HandleBitcast(void* op, Program* prog);
+void HandleBitcast(void* op, ParseProgram* prog);
 struct SBitcast {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-void HandleSNegate(void* op, Program* prog);
+void HandleSNegate(void* op, ParseProgram* prog);
 struct SSNegate {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-void HandleFNegate(void* op, Program* prog);
+void HandleFNegate(void* op, ParseProgram* prog);
 struct SFNegate {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-void HandleIAdd(void* op, Program* prog);
+void HandleIAdd(void* op, ParseProgram* prog);
 struct SIAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -867,7 +867,7 @@ struct SIAdd {
   uint32 Operand2Id;
 };
 
-void HandleFAdd(void* op, Program* prog);
+void HandleFAdd(void* op, ParseProgram* prog);
 struct SFAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -875,7 +875,7 @@ struct SFAdd {
   uint32 Operand2Id;
 };
 
-void HandleISub(void* op, Program* prog);
+void HandleISub(void* op, ParseProgram* prog);
 struct SISub {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -883,7 +883,7 @@ struct SISub {
   uint32 Operand2Id;
 };
 
-void HandleFSub(void* op, Program* prog);
+void HandleFSub(void* op, ParseProgram* prog);
 struct SFSub {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -891,7 +891,7 @@ struct SFSub {
   uint32 Operand2Id;
 };
 
-void HandleIMul(void* op, Program* prog);
+void HandleIMul(void* op, ParseProgram* prog);
 struct SIMul {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -899,7 +899,7 @@ struct SIMul {
   uint32 Operand2Id;
 };
 
-void HandleFMul(void* op, Program* prog);
+void HandleFMul(void* op, ParseProgram* prog);
 struct SFMul {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -907,7 +907,7 @@ struct SFMul {
   uint32 Operand2Id;
 };
 
-void HandleUDiv(void* op, Program* prog);
+void HandleUDiv(void* op, ParseProgram* prog);
 struct SUDiv {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -915,7 +915,7 @@ struct SUDiv {
   uint32 Operand2Id;
 };
 
-void HandleSDiv(void* op, Program* prog);
+void HandleSDiv(void* op, ParseProgram* prog);
 struct SSDiv {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -923,7 +923,7 @@ struct SSDiv {
   uint32 Operand2Id;
 };
 
-void HandleFDiv(void* op, Program* prog);
+void HandleFDiv(void* op, ParseProgram* prog);
 struct SFDiv {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -931,7 +931,7 @@ struct SFDiv {
   uint32 Operand2Id;
 };
 
-void HandleUMod(void* op, Program* prog);
+void HandleUMod(void* op, ParseProgram* prog);
 struct SUMod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -939,7 +939,7 @@ struct SUMod {
   uint32 Operand2Id;
 };
 
-void HandleSRem(void* op, Program* prog);
+void HandleSRem(void* op, ParseProgram* prog);
 struct SSRem {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -947,7 +947,7 @@ struct SSRem {
   uint32 Operand2Id;
 };
 
-void HandleSMod(void* op, Program* prog);
+void HandleSMod(void* op, ParseProgram* prog);
 struct SSMod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -955,7 +955,7 @@ struct SSMod {
   uint32 Operand2Id;
 };
 
-void HandleFRem(void* op, Program* prog);
+void HandleFRem(void* op, ParseProgram* prog);
 struct SFRem {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -963,7 +963,7 @@ struct SFRem {
   uint32 Operand2Id;
 };
 
-void HandleFMod(void* op, Program* prog);
+void HandleFMod(void* op, ParseProgram* prog);
 struct SFMod {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -971,7 +971,7 @@ struct SFMod {
   uint32 Operand2Id;
 };
 
-void HandleVectorTimesScalar(void* op, Program* prog);
+void HandleVectorTimesScalar(void* op, ParseProgram* prog);
 struct SVectorTimesScalar {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -979,7 +979,7 @@ struct SVectorTimesScalar {
   uint32 ScalarId;
 };
 
-void HandleMatrixTimesScalar(void* op, Program* prog);
+void HandleMatrixTimesScalar(void* op, ParseProgram* prog);
 struct SMatrixTimesScalar {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -987,7 +987,7 @@ struct SMatrixTimesScalar {
   uint32 ScalarId;
 };
 
-void HandleVectorTimesMatrix(void* op, Program* prog);
+void HandleVectorTimesMatrix(void* op, ParseProgram* prog);
 struct SVectorTimesMatrix {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -995,7 +995,7 @@ struct SVectorTimesMatrix {
   uint32 MatrixId;
 };
 
-void HandleMatrixTimesVector(void* op, Program* prog);
+void HandleMatrixTimesVector(void* op, ParseProgram* prog);
 struct SMatrixTimesVector {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1003,7 +1003,7 @@ struct SMatrixTimesVector {
   uint32 VectorId;
 };
 
-void HandleMatrixTimesMatrix(void* op, Program* prog);
+void HandleMatrixTimesMatrix(void* op, ParseProgram* prog);
 struct SMatrixTimesMatrix {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1011,7 +1011,7 @@ struct SMatrixTimesMatrix {
   uint32 RightMatrixId;
 };
 
-void HandleOuterProduct(void* op, Program* prog);
+void HandleOuterProduct(void* op, ParseProgram* prog);
 struct SOuterProduct {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1019,7 +1019,7 @@ struct SOuterProduct {
   uint32 Vector2Id;
 };
 
-void HandleDot(void* op, Program* prog);
+void HandleDot(void* op, ParseProgram* prog);
 struct SDot {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1027,74 +1027,74 @@ struct SDot {
   uint32 Vector2Id;
 };
 
-void HandleIAddCarry(void* op, Program* prog);
+void HandleIAddCarry(void* op, ParseProgram* prog);
 struct SIAddCarry {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleISubBorrow(void* op, Program* prog);
+void HandleISubBorrow(void* op, ParseProgram* prog);
 struct SISubBorrow {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleIMulExtended(void* op, Program* prog);
+void HandleIMulExtended(void* op, ParseProgram* prog);
 struct SIMulExtended {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleAny(void* op, Program* prog);
+void HandleAny(void* op, ParseProgram* prog);
 struct SAny {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 VectorId;
 };
 
-void HandleAll(void* op, Program* prog);
+void HandleAll(void* op, ParseProgram* prog);
 struct SAll {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 VectorId;
 };
 
-void HandleIsNan(void* op, Program* prog);
+void HandleIsNan(void* op, ParseProgram* prog);
 struct SIsNan {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 xId;
 };
 
-void HandleIsInf(void* op, Program* prog);
+void HandleIsInf(void* op, ParseProgram* prog);
 struct SIsInf {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 xId;
 };
 
-void HandleIsFinite(void* op, Program* prog);
+void HandleIsFinite(void* op, ParseProgram* prog);
 struct SIsFinite {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 xId;
 };
 
-void HandleIsNormal(void* op, Program* prog);
+void HandleIsNormal(void* op, ParseProgram* prog);
 struct SIsNormal {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 xId;
 };
 
-void HandleSignBitSet(void* op, Program* prog);
+void HandleSignBitSet(void* op, ParseProgram* prog);
 struct SSignBitSet {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 xId;
 };
 
-void HandleLessOrGreater(void* op, Program* prog);
+void HandleLessOrGreater(void* op, ParseProgram* prog);
 struct SLessOrGreater {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1102,7 +1102,7 @@ struct SLessOrGreater {
   uint32 yId;
 };
 
-void HandleOrdered(void* op, Program* prog);
+void HandleOrdered(void* op, ParseProgram* prog);
 struct SOrdered {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1110,7 +1110,7 @@ struct SOrdered {
   uint32 yId;
 };
 
-void HandleUnordered(void* op, Program* prog);
+void HandleUnordered(void* op, ParseProgram* prog);
 struct SUnordered {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1118,7 +1118,7 @@ struct SUnordered {
   uint32 yId;
 };
 
-void HandleLogicalEqual(void* op, Program* prog);
+void HandleLogicalEqual(void* op, ParseProgram* prog);
 struct SLogicalEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1126,7 +1126,7 @@ struct SLogicalEqual {
   uint32 Operand2Id;
 };
 
-void HandleLogicalNotEqual(void* op, Program* prog);
+void HandleLogicalNotEqual(void* op, ParseProgram* prog);
 struct SLogicalNotEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1134,7 +1134,7 @@ struct SLogicalNotEqual {
   uint32 Operand2Id;
 };
 
-void HandleLogicalOr(void* op, Program* prog);
+void HandleLogicalOr(void* op, ParseProgram* prog);
 struct SLogicalOr {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1142,7 +1142,7 @@ struct SLogicalOr {
   uint32 Operand2Id;
 };
 
-void HandleLogicalAnd(void* op, Program* prog);
+void HandleLogicalAnd(void* op, ParseProgram* prog);
 struct SLogicalAnd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1150,14 +1150,14 @@ struct SLogicalAnd {
   uint32 Operand2Id;
 };
 
-void HandleLogicalNot(void* op, Program* prog);
+void HandleLogicalNot(void* op, ParseProgram* prog);
 struct SLogicalNot {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-void HandleSelect(void* op, Program* prog);
+void HandleSelect(void* op, ParseProgram* prog);
 struct SSelect {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1166,7 +1166,7 @@ struct SSelect {
   uint32 Object2Id;
 };
 
-void HandleIEqual(void* op, Program* prog);
+void HandleIEqual(void* op, ParseProgram* prog);
 struct SIEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1174,7 +1174,7 @@ struct SIEqual {
   uint32 Operand2Id;
 };
 
-void HandleINotEqual(void* op, Program* prog);
+void HandleINotEqual(void* op, ParseProgram* prog);
 struct SINotEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1182,7 +1182,7 @@ struct SINotEqual {
   uint32 Operand2Id;
 };
 
-void HandleUGreaterThan(void* op, Program* prog);
+void HandleUGreaterThan(void* op, ParseProgram* prog);
 struct SUGreaterThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1190,7 +1190,7 @@ struct SUGreaterThan {
   uint32 Operand2Id;
 };
 
-void HandleSGreaterThan(void* op, Program* prog);
+void HandleSGreaterThan(void* op, ParseProgram* prog);
 struct SSGreaterThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1198,7 +1198,7 @@ struct SSGreaterThan {
   uint32 Operand2Id;
 };
 
-void HandleUGreaterThanEqual(void* op, Program* prog);
+void HandleUGreaterThanEqual(void* op, ParseProgram* prog);
 struct SUGreaterThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1206,7 +1206,7 @@ struct SUGreaterThanEqual {
   uint32 Operand2Id;
 };
 
-void HandleSGreaterThanEqual(void* op, Program* prog);
+void HandleSGreaterThanEqual(void* op, ParseProgram* prog);
 struct SSGreaterThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1214,7 +1214,7 @@ struct SSGreaterThanEqual {
   uint32 Operand2Id;
 };
 
-void HandleULessThan(void* op, Program* prog);
+void HandleULessThan(void* op, ParseProgram* prog);
 struct SULessThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1222,7 +1222,7 @@ struct SULessThan {
   uint32 Operand2Id;
 };
 
-void HandleSLessThan(void* op, Program* prog);
+void HandleSLessThan(void* op, ParseProgram* prog);
 struct SSLessThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1230,7 +1230,7 @@ struct SSLessThan {
   uint32 Operand2Id;
 };
 
-void HandleULessThanEqual(void* op, Program* prog);
+void HandleULessThanEqual(void* op, ParseProgram* prog);
 struct SULessThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1238,7 +1238,7 @@ struct SULessThanEqual {
   uint32 Operand2Id;
 };
 
-void HandleSLessThanEqual(void* op, Program* prog);
+void HandleSLessThanEqual(void* op, ParseProgram* prog);
 struct SSLessThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1246,7 +1246,7 @@ struct SSLessThanEqual {
   uint32 Operand2Id;
 };
 
-void HandleFOrdEqual(void* op, Program* prog);
+void HandleFOrdEqual(void* op, ParseProgram* prog);
 struct SFOrdEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1254,7 +1254,7 @@ struct SFOrdEqual {
   uint32 Operand2Id;
 };
 
-void HandleFUnordEqual(void* op, Program* prog);
+void HandleFUnordEqual(void* op, ParseProgram* prog);
 struct SFUnordEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1262,7 +1262,7 @@ struct SFUnordEqual {
   uint32 Operand2Id;
 };
 
-void HandleFOrdNotEqual(void* op, Program* prog);
+void HandleFOrdNotEqual(void* op, ParseProgram* prog);
 struct SFOrdNotEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1270,7 +1270,7 @@ struct SFOrdNotEqual {
   uint32 Operand2Id;
 };
 
-void HandleFUnordNotEqual(void* op, Program* prog);
+void HandleFUnordNotEqual(void* op, ParseProgram* prog);
 struct SFUnordNotEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1278,7 +1278,7 @@ struct SFUnordNotEqual {
   uint32 Operand2Id;
 };
 
-void HandleFOrdLessThan(void* op, Program* prog);
+void HandleFOrdLessThan(void* op, ParseProgram* prog);
 struct SFOrdLessThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1286,7 +1286,7 @@ struct SFOrdLessThan {
   uint32 Operand2Id;
 };
 
-void HandleFUnordLessThan(void* op, Program* prog);
+void HandleFUnordLessThan(void* op, ParseProgram* prog);
 struct SFUnordLessThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1294,7 +1294,7 @@ struct SFUnordLessThan {
   uint32 Operand2Id;
 };
 
-void HandleFOrdGreaterThan(void* op, Program* prog);
+void HandleFOrdGreaterThan(void* op, ParseProgram* prog);
 struct SFOrdGreaterThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1302,7 +1302,7 @@ struct SFOrdGreaterThan {
   uint32 Operand2Id;
 };
 
-void HandleFUnordGreaterThan(void* op, Program* prog);
+void HandleFUnordGreaterThan(void* op, ParseProgram* prog);
 struct SFUnordGreaterThan {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1310,7 +1310,7 @@ struct SFUnordGreaterThan {
   uint32 Operand2Id;
 };
 
-void HandleFOrdLessThanEqual(void* op, Program* prog);
+void HandleFOrdLessThanEqual(void* op, ParseProgram* prog);
 struct SFOrdLessThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1318,7 +1318,7 @@ struct SFOrdLessThanEqual {
   uint32 Operand2Id;
 };
 
-void HandleFUnordLessThanEqual(void* op, Program* prog);
+void HandleFUnordLessThanEqual(void* op, ParseProgram* prog);
 struct SFUnordLessThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1326,7 +1326,7 @@ struct SFUnordLessThanEqual {
   uint32 Operand2Id;
 };
 
-void HandleFOrdGreaterThanEqual(void* op, Program* prog);
+void HandleFOrdGreaterThanEqual(void* op, ParseProgram* prog);
 struct SFOrdGreaterThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1334,7 +1334,7 @@ struct SFOrdGreaterThanEqual {
   uint32 Operand2Id;
 };
 
-void HandleFUnordGreaterThanEqual(void* op, Program* prog);
+void HandleFUnordGreaterThanEqual(void* op, ParseProgram* prog);
 struct SFUnordGreaterThanEqual {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1342,7 +1342,7 @@ struct SFUnordGreaterThanEqual {
   uint32 Operand2Id;
 };
 
-void HandleShiftRightLogical(void* op, Program* prog);
+void HandleShiftRightLogical(void* op, ParseProgram* prog);
 struct SShiftRightLogical {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1350,7 +1350,7 @@ struct SShiftRightLogical {
   uint32 ShiftId;
 };
 
-void HandleShiftRightArithmetic(void* op, Program* prog);
+void HandleShiftRightArithmetic(void* op, ParseProgram* prog);
 struct SShiftRightArithmetic {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1358,7 +1358,7 @@ struct SShiftRightArithmetic {
   uint32 ShiftId;
 };
 
-void HandleShiftLeftLogical(void* op, Program* prog);
+void HandleShiftLeftLogical(void* op, ParseProgram* prog);
 struct SShiftLeftLogical {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1366,7 +1366,7 @@ struct SShiftLeftLogical {
   uint32 ShiftId;
 };
 
-void HandleBitwiseOr(void* op, Program* prog);
+void HandleBitwiseOr(void* op, ParseProgram* prog);
 struct SBitwiseOr {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1374,7 +1374,7 @@ struct SBitwiseOr {
   uint32 Operand2Id;
 };
 
-void HandleBitwiseXor(void* op, Program* prog);
+void HandleBitwiseXor(void* op, ParseProgram* prog);
 struct SBitwiseXor {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1382,7 +1382,7 @@ struct SBitwiseXor {
   uint32 Operand2Id;
 };
 
-void HandleBitwiseAnd(void* op, Program* prog);
+void HandleBitwiseAnd(void* op, ParseProgram* prog);
 struct SBitwiseAnd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1390,14 +1390,14 @@ struct SBitwiseAnd {
   uint32 Operand2Id;
 };
 
-void HandleNot(void* op, Program* prog);
+void HandleNot(void* op, ParseProgram* prog);
 struct SNot {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 OperandId;
 };
 
-void HandleBitFieldInsert(void* op, Program* prog);
+void HandleBitFieldInsert(void* op, ParseProgram* prog);
 struct SBitFieldInsert {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1407,7 +1407,7 @@ struct SBitFieldInsert {
   uint32 CountId;
 };
 
-void HandleBitFieldSExtract(void* op, Program* prog);
+void HandleBitFieldSExtract(void* op, ParseProgram* prog);
 struct SBitFieldSExtract {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1416,7 +1416,7 @@ struct SBitFieldSExtract {
   uint32 CountId;
 };
 
-void HandleBitFieldUExtract(void* op, Program* prog);
+void HandleBitFieldUExtract(void* op, ParseProgram* prog);
 struct SBitFieldUExtract {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1425,115 +1425,115 @@ struct SBitFieldUExtract {
   uint32 CountId;
 };
 
-void HandleBitReverse(void* op, Program* prog);
+void HandleBitReverse(void* op, ParseProgram* prog);
 struct SBitReverse {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 BaseId;
 };
 
-void HandleBitCount(void* op, Program* prog);
+void HandleBitCount(void* op, ParseProgram* prog);
 struct SBitCount {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 BaseId;
 };
 
-void HandleDPdx(void* op, Program* prog);
+void HandleDPdx(void* op, ParseProgram* prog);
 struct SDPdx {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-void HandleDPdy(void* op, Program* prog);
+void HandleDPdy(void* op, ParseProgram* prog);
 struct SDPdy {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-void HandleFwidth(void* op, Program* prog);
+void HandleFwidth(void* op, ParseProgram* prog);
 struct SFwidth {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-void HandleDPdxFine(void* op, Program* prog);
+void HandleDPdxFine(void* op, ParseProgram* prog);
 struct SDPdxFine {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-void HandleDPdyFine(void* op, Program* prog);
+void HandleDPdyFine(void* op, ParseProgram* prog);
 struct SDPdyFine {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-void HandleFwidthFine(void* op, Program* prog);
+void HandleFwidthFine(void* op, ParseProgram* prog);
 struct SFwidthFine {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-void HandleDPdxCoarse(void* op, Program* prog);
+void HandleDPdxCoarse(void* op, ParseProgram* prog);
 struct SDPdxCoarse {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-void HandleDPdyCoarse(void* op, Program* prog);
+void HandleDPdyCoarse(void* op, ParseProgram* prog);
 struct SDPdyCoarse {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-void HandleFwidthCoarse(void* op, Program* prog);
+void HandleFwidthCoarse(void* op, ParseProgram* prog);
 struct SFwidthCoarse {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PId;
 };
 
-void HandleEmitVertex(void* op, Program* prog);
+void HandleEmitVertex(void* op, ParseProgram* prog);
 struct SEmitVertex {
 };
 
-void HandleEndPrimitive(void* op, Program* prog);
+void HandleEndPrimitive(void* op, ParseProgram* prog);
 struct SEndPrimitive {
 };
 
-void HandleEmitStreamVertex(void* op, Program* prog);
+void HandleEmitStreamVertex(void* op, ParseProgram* prog);
 struct SEmitStreamVertex {
   uint32 StreamId;
 };
 
-void HandleEndStreamPrimitive(void* op, Program* prog);
+void HandleEndStreamPrimitive(void* op, ParseProgram* prog);
 struct SEndStreamPrimitive {
   uint32 StreamId;
 };
 
-void HandleControlBarrier(void* op, Program* prog);
+void HandleControlBarrier(void* op, ParseProgram* prog);
 struct SControlBarrier {
   uint32 ExecutionId;
   uint32 MemoryId;
   uint32 SemanticsId;
 };
 
-void HandleMemoryBarrier(void* op, Program* prog);
+void HandleMemoryBarrier(void* op, ParseProgram* prog);
 struct SMemoryBarrier {
   uint32 MemoryId;
   uint32 SemanticsId;
 };
 
-void HandleAtomicLoad(void* op, Program* prog);
+void HandleAtomicLoad(void* op, ParseProgram* prog);
 struct SAtomicLoad {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1542,7 +1542,7 @@ struct SAtomicLoad {
   uint32 SemanticsId;
 };
 
-void HandleAtomicStore(void* op, Program* prog);
+void HandleAtomicStore(void* op, ParseProgram* prog);
 struct SAtomicStore {
   uint32 PointerId;
   uint32 ScopeId;
@@ -1550,7 +1550,7 @@ struct SAtomicStore {
   uint32 ValueId;
 };
 
-void HandleAtomicExchange(void* op, Program* prog);
+void HandleAtomicExchange(void* op, ParseProgram* prog);
 struct SAtomicExchange {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1560,7 +1560,7 @@ struct SAtomicExchange {
   uint32 ValueId;
 };
 
-void HandleAtomicCompareExchange(void* op, Program* prog);
+void HandleAtomicCompareExchange(void* op, ParseProgram* prog);
 struct SAtomicCompareExchange {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1572,7 +1572,7 @@ struct SAtomicCompareExchange {
   uint32 ComparatorId;
 };
 
-void HandleAtomicCompareExchangeWeak(void* op, Program* prog);
+void HandleAtomicCompareExchangeWeak(void* op, ParseProgram* prog);
 struct SAtomicCompareExchangeWeak {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1584,7 +1584,7 @@ struct SAtomicCompareExchangeWeak {
   uint32 ComparatorId;
 };
 
-void HandleAtomicIIncrement(void* op, Program* prog);
+void HandleAtomicIIncrement(void* op, ParseProgram* prog);
 struct SAtomicIIncrement {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1593,7 +1593,7 @@ struct SAtomicIIncrement {
   uint32 SemanticsId;
 };
 
-void HandleAtomicIDecrement(void* op, Program* prog);
+void HandleAtomicIDecrement(void* op, ParseProgram* prog);
 struct SAtomicIDecrement {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1602,7 +1602,7 @@ struct SAtomicIDecrement {
   uint32 SemanticsId;
 };
 
-void HandleAtomicIAdd(void* op, Program* prog);
+void HandleAtomicIAdd(void* op, ParseProgram* prog);
 struct SAtomicIAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1612,7 +1612,7 @@ struct SAtomicIAdd {
   uint32 ValueId;
 };
 
-void HandleAtomicISub(void* op, Program* prog);
+void HandleAtomicISub(void* op, ParseProgram* prog);
 struct SAtomicISub {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1622,7 +1622,7 @@ struct SAtomicISub {
   uint32 ValueId;
 };
 
-void HandleAtomicSMin(void* op, Program* prog);
+void HandleAtomicSMin(void* op, ParseProgram* prog);
 struct SAtomicSMin {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1632,7 +1632,7 @@ struct SAtomicSMin {
   uint32 ValueId;
 };
 
-void HandleAtomicUMin(void* op, Program* prog);
+void HandleAtomicUMin(void* op, ParseProgram* prog);
 struct SAtomicUMin {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1642,7 +1642,7 @@ struct SAtomicUMin {
   uint32 ValueId;
 };
 
-void HandleAtomicSMax(void* op, Program* prog);
+void HandleAtomicSMax(void* op, ParseProgram* prog);
 struct SAtomicSMax {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1652,7 +1652,7 @@ struct SAtomicSMax {
   uint32 ValueId;
 };
 
-void HandleAtomicUMax(void* op, Program* prog);
+void HandleAtomicUMax(void* op, ParseProgram* prog);
 struct SAtomicUMax {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1662,7 +1662,7 @@ struct SAtomicUMax {
   uint32 ValueId;
 };
 
-void HandleAtomicAnd(void* op, Program* prog);
+void HandleAtomicAnd(void* op, ParseProgram* prog);
 struct SAtomicAnd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1672,7 +1672,7 @@ struct SAtomicAnd {
   uint32 ValueId;
 };
 
-void HandleAtomicOr(void* op, Program* prog);
+void HandleAtomicOr(void* op, ParseProgram* prog);
 struct SAtomicOr {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1682,7 +1682,7 @@ struct SAtomicOr {
   uint32 ValueId;
 };
 
-void HandleAtomicXor(void* op, Program* prog);
+void HandleAtomicXor(void* op, ParseProgram* prog);
 struct SAtomicXor {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1692,7 +1692,7 @@ struct SAtomicXor {
   uint32 ValueId;
 };
 
-void HandlePhi(void* op, Program* prog);
+void HandlePhi(void* op, ParseProgram* prog);
 struct SPhi {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1700,29 +1700,29 @@ struct SPhi {
   uint32* VariableIds;
 };
 
-void HandleLoopMerge(void* op, Program* prog);
+void HandleLoopMerge(void* op, ParseProgram* prog);
 struct SLoopMerge {
   uint32 MergeBlockId;
   spv::LoopControlMask LoopControl;
 };
 
-void HandleSelectionMerge(void* op, Program* prog);
+void HandleSelectionMerge(void* op, ParseProgram* prog);
 struct SSelectionMerge {
   uint32 MergeBlockId;
   spv::SelectionControlMask SelectionControl;
 };
 
-void HandleLabel(void* op, Program* prog);
+void HandleLabel(void* op, ParseProgram* prog);
 struct SLabel {
   uint32 ResultId;
 };
 
-void HandleBranch(void* op, Program* prog);
+void HandleBranch(void* op, ParseProgram* prog);
 struct SBranch {
   uint32 TargetLabelId;
 };
 
-void HandleBranchConditional(void* op, Program* prog);
+void HandleBranchConditional(void* op, ParseProgram* prog);
 struct SBranchConditional {
   uint32 ConditionId;
   uint32 TrueLabelId;
@@ -1731,7 +1731,7 @@ struct SBranchConditional {
   uint32* Branchweights;
 };
 
-void HandleSwitch(void* op, Program* prog);
+void HandleSwitch(void* op, ParseProgram* prog);
 struct SSwitch {
   uint32 SelectorId;
   uint32 DefaultId;
@@ -1739,36 +1739,36 @@ struct SSwitch {
   uint32* literalIds;
 };
 
-void HandleKill(void* op, Program* prog);
+void HandleKill(void* op, ParseProgram* prog);
 struct SKill {
 };
 
-void HandleReturn(void* op, Program* prog);
+void HandleReturn(void* op, ParseProgram* prog);
 struct SReturn {
 };
 
-void HandleReturnValue(void* op, Program* prog);
+void HandleReturnValue(void* op, ParseProgram* prog);
 struct SReturnValue {
   uint32 ValueId;
 };
 
-void HandleUnreachable(void* op, Program* prog);
+void HandleUnreachable(void* op, ParseProgram* prog);
 struct SUnreachable {
 };
 
-void HandleLifetimeStart(void* op, Program* prog);
+void HandleLifetimeStart(void* op, ParseProgram* prog);
 struct SLifetimeStart {
   uint32 PointerId;
   uint32 Size;
 };
 
-void HandleLifetimeStop(void* op, Program* prog);
+void HandleLifetimeStop(void* op, ParseProgram* prog);
 struct SLifetimeStop {
   uint32 PointerId;
   uint32 Size;
 };
 
-void HandleAsyncGroupCopy(void* op, Program* prog);
+void HandleAsyncGroupCopy(void* op, ParseProgram* prog);
 struct SAsyncGroupCopy {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1780,14 +1780,14 @@ struct SAsyncGroupCopy {
   uint32 EventId;
 };
 
-void HandleWaitGroupEvents(void* op, Program* prog);
+void HandleWaitGroupEvents(void* op, ParseProgram* prog);
 struct SWaitGroupEvents {
   uint32 ExecutionId;
   uint32 NumEventsId;
   uint32 EventsListId;
 };
 
-void HandleGroupAll(void* op, Program* prog);
+void HandleGroupAll(void* op, ParseProgram* prog);
 struct SGroupAll {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1795,7 +1795,7 @@ struct SGroupAll {
   uint32 PredicateId;
 };
 
-void HandleGroupAny(void* op, Program* prog);
+void HandleGroupAny(void* op, ParseProgram* prog);
 struct SGroupAny {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1803,7 +1803,7 @@ struct SGroupAny {
   uint32 PredicateId;
 };
 
-void HandleGroupBroadcast(void* op, Program* prog);
+void HandleGroupBroadcast(void* op, ParseProgram* prog);
 struct SGroupBroadcast {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1812,7 +1812,7 @@ struct SGroupBroadcast {
   uint32 LocalIdId;
 };
 
-void HandleGroupIAdd(void* op, Program* prog);
+void HandleGroupIAdd(void* op, ParseProgram* prog);
 struct SGroupIAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1821,7 +1821,7 @@ struct SGroupIAdd {
   uint32 XId;
 };
 
-void HandleGroupFAdd(void* op, Program* prog);
+void HandleGroupFAdd(void* op, ParseProgram* prog);
 struct SGroupFAdd {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1830,7 +1830,7 @@ struct SGroupFAdd {
   uint32 XId;
 };
 
-void HandleGroupFMin(void* op, Program* prog);
+void HandleGroupFMin(void* op, ParseProgram* prog);
 struct SGroupFMin {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1839,7 +1839,7 @@ struct SGroupFMin {
   uint32 XId;
 };
 
-void HandleGroupUMin(void* op, Program* prog);
+void HandleGroupUMin(void* op, ParseProgram* prog);
 struct SGroupUMin {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1848,7 +1848,7 @@ struct SGroupUMin {
   uint32 XId;
 };
 
-void HandleGroupSMin(void* op, Program* prog);
+void HandleGroupSMin(void* op, ParseProgram* prog);
 struct SGroupSMin {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1857,7 +1857,7 @@ struct SGroupSMin {
   uint32 XId;
 };
 
-void HandleGroupFMax(void* op, Program* prog);
+void HandleGroupFMax(void* op, ParseProgram* prog);
 struct SGroupFMax {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1866,7 +1866,7 @@ struct SGroupFMax {
   uint32 XId;
 };
 
-void HandleGroupUMax(void* op, Program* prog);
+void HandleGroupUMax(void* op, ParseProgram* prog);
 struct SGroupUMax {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1875,7 +1875,7 @@ struct SGroupUMax {
   uint32 XId;
 };
 
-void HandleGroupSMax(void* op, Program* prog);
+void HandleGroupSMax(void* op, ParseProgram* prog);
 struct SGroupSMax {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1884,7 +1884,7 @@ struct SGroupSMax {
   uint32 XId;
 };
 
-void HandleReadPipe(void* op, Program* prog);
+void HandleReadPipe(void* op, ParseProgram* prog);
 struct SReadPipe {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1892,7 +1892,7 @@ struct SReadPipe {
   uint32 PointerId;
 };
 
-void HandleWritePipe(void* op, Program* prog);
+void HandleWritePipe(void* op, ParseProgram* prog);
 struct SWritePipe {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1900,7 +1900,7 @@ struct SWritePipe {
   uint32 PointerId;
 };
 
-void HandleReservedReadPipe(void* op, Program* prog);
+void HandleReservedReadPipe(void* op, ParseProgram* prog);
 struct SReservedReadPipe {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1910,7 +1910,7 @@ struct SReservedReadPipe {
   uint32 PointerId;
 };
 
-void HandleReservedWritePipe(void* op, Program* prog);
+void HandleReservedWritePipe(void* op, ParseProgram* prog);
 struct SReservedWritePipe {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1920,7 +1920,7 @@ struct SReservedWritePipe {
   uint32 PointerId;
 };
 
-void HandleReserveReadPipePackets(void* op, Program* prog);
+void HandleReserveReadPipePackets(void* op, ParseProgram* prog);
 struct SReserveReadPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1928,7 +1928,7 @@ struct SReserveReadPipePackets {
   uint32 NumPacketsId;
 };
 
-void HandleReserveWritePipePackets(void* op, Program* prog);
+void HandleReserveWritePipePackets(void* op, ParseProgram* prog);
 struct SReserveWritePipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1936,40 +1936,40 @@ struct SReserveWritePipePackets {
   uint32 NumPacketsId;
 };
 
-void HandleCommitReadPipe(void* op, Program* prog);
+void HandleCommitReadPipe(void* op, ParseProgram* prog);
 struct SCommitReadPipe {
   uint32 PipeId;
   uint32 ReserveIdId;
 };
 
-void HandleCommitWritePipe(void* op, Program* prog);
+void HandleCommitWritePipe(void* op, ParseProgram* prog);
 struct SCommitWritePipe {
   uint32 PipeId;
   uint32 ReserveIdId;
 };
 
-void HandleIsValidReserveId(void* op, Program* prog);
+void HandleIsValidReserveId(void* op, ParseProgram* prog);
 struct SIsValidReserveId {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 ReserveIdId;
 };
 
-void HandleGetNumPipePackets(void* op, Program* prog);
+void HandleGetNumPipePackets(void* op, ParseProgram* prog);
 struct SGetNumPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PipeId;
 };
 
-void HandleGetMaxPipePackets(void* op, Program* prog);
+void HandleGetMaxPipePackets(void* op, ParseProgram* prog);
 struct SGetMaxPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 PipeId;
 };
 
-void HandleGroupReserveReadPipePackets(void* op, Program* prog);
+void HandleGroupReserveReadPipePackets(void* op, ParseProgram* prog);
 struct SGroupReserveReadPipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1978,7 +1978,7 @@ struct SGroupReserveReadPipePackets {
   uint32 NumPacketsId;
 };
 
-void HandleGroupReserveWritePipePackets(void* op, Program* prog);
+void HandleGroupReserveWritePipePackets(void* op, ParseProgram* prog);
 struct SGroupReserveWritePipePackets {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -1987,21 +1987,21 @@ struct SGroupReserveWritePipePackets {
   uint32 NumPacketsId;
 };
 
-void HandleGroupCommitReadPipe(void* op, Program* prog);
+void HandleGroupCommitReadPipe(void* op, ParseProgram* prog);
 struct SGroupCommitReadPipe {
   uint32 ExecutionId;
   uint32 PipeId;
   uint32 ReserveIdId;
 };
 
-void HandleGroupCommitWritePipe(void* op, Program* prog);
+void HandleGroupCommitWritePipe(void* op, ParseProgram* prog);
 struct SGroupCommitWritePipe {
   uint32 ExecutionId;
   uint32 PipeId;
   uint32 ReserveIdId;
 };
 
-void HandleEnqueueMarker(void* op, Program* prog);
+void HandleEnqueueMarker(void* op, ParseProgram* prog);
 struct SEnqueueMarker {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -2011,7 +2011,7 @@ struct SEnqueueMarker {
   uint32 RetEventId;
 };
 
-void HandleEnqueueKernel(void* op, Program* prog);
+void HandleEnqueueKernel(void* op, ParseProgram* prog);
 struct SEnqueueKernel {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -2029,7 +2029,7 @@ struct SEnqueueKernel {
   uint32* LocalSizeIds;
 };
 
-void HandleGetKernelNDrangeSubGroupCount(void* op, Program* prog);
+void HandleGetKernelNDrangeSubGroupCount(void* op, ParseProgram* prog);
 struct SGetKernelNDrangeSubGroupCount {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -2040,7 +2040,7 @@ struct SGetKernelNDrangeSubGroupCount {
   uint32 ParamAlignId;
 };
 
-void HandleGetKernelNDrangeMaxSubGroupSize(void* op, Program* prog);
+void HandleGetKernelNDrangeMaxSubGroupSize(void* op, ParseProgram* prog);
 struct SGetKernelNDrangeMaxSubGroupSize {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -2051,7 +2051,7 @@ struct SGetKernelNDrangeMaxSubGroupSize {
   uint32 ParamAlignId;
 };
 
-void HandleGetKernelWorkGroupSize(void* op, Program* prog);
+void HandleGetKernelWorkGroupSize(void* op, ParseProgram* prog);
 struct SGetKernelWorkGroupSize {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -2061,7 +2061,7 @@ struct SGetKernelWorkGroupSize {
   uint32 ParamAlignId;
 };
 
-void HandleGetKernelPreferredWorkGroupSizeMultiple(void* op, Program* prog);
+void HandleGetKernelPreferredWorkGroupSizeMultiple(void* op, ParseProgram* prog);
 struct SGetKernelPreferredWorkGroupSizeMultiple {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -2071,49 +2071,49 @@ struct SGetKernelPreferredWorkGroupSizeMultiple {
   uint32 ParamAlignId;
 };
 
-void HandleRetainEvent(void* op, Program* prog);
+void HandleRetainEvent(void* op, ParseProgram* prog);
 struct SRetainEvent {
   uint32 EventId;
 };
 
-void HandleReleaseEvent(void* op, Program* prog);
+void HandleReleaseEvent(void* op, ParseProgram* prog);
 struct SReleaseEvent {
   uint32 EventId;
 };
 
-void HandleCreateUserEvent(void* op, Program* prog);
+void HandleCreateUserEvent(void* op, ParseProgram* prog);
 struct SCreateUserEvent {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleIsValidEvent(void* op, Program* prog);
+void HandleIsValidEvent(void* op, ParseProgram* prog);
 struct SIsValidEvent {
   uint32 ResultTypeId;
   uint32 ResultId;
   uint32 EventId;
 };
 
-void HandleSetUserEventStatus(void* op, Program* prog);
+void HandleSetUserEventStatus(void* op, ParseProgram* prog);
 struct SSetUserEventStatus {
   uint32 EventId;
   uint32 StatusId;
 };
 
-void HandleCaptureEventProfilingInfo(void* op, Program* prog);
+void HandleCaptureEventProfilingInfo(void* op, ParseProgram* prog);
 struct SCaptureEventProfilingInfo {
   uint32 EventId;
   uint32 ProfilingInfoId;
   uint32 ValueId;
 };
 
-void HandleGetDefaultQueue(void* op, Program* prog);
+void HandleGetDefaultQueue(void* op, ParseProgram* prog);
 struct SGetDefaultQueue {
   uint32 ResultTypeId;
   uint32 ResultId;
 };
 
-void HandleBuildNDRange(void* op, Program* prog);
+void HandleBuildNDRange(void* op, ParseProgram* prog);
 struct SBuildNDRange {
   uint32 ResultTypeId;
   uint32 ResultId;
@@ -2128,5 +2128,5 @@ extern void* LUTOpWordTypes[(uint32)Op::COUNT+1];
 
 extern uint32 LUTOpWordTypesCount[(uint32)Op::COUNT+1];
 
-typedef void(*OpHandler)(void*, Program*);
+typedef void(*OpHandler)(void*, ParseProgram*);
 extern OpHandler LUTHandlerMethods[(uint32)Op::COUNT+1];

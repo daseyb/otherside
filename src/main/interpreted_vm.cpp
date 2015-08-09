@@ -154,7 +154,7 @@ Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint3
 }
 
 uint32 InterpretedVM::Execute(Function* func) {
-  prog.CurrentFunction = func;
+  currentFunction = func;
 
   int pc = 0;
 
@@ -188,7 +188,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       if (resultId == -1) {
         return -1;
       }
-      prog.CurrentFunction = func;
+      currentFunction = func;
       env.Values[call->ResultId] = env.Values[resultId];
       break;
     }
@@ -431,8 +431,8 @@ void* InterpretedVM::ReadVariable(std::string name) const {
 bool InterpretedVM::SetVariable(uint32 id, void* value) {
   SVariable var;
   
-  if (prog.CurrentFunction->Variables.find(id) != prog.CurrentFunction->Variables.end()) {
-    var = prog.CurrentFunction->Variables.at(id);
+  if (currentFunction && currentFunction->Variables.find(id) != currentFunction->Variables.end()) {
+    var = currentFunction->Variables.at(id);
   } else {
     var = prog.Variables.at(id);
   }

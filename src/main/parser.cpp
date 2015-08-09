@@ -96,37 +96,38 @@ SOp Parser::readInstruction() {
   return Result;
 }
 
-bool Parser::ParseProgram(Program* prog) {
+bool Parser::Parse(Program *outProg) {
   if (!expectAndEat(spv::MagicNumber)) {
     return false;
   }
 
-  prog->Version = getAndEat();
-  prog->GeneratorMagic = getAndEat();
-  prog->IDBound = getAndEat();
-  prog->InstructionSchema = getAndEat();
+  ParseProgram prog;
+  prog.Version = getAndEat();
+  prog.GeneratorMagic = getAndEat();
+  prog.IDBound = getAndEat();
+  prog.InstructionSchema = getAndEat();
 
   int instructionIndex = 0;
-  prog->NextOp = readInstruction();
+  prog.NextOp = readInstruction();
 
   do {
-    SOp op = prog->NextOp;
+    SOp op = prog.NextOp;
     instructionIndex++;
     if (!end()) {
-      prog->NextOp = readInstruction();
-    }
-    else {
-      prog->NextOp = SOp{ Op::OpNop, nullptr };
+      prog.NextOp = readInstruction();
+    } else {
+      prog.NextOp = SOp{ Op::OpNop, nullptr };
     }
 
-    LUTHandlerMethods[(int)op.Op]((void*)op.Memory, prog);
-    prog->Ops.push_back(op);
+    LUTHandlerMethods[(int)op.Op]((void*)op.Memory, &prog);
+    prog.Ops.push_back(op);
 
-    if (prog->InFunction && prog->CurrentFunction->InBlock) {
-      addOp(prog, op);
+    if (prog.InFunction && prog.CurrentFunction->InBlock) {
+      addOp(&prog, op);
     }
-  } while (prog->NextOp.Op != Op::OpNop);
+  } while (prog.NextOp.Op != Op::OpNop);
 
+  *outProg = (Program)prog;
   return true;
 }
 

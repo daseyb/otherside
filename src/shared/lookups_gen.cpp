@@ -2,1159 +2,1159 @@
 #include "parser_definitions.h"
 
 
-void HandleNop(void* op, Program* prog) {
+void HandleNop(void* op, ParseProgram* prog) {
   SNop* opNop = (SNop*)op;
   assert(false);
 }
 
-void HandleUndef(void* op, Program* prog) {
+void HandleUndef(void* op, ParseProgram* prog) {
   SUndef* opUndef = (SUndef*)op;
 }
 
-void HandleSource(void* op, Program* prog) {
+void HandleSource(void* op, ParseProgram* prog) {
   SSource* opSource = (SSource*)op;
   prog->SourceLanguage = *opSource;
 }
 
-void HandleSourceExtension(void* op, Program* prog) {
+void HandleSourceExtension(void* op, ParseProgram* prog) {
   SSourceExtension* opSourceExtension = (SSourceExtension*)op;
   prog->SourceExtensions.push_back(opSourceExtension->Extension);
 }
 
-void HandleName(void* op, Program* prog) {
+void HandleName(void* op, ParseProgram* prog) {
   SName* opName = (SName*)op;
   prog->Names.insert(std::pair<uint32, SName>(opName->TargetId, *opName));
 }
 
-void HandleMemberName(void* op, Program* prog) {
+void HandleMemberName(void* op, ParseProgram* prog) {
   SMemberName* opMemberName = (SMemberName*)op;
   uint32 key = (opMemberName->TypeId << 16) & opMemberName->TypeId;
   prog->MemberNames.insert(std::pair<uint32, SMemberName>(key, *opMemberName));
 }
 
-void HandleString(void* op, Program* prog) {
+void HandleString(void* op, ParseProgram* prog) {
   SString* opString = (SString*)op;
   prog->Strings.insert(std::pair<uint32, SString>(opString->ResultId, *opString));
 }
 
-void HandleLine(void* op, Program* prog) {
+void HandleLine(void* op, ParseProgram* prog) {
   SLine* opLine = (SLine*)op;
   prog->Lines.insert(std::pair<uint32, SLine>(opLine->TargetId, *opLine));
 }
 
-void HandleExtension(void* op, Program* prog) {
+void HandleExtension(void* op, ParseProgram* prog) {
   SExtension* opExtension = (SExtension*)op;
   prog->SPIRVExtensions.push_back(opExtension->Name);
 }
 
-void HandleExtInstImport(void* op, Program* prog) {
+void HandleExtInstImport(void* op, ParseProgram* prog) {
   SExtInstImport* opExtInstImport = (SExtInstImport*)op;
   prog->ExtensionImports.insert(std::pair<uint32, SExtInstImport>(opExtInstImport->ResultId, *opExtInstImport));
 }
 
-void HandleExtInst(void* op, Program* prog) {
+void HandleExtInst(void* op, ParseProgram* prog) {
   SExtInst* opExtInst = (SExtInst*)op;
 }
 
-void HandleMemoryModel(void* op, Program* prog) {
+void HandleMemoryModel(void* op, ParseProgram* prog) {
   SMemoryModel* opMemoryModel = (SMemoryModel*)op;
   prog->MemoryModel = *opMemoryModel;
 }
 
-void HandleEntryPoint(void* op, Program* prog) {
+void HandleEntryPoint(void* op, ParseProgram* prog) {
   SEntryPoint* opEntryPoint = (SEntryPoint*)op;
   prog->EntryPoints.insert(std::pair<uint32, SEntryPoint>(opEntryPoint->EntryPointId, *opEntryPoint));
 }
 
-void HandleExecutionMode(void* op, Program* prog) {
+void HandleExecutionMode(void* op, ParseProgram* prog) {
   SExecutionMode* opExecutionMode = (SExecutionMode*)op;
   prog->ExecutionModes.insert(std::pair<uint32, SExecutionMode>(opExecutionMode->EntryPointId, *opExecutionMode));
 }
 
-void HandleCapability(void* op, Program* prog) {
+void HandleCapability(void* op, ParseProgram* prog) {
   SCapability* opCapability = (SCapability*)op;
 }
 
-void HandleTypeVoid(void* op, Program* prog) {
+void HandleTypeVoid(void* op, ParseProgram* prog) {
   STypeVoid* opTypeVoid = (STypeVoid*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeVoid->ResultId, SOp{ Op::OpTypeVoid, op }));
 }
 
-void HandleTypeBool(void* op, Program* prog) {
+void HandleTypeBool(void* op, ParseProgram* prog) {
   STypeBool* opTypeBool = (STypeBool*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeBool->ResultId, SOp{ Op::OpTypeBool, op }));
 }
 
-void HandleTypeInt(void* op, Program* prog) {
+void HandleTypeInt(void* op, ParseProgram* prog) {
   STypeInt* opTypeInt = (STypeInt*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeInt->ResultId, SOp{ Op::OpTypeInt, op }));
 }
 
-void HandleTypeFloat(void* op, Program* prog) {
+void HandleTypeFloat(void* op, ParseProgram* prog) {
   STypeFloat* opTypeFloat = (STypeFloat*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeFloat->ResultId, SOp{ Op::OpTypeFloat, op }));
 }
 
-void HandleTypeVector(void* op, Program* prog) {
+void HandleTypeVector(void* op, ParseProgram* prog) {
   STypeVector* opTypeVector = (STypeVector*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeVector->ResultId, SOp{ Op::OpTypeVector, op }));
 }
 
-void HandleTypeMatrix(void* op, Program* prog) {
+void HandleTypeMatrix(void* op, ParseProgram* prog) {
   STypeMatrix* opTypeMatrix = (STypeMatrix*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeMatrix->ResultId, SOp{ Op::OpTypeMatrix, op }));
 }
 
-void HandleTypeImage(void* op, Program* prog) {
+void HandleTypeImage(void* op, ParseProgram* prog) {
   STypeImage* opTypeImage = (STypeImage*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeImage->ResultId, SOp{ Op::OpTypeImage, op }));
 }
 
-void HandleTypeSampler(void* op, Program* prog) {
+void HandleTypeSampler(void* op, ParseProgram* prog) {
   STypeSampler* opTypeSampler = (STypeSampler*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeSampler->ResultId, SOp{ Op::OpTypeSampler, op }));
 }
 
-void HandleTypeSampledImage(void* op, Program* prog) {
+void HandleTypeSampledImage(void* op, ParseProgram* prog) {
   STypeSampledImage* opTypeSampledImage = (STypeSampledImage*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeSampledImage->ResultId, SOp{ Op::OpTypeSampledImage, op }));
 }
 
-void HandleTypeArray(void* op, Program* prog) {
+void HandleTypeArray(void* op, ParseProgram* prog) {
   STypeArray* opTypeArray = (STypeArray*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeArray->ResultId, SOp{ Op::OpTypeArray, op }));
 }
 
-void HandleTypeRuntimeArray(void* op, Program* prog) {
+void HandleTypeRuntimeArray(void* op, ParseProgram* prog) {
   STypeRuntimeArray* opTypeRuntimeArray = (STypeRuntimeArray*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeRuntimeArray->ResultId, SOp{ Op::OpTypeRuntimeArray, op }));
 }
 
-void HandleTypeStruct(void* op, Program* prog) {
+void HandleTypeStruct(void* op, ParseProgram* prog) {
   STypeStruct* opTypeStruct = (STypeStruct*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeStruct->ResultId, SOp{ Op::OpTypeStruct, op }));
 }
 
-void HandleTypeOpaque(void* op, Program* prog) {
+void HandleTypeOpaque(void* op, ParseProgram* prog) {
   STypeOpaque* opTypeOpaque = (STypeOpaque*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeOpaque->ResultId, SOp{ Op::OpTypeOpaque, op }));
 }
 
-void HandleTypePointer(void* op, Program* prog) {
+void HandleTypePointer(void* op, ParseProgram* prog) {
   STypePointer* opTypePointer = (STypePointer*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypePointer->ResultId, SOp{ Op::OpTypePointer, op }));
 }
 
-void HandleTypeFunction(void* op, Program* prog) {
+void HandleTypeFunction(void* op, ParseProgram* prog) {
   STypeFunction* opTypeFunction = (STypeFunction*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeFunction->ResultId, SOp{ Op::OpTypeFunction, op }));
 }
 
-void HandleTypeEvent(void* op, Program* prog) {
+void HandleTypeEvent(void* op, ParseProgram* prog) {
   STypeEvent* opTypeEvent = (STypeEvent*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeEvent->ResultId, SOp{ Op::OpTypeEvent, op }));
 }
 
-void HandleTypeDeviceEvent(void* op, Program* prog) {
+void HandleTypeDeviceEvent(void* op, ParseProgram* prog) {
   STypeDeviceEvent* opTypeDeviceEvent = (STypeDeviceEvent*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeDeviceEvent->ResultId, SOp{ Op::OpTypeDeviceEvent, op }));
 }
 
-void HandleTypeReserveId(void* op, Program* prog) {
+void HandleTypeReserveId(void* op, ParseProgram* prog) {
   STypeReserveId* opTypeReserveId = (STypeReserveId*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeReserveId->ResultId, SOp{ Op::OpTypeReserveId, op }));
 }
 
-void HandleTypeQueue(void* op, Program* prog) {
+void HandleTypeQueue(void* op, ParseProgram* prog) {
   STypeQueue* opTypeQueue = (STypeQueue*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypeQueue->ResultId, SOp{ Op::OpTypeQueue, op }));
 }
 
-void HandleTypePipe(void* op, Program* prog) {
+void HandleTypePipe(void* op, ParseProgram* prog) {
   STypePipe* opTypePipe = (STypePipe*)op;
   prog->DefinedTypes.insert(std::pair<uint32, SOp>(opTypePipe->ResultId, SOp{ Op::OpTypePipe, op }));
 }
 
-void HandleConstantTrue(void* op, Program* prog) {
+void HandleConstantTrue(void* op, ParseProgram* prog) {
   SConstantTrue* opConstantTrue = (SConstantTrue*)op;
   prog->Constants.insert(std::pair<uint32, SOp>(opConstantTrue->ResultId, SOp{ Op::OpConstantTrue, op }));
 }
 
-void HandleConstantFalse(void* op, Program* prog) {
+void HandleConstantFalse(void* op, ParseProgram* prog) {
   SConstantFalse* opConstantFalse = (SConstantFalse*)op;
   prog->Constants.insert(std::pair<uint32, SOp>(opConstantFalse->ResultId, SOp{ Op::OpConstantFalse, op }));
 }
 
-void HandleConstant(void* op, Program* prog) {
+void HandleConstant(void* op, ParseProgram* prog) {
   SConstant* opConstant = (SConstant*)op;
   prog->Constants.insert(std::pair<uint32, SOp>(opConstant->ResultId, SOp{ Op::OpConstant, op }));
 }
 
-void HandleConstantComposite(void* op, Program* prog) {
+void HandleConstantComposite(void* op, ParseProgram* prog) {
   SConstantComposite* opConstantComposite = (SConstantComposite*)op;
   prog->Constants.insert(std::pair<uint32, SOp>(opConstantComposite->ResultId, SOp{ Op::OpConstantComposite, op }));
 }
 
-void HandleConstantSampler(void* op, Program* prog) {
+void HandleConstantSampler(void* op, ParseProgram* prog) {
   SConstantSampler* opConstantSampler = (SConstantSampler*)op;
   prog->Constants.insert(std::pair<uint32, SOp>(opConstantSampler->ResultId, SOp{ Op::OpConstantSampler, op }));
 }
 
-void HandleConstantNull(void* op, Program* prog) {
+void HandleConstantNull(void* op, ParseProgram* prog) {
   SConstantNull* opConstantNull = (SConstantNull*)op;
 }
 
-void HandleSpecConstantTrue(void* op, Program* prog) {
+void HandleSpecConstantTrue(void* op, ParseProgram* prog) {
   SSpecConstantTrue* opSpecConstantTrue = (SSpecConstantTrue*)op;
 }
 
-void HandleSpecConstantFalse(void* op, Program* prog) {
+void HandleSpecConstantFalse(void* op, ParseProgram* prog) {
   SSpecConstantFalse* opSpecConstantFalse = (SSpecConstantFalse*)op;
 }
 
-void HandleSpecConstant(void* op, Program* prog) {
+void HandleSpecConstant(void* op, ParseProgram* prog) {
   SSpecConstant* opSpecConstant = (SSpecConstant*)op;
 }
 
-void HandleSpecConstantComposite(void* op, Program* prog) {
+void HandleSpecConstantComposite(void* op, ParseProgram* prog) {
   SSpecConstantComposite* opSpecConstantComposite = (SSpecConstantComposite*)op;
 }
 
-void HandleSpecConstantOp(void* op, Program* prog) {
+void HandleSpecConstantOp(void* op, ParseProgram* prog) {
   SSpecConstantOp* opSpecConstantOp = (SSpecConstantOp*)op;
 }
 
-void HandleFunction(void* op, Program* prog) {
+void HandleFunction(void* op, ParseProgram* prog) {
   SFunction* opFunction = (SFunction*)op;
   startFunction(prog, *opFunction);
 }
 
-void HandleFunctionParameter(void* op, Program* prog) {
+void HandleFunctionParameter(void* op, ParseProgram* prog) {
   SFunctionParameter* opFunctionParameter = (SFunctionParameter*)op;
   prog->CurrentFunction->Parameters.push_back(*opFunctionParameter);
 }
 
-void HandleFunctionEnd(void* op, Program* prog) {
+void HandleFunctionEnd(void* op, ParseProgram* prog) {
   SFunctionEnd* opFunctionEnd = (SFunctionEnd*)op;
   endFunction(prog);
 }
 
-void HandleFunctionCall(void* op, Program* prog) {
+void HandleFunctionCall(void* op, ParseProgram* prog) {
   SFunctionCall* opFunctionCall = (SFunctionCall*)op;
 }
 
-void HandleVariable(void* op, Program* prog) {
+void HandleVariable(void* op, ParseProgram* prog) {
   SVariable* opVariable = (SVariable*)op;
   addVariable(prog, *opVariable);
 }
 
-void HandleImageTexelPointer(void* op, Program* prog) {
+void HandleImageTexelPointer(void* op, ParseProgram* prog) {
   SImageTexelPointer* opImageTexelPointer = (SImageTexelPointer*)op;
 }
 
-void HandleLoad(void* op, Program* prog) {
+void HandleLoad(void* op, ParseProgram* prog) {
   SLoad* opLoad = (SLoad*)op;
 }
 
-void HandleStore(void* op, Program* prog) {
+void HandleStore(void* op, ParseProgram* prog) {
   SStore* opStore = (SStore*)op;
 }
 
-void HandleCopyMemory(void* op, Program* prog) {
+void HandleCopyMemory(void* op, ParseProgram* prog) {
   SCopyMemory* opCopyMemory = (SCopyMemory*)op;
 }
 
-void HandleCopyMemorySized(void* op, Program* prog) {
+void HandleCopyMemorySized(void* op, ParseProgram* prog) {
   SCopyMemorySized* opCopyMemorySized = (SCopyMemorySized*)op;
 }
 
-void HandleAccessChain(void* op, Program* prog) {
+void HandleAccessChain(void* op, ParseProgram* prog) {
   SAccessChain* opAccessChain = (SAccessChain*)op;
 }
 
-void HandleInBoundsAccessChain(void* op, Program* prog) {
+void HandleInBoundsAccessChain(void* op, ParseProgram* prog) {
   SInBoundsAccessChain* opInBoundsAccessChain = (SInBoundsAccessChain*)op;
 }
 
-void HandlePtrAccessChain(void* op, Program* prog) {
+void HandlePtrAccessChain(void* op, ParseProgram* prog) {
   SPtrAccessChain* opPtrAccessChain = (SPtrAccessChain*)op;
 }
 
-void HandleArrayLength(void* op, Program* prog) {
+void HandleArrayLength(void* op, ParseProgram* prog) {
   SArrayLength* opArrayLength = (SArrayLength*)op;
 }
 
-void HandleGenericPtrMemSemantics(void* op, Program* prog) {
+void HandleGenericPtrMemSemantics(void* op, ParseProgram* prog) {
   SGenericPtrMemSemantics* opGenericPtrMemSemantics = (SGenericPtrMemSemantics*)op;
 }
 
-void HandleDecorate(void* op, Program* prog) {
+void HandleDecorate(void* op, ParseProgram* prog) {
   SDecorate* opDecorate = (SDecorate*)op;
 }
 
-void HandleMemberDecorate(void* op, Program* prog) {
+void HandleMemberDecorate(void* op, ParseProgram* prog) {
   SMemberDecorate* opMemberDecorate = (SMemberDecorate*)op;
 }
 
-void HandleDecorationGroup(void* op, Program* prog) {
+void HandleDecorationGroup(void* op, ParseProgram* prog) {
   SDecorationGroup* opDecorationGroup = (SDecorationGroup*)op;
 }
 
-void HandleGroupDecorate(void* op, Program* prog) {
+void HandleGroupDecorate(void* op, ParseProgram* prog) {
   SGroupDecorate* opGroupDecorate = (SGroupDecorate*)op;
 }
 
-void HandleGroupMemberDecorate(void* op, Program* prog) {
+void HandleGroupMemberDecorate(void* op, ParseProgram* prog) {
   SGroupMemberDecorate* opGroupMemberDecorate = (SGroupMemberDecorate*)op;
 }
 
-void HandleVectorExtractDynamic(void* op, Program* prog) {
+void HandleVectorExtractDynamic(void* op, ParseProgram* prog) {
   SVectorExtractDynamic* opVectorExtractDynamic = (SVectorExtractDynamic*)op;
 }
 
-void HandleVectorInsertDynamic(void* op, Program* prog) {
+void HandleVectorInsertDynamic(void* op, ParseProgram* prog) {
   SVectorInsertDynamic* opVectorInsertDynamic = (SVectorInsertDynamic*)op;
 }
 
-void HandleVectorShuffle(void* op, Program* prog) {
+void HandleVectorShuffle(void* op, ParseProgram* prog) {
   SVectorShuffle* opVectorShuffle = (SVectorShuffle*)op;
 }
 
-void HandleCompositeConstruct(void* op, Program* prog) {
+void HandleCompositeConstruct(void* op, ParseProgram* prog) {
   SCompositeConstruct* opCompositeConstruct = (SCompositeConstruct*)op;
 }
 
-void HandleCompositeExtract(void* op, Program* prog) {
+void HandleCompositeExtract(void* op, ParseProgram* prog) {
   SCompositeExtract* opCompositeExtract = (SCompositeExtract*)op;
 }
 
-void HandleCompositeInsert(void* op, Program* prog) {
+void HandleCompositeInsert(void* op, ParseProgram* prog) {
   SCompositeInsert* opCompositeInsert = (SCompositeInsert*)op;
 }
 
-void HandleCopyObject(void* op, Program* prog) {
+void HandleCopyObject(void* op, ParseProgram* prog) {
   SCopyObject* opCopyObject = (SCopyObject*)op;
 }
 
-void HandleTranspose(void* op, Program* prog) {
+void HandleTranspose(void* op, ParseProgram* prog) {
   STranspose* opTranspose = (STranspose*)op;
 }
 
-void HandleSampledImage(void* op, Program* prog) {
+void HandleSampledImage(void* op, ParseProgram* prog) {
   SSampledImage* opSampledImage = (SSampledImage*)op;
 }
 
-void HandleImageSampleImplicitLod(void* op, Program* prog) {
+void HandleImageSampleImplicitLod(void* op, ParseProgram* prog) {
   SImageSampleImplicitLod* opImageSampleImplicitLod = (SImageSampleImplicitLod*)op;
 }
 
-void HandleImageSampleExplicitLod(void* op, Program* prog) {
+void HandleImageSampleExplicitLod(void* op, ParseProgram* prog) {
   SImageSampleExplicitLod* opImageSampleExplicitLod = (SImageSampleExplicitLod*)op;
 }
 
-void HandleImageSampleDrefImplicitLod(void* op, Program* prog) {
+void HandleImageSampleDrefImplicitLod(void* op, ParseProgram* prog) {
   SImageSampleDrefImplicitLod* opImageSampleDrefImplicitLod = (SImageSampleDrefImplicitLod*)op;
 }
 
-void HandleImageSampleDrefExplicitLod(void* op, Program* prog) {
+void HandleImageSampleDrefExplicitLod(void* op, ParseProgram* prog) {
   SImageSampleDrefExplicitLod* opImageSampleDrefExplicitLod = (SImageSampleDrefExplicitLod*)op;
 }
 
-void HandleImageSampleProjImplicitLod(void* op, Program* prog) {
+void HandleImageSampleProjImplicitLod(void* op, ParseProgram* prog) {
   SImageSampleProjImplicitLod* opImageSampleProjImplicitLod = (SImageSampleProjImplicitLod*)op;
 }
 
-void HandleImageSampleProjExplicitLod(void* op, Program* prog) {
+void HandleImageSampleProjExplicitLod(void* op, ParseProgram* prog) {
   SImageSampleProjExplicitLod* opImageSampleProjExplicitLod = (SImageSampleProjExplicitLod*)op;
 }
 
-void HandleImageSampleProjDrefImplicitLod(void* op, Program* prog) {
+void HandleImageSampleProjDrefImplicitLod(void* op, ParseProgram* prog) {
   SImageSampleProjDrefImplicitLod* opImageSampleProjDrefImplicitLod = (SImageSampleProjDrefImplicitLod*)op;
 }
 
-void HandleImageSampleProjDrefExplicitLod(void* op, Program* prog) {
+void HandleImageSampleProjDrefExplicitLod(void* op, ParseProgram* prog) {
   SImageSampleProjDrefExplicitLod* opImageSampleProjDrefExplicitLod = (SImageSampleProjDrefExplicitLod*)op;
 }
 
-void HandleImageFetch(void* op, Program* prog) {
+void HandleImageFetch(void* op, ParseProgram* prog) {
   SImageFetch* opImageFetch = (SImageFetch*)op;
 }
 
-void HandleImageGather(void* op, Program* prog) {
+void HandleImageGather(void* op, ParseProgram* prog) {
   SImageGather* opImageGather = (SImageGather*)op;
 }
 
-void HandleImageDrefGather(void* op, Program* prog) {
+void HandleImageDrefGather(void* op, ParseProgram* prog) {
   SImageDrefGather* opImageDrefGather = (SImageDrefGather*)op;
 }
 
-void HandleImageRead(void* op, Program* prog) {
+void HandleImageRead(void* op, ParseProgram* prog) {
   SImageRead* opImageRead = (SImageRead*)op;
 }
 
-void HandleImageWrite(void* op, Program* prog) {
+void HandleImageWrite(void* op, ParseProgram* prog) {
   SImageWrite* opImageWrite = (SImageWrite*)op;
 }
 
-void HandleImageQueryDim(void* op, Program* prog) {
+void HandleImageQueryDim(void* op, ParseProgram* prog) {
   SImageQueryDim* opImageQueryDim = (SImageQueryDim*)op;
 }
 
-void HandleImageQueryFormat(void* op, Program* prog) {
+void HandleImageQueryFormat(void* op, ParseProgram* prog) {
   SImageQueryFormat* opImageQueryFormat = (SImageQueryFormat*)op;
 }
 
-void HandleImageQueryOrder(void* op, Program* prog) {
+void HandleImageQueryOrder(void* op, ParseProgram* prog) {
   SImageQueryOrder* opImageQueryOrder = (SImageQueryOrder*)op;
 }
 
-void HandleImageQuerySizeLod(void* op, Program* prog) {
+void HandleImageQuerySizeLod(void* op, ParseProgram* prog) {
   SImageQuerySizeLod* opImageQuerySizeLod = (SImageQuerySizeLod*)op;
 }
 
-void HandleImageQuerySize(void* op, Program* prog) {
+void HandleImageQuerySize(void* op, ParseProgram* prog) {
   SImageQuerySize* opImageQuerySize = (SImageQuerySize*)op;
 }
 
-void HandleImageQueryLod(void* op, Program* prog) {
+void HandleImageQueryLod(void* op, ParseProgram* prog) {
   SImageQueryLod* opImageQueryLod = (SImageQueryLod*)op;
 }
 
-void HandleImageQueryLevels(void* op, Program* prog) {
+void HandleImageQueryLevels(void* op, ParseProgram* prog) {
   SImageQueryLevels* opImageQueryLevels = (SImageQueryLevels*)op;
 }
 
-void HandleImageQuerySamples(void* op, Program* prog) {
+void HandleImageQuerySamples(void* op, ParseProgram* prog) {
   SImageQuerySamples* opImageQuerySamples = (SImageQuerySamples*)op;
 }
 
-void HandleConvertFToU(void* op, Program* prog) {
+void HandleConvertFToU(void* op, ParseProgram* prog) {
   SConvertFToU* opConvertFToU = (SConvertFToU*)op;
 }
 
-void HandleConvertFToS(void* op, Program* prog) {
+void HandleConvertFToS(void* op, ParseProgram* prog) {
   SConvertFToS* opConvertFToS = (SConvertFToS*)op;
 }
 
-void HandleConvertSToF(void* op, Program* prog) {
+void HandleConvertSToF(void* op, ParseProgram* prog) {
   SConvertSToF* opConvertSToF = (SConvertSToF*)op;
 }
 
-void HandleConvertUToF(void* op, Program* prog) {
+void HandleConvertUToF(void* op, ParseProgram* prog) {
   SConvertUToF* opConvertUToF = (SConvertUToF*)op;
 }
 
-void HandleUConvert(void* op, Program* prog) {
+void HandleUConvert(void* op, ParseProgram* prog) {
   SUConvert* opUConvert = (SUConvert*)op;
 }
 
-void HandleSConvert(void* op, Program* prog) {
+void HandleSConvert(void* op, ParseProgram* prog) {
   SSConvert* opSConvert = (SSConvert*)op;
 }
 
-void HandleFConvert(void* op, Program* prog) {
+void HandleFConvert(void* op, ParseProgram* prog) {
   SFConvert* opFConvert = (SFConvert*)op;
 }
 
-void HandleQuantizeToF16(void* op, Program* prog) {
+void HandleQuantizeToF16(void* op, ParseProgram* prog) {
   SQuantizeToF16* opQuantizeToF16 = (SQuantizeToF16*)op;
 }
 
-void HandleConvertPtrToU(void* op, Program* prog) {
+void HandleConvertPtrToU(void* op, ParseProgram* prog) {
   SConvertPtrToU* opConvertPtrToU = (SConvertPtrToU*)op;
 }
 
-void HandleSatConvertSToU(void* op, Program* prog) {
+void HandleSatConvertSToU(void* op, ParseProgram* prog) {
   SSatConvertSToU* opSatConvertSToU = (SSatConvertSToU*)op;
 }
 
-void HandleSatConvertUToS(void* op, Program* prog) {
+void HandleSatConvertUToS(void* op, ParseProgram* prog) {
   SSatConvertUToS* opSatConvertUToS = (SSatConvertUToS*)op;
 }
 
-void HandleConvertUToPtr(void* op, Program* prog) {
+void HandleConvertUToPtr(void* op, ParseProgram* prog) {
   SConvertUToPtr* opConvertUToPtr = (SConvertUToPtr*)op;
 }
 
-void HandlePtrCastToGeneric(void* op, Program* prog) {
+void HandlePtrCastToGeneric(void* op, ParseProgram* prog) {
   SPtrCastToGeneric* opPtrCastToGeneric = (SPtrCastToGeneric*)op;
 }
 
-void HandleGenericCastToPtr(void* op, Program* prog) {
+void HandleGenericCastToPtr(void* op, ParseProgram* prog) {
   SGenericCastToPtr* opGenericCastToPtr = (SGenericCastToPtr*)op;
 }
 
-void HandleGenericCastToPtrExplicit(void* op, Program* prog) {
+void HandleGenericCastToPtrExplicit(void* op, ParseProgram* prog) {
   SGenericCastToPtrExplicit* opGenericCastToPtrExplicit = (SGenericCastToPtrExplicit*)op;
 }
 
-void HandleBitcast(void* op, Program* prog) {
+void HandleBitcast(void* op, ParseProgram* prog) {
   SBitcast* opBitcast = (SBitcast*)op;
 }
 
-void HandleSNegate(void* op, Program* prog) {
+void HandleSNegate(void* op, ParseProgram* prog) {
   SSNegate* opSNegate = (SSNegate*)op;
 }
 
-void HandleFNegate(void* op, Program* prog) {
+void HandleFNegate(void* op, ParseProgram* prog) {
   SFNegate* opFNegate = (SFNegate*)op;
 }
 
-void HandleIAdd(void* op, Program* prog) {
+void HandleIAdd(void* op, ParseProgram* prog) {
   SIAdd* opIAdd = (SIAdd*)op;
 }
 
-void HandleFAdd(void* op, Program* prog) {
+void HandleFAdd(void* op, ParseProgram* prog) {
   SFAdd* opFAdd = (SFAdd*)op;
 }
 
-void HandleISub(void* op, Program* prog) {
+void HandleISub(void* op, ParseProgram* prog) {
   SISub* opISub = (SISub*)op;
 }
 
-void HandleFSub(void* op, Program* prog) {
+void HandleFSub(void* op, ParseProgram* prog) {
   SFSub* opFSub = (SFSub*)op;
 }
 
-void HandleIMul(void* op, Program* prog) {
+void HandleIMul(void* op, ParseProgram* prog) {
   SIMul* opIMul = (SIMul*)op;
 }
 
-void HandleFMul(void* op, Program* prog) {
+void HandleFMul(void* op, ParseProgram* prog) {
   SFMul* opFMul = (SFMul*)op;
 }
 
-void HandleUDiv(void* op, Program* prog) {
+void HandleUDiv(void* op, ParseProgram* prog) {
   SUDiv* opUDiv = (SUDiv*)op;
 }
 
-void HandleSDiv(void* op, Program* prog) {
+void HandleSDiv(void* op, ParseProgram* prog) {
   SSDiv* opSDiv = (SSDiv*)op;
 }
 
-void HandleFDiv(void* op, Program* prog) {
+void HandleFDiv(void* op, ParseProgram* prog) {
   SFDiv* opFDiv = (SFDiv*)op;
 }
 
-void HandleUMod(void* op, Program* prog) {
+void HandleUMod(void* op, ParseProgram* prog) {
   SUMod* opUMod = (SUMod*)op;
 }
 
-void HandleSRem(void* op, Program* prog) {
+void HandleSRem(void* op, ParseProgram* prog) {
   SSRem* opSRem = (SSRem*)op;
 }
 
-void HandleSMod(void* op, Program* prog) {
+void HandleSMod(void* op, ParseProgram* prog) {
   SSMod* opSMod = (SSMod*)op;
 }
 
-void HandleFRem(void* op, Program* prog) {
+void HandleFRem(void* op, ParseProgram* prog) {
   SFRem* opFRem = (SFRem*)op;
 }
 
-void HandleFMod(void* op, Program* prog) {
+void HandleFMod(void* op, ParseProgram* prog) {
   SFMod* opFMod = (SFMod*)op;
 }
 
-void HandleVectorTimesScalar(void* op, Program* prog) {
+void HandleVectorTimesScalar(void* op, ParseProgram* prog) {
   SVectorTimesScalar* opVectorTimesScalar = (SVectorTimesScalar*)op;
 }
 
-void HandleMatrixTimesScalar(void* op, Program* prog) {
+void HandleMatrixTimesScalar(void* op, ParseProgram* prog) {
   SMatrixTimesScalar* opMatrixTimesScalar = (SMatrixTimesScalar*)op;
 }
 
-void HandleVectorTimesMatrix(void* op, Program* prog) {
+void HandleVectorTimesMatrix(void* op, ParseProgram* prog) {
   SVectorTimesMatrix* opVectorTimesMatrix = (SVectorTimesMatrix*)op;
 }
 
-void HandleMatrixTimesVector(void* op, Program* prog) {
+void HandleMatrixTimesVector(void* op, ParseProgram* prog) {
   SMatrixTimesVector* opMatrixTimesVector = (SMatrixTimesVector*)op;
 }
 
-void HandleMatrixTimesMatrix(void* op, Program* prog) {
+void HandleMatrixTimesMatrix(void* op, ParseProgram* prog) {
   SMatrixTimesMatrix* opMatrixTimesMatrix = (SMatrixTimesMatrix*)op;
 }
 
-void HandleOuterProduct(void* op, Program* prog) {
+void HandleOuterProduct(void* op, ParseProgram* prog) {
   SOuterProduct* opOuterProduct = (SOuterProduct*)op;
 }
 
-void HandleDot(void* op, Program* prog) {
+void HandleDot(void* op, ParseProgram* prog) {
   SDot* opDot = (SDot*)op;
 }
 
-void HandleIAddCarry(void* op, Program* prog) {
+void HandleIAddCarry(void* op, ParseProgram* prog) {
   SIAddCarry* opIAddCarry = (SIAddCarry*)op;
 }
 
-void HandleISubBorrow(void* op, Program* prog) {
+void HandleISubBorrow(void* op, ParseProgram* prog) {
   SISubBorrow* opISubBorrow = (SISubBorrow*)op;
 }
 
-void HandleIMulExtended(void* op, Program* prog) {
+void HandleIMulExtended(void* op, ParseProgram* prog) {
   SIMulExtended* opIMulExtended = (SIMulExtended*)op;
 }
 
-void HandleAny(void* op, Program* prog) {
+void HandleAny(void* op, ParseProgram* prog) {
   SAny* opAny = (SAny*)op;
 }
 
-void HandleAll(void* op, Program* prog) {
+void HandleAll(void* op, ParseProgram* prog) {
   SAll* opAll = (SAll*)op;
 }
 
-void HandleIsNan(void* op, Program* prog) {
+void HandleIsNan(void* op, ParseProgram* prog) {
   SIsNan* opIsNan = (SIsNan*)op;
 }
 
-void HandleIsInf(void* op, Program* prog) {
+void HandleIsInf(void* op, ParseProgram* prog) {
   SIsInf* opIsInf = (SIsInf*)op;
 }
 
-void HandleIsFinite(void* op, Program* prog) {
+void HandleIsFinite(void* op, ParseProgram* prog) {
   SIsFinite* opIsFinite = (SIsFinite*)op;
 }
 
-void HandleIsNormal(void* op, Program* prog) {
+void HandleIsNormal(void* op, ParseProgram* prog) {
   SIsNormal* opIsNormal = (SIsNormal*)op;
 }
 
-void HandleSignBitSet(void* op, Program* prog) {
+void HandleSignBitSet(void* op, ParseProgram* prog) {
   SSignBitSet* opSignBitSet = (SSignBitSet*)op;
 }
 
-void HandleLessOrGreater(void* op, Program* prog) {
+void HandleLessOrGreater(void* op, ParseProgram* prog) {
   SLessOrGreater* opLessOrGreater = (SLessOrGreater*)op;
 }
 
-void HandleOrdered(void* op, Program* prog) {
+void HandleOrdered(void* op, ParseProgram* prog) {
   SOrdered* opOrdered = (SOrdered*)op;
 }
 
-void HandleUnordered(void* op, Program* prog) {
+void HandleUnordered(void* op, ParseProgram* prog) {
   SUnordered* opUnordered = (SUnordered*)op;
 }
 
-void HandleLogicalEqual(void* op, Program* prog) {
+void HandleLogicalEqual(void* op, ParseProgram* prog) {
   SLogicalEqual* opLogicalEqual = (SLogicalEqual*)op;
 }
 
-void HandleLogicalNotEqual(void* op, Program* prog) {
+void HandleLogicalNotEqual(void* op, ParseProgram* prog) {
   SLogicalNotEqual* opLogicalNotEqual = (SLogicalNotEqual*)op;
 }
 
-void HandleLogicalOr(void* op, Program* prog) {
+void HandleLogicalOr(void* op, ParseProgram* prog) {
   SLogicalOr* opLogicalOr = (SLogicalOr*)op;
 }
 
-void HandleLogicalAnd(void* op, Program* prog) {
+void HandleLogicalAnd(void* op, ParseProgram* prog) {
   SLogicalAnd* opLogicalAnd = (SLogicalAnd*)op;
 }
 
-void HandleLogicalNot(void* op, Program* prog) {
+void HandleLogicalNot(void* op, ParseProgram* prog) {
   SLogicalNot* opLogicalNot = (SLogicalNot*)op;
 }
 
-void HandleSelect(void* op, Program* prog) {
+void HandleSelect(void* op, ParseProgram* prog) {
   SSelect* opSelect = (SSelect*)op;
 }
 
-void HandleIEqual(void* op, Program* prog) {
+void HandleIEqual(void* op, ParseProgram* prog) {
   SIEqual* opIEqual = (SIEqual*)op;
 }
 
-void HandleINotEqual(void* op, Program* prog) {
+void HandleINotEqual(void* op, ParseProgram* prog) {
   SINotEqual* opINotEqual = (SINotEqual*)op;
 }
 
-void HandleUGreaterThan(void* op, Program* prog) {
+void HandleUGreaterThan(void* op, ParseProgram* prog) {
   SUGreaterThan* opUGreaterThan = (SUGreaterThan*)op;
 }
 
-void HandleSGreaterThan(void* op, Program* prog) {
+void HandleSGreaterThan(void* op, ParseProgram* prog) {
   SSGreaterThan* opSGreaterThan = (SSGreaterThan*)op;
 }
 
-void HandleUGreaterThanEqual(void* op, Program* prog) {
+void HandleUGreaterThanEqual(void* op, ParseProgram* prog) {
   SUGreaterThanEqual* opUGreaterThanEqual = (SUGreaterThanEqual*)op;
 }
 
-void HandleSGreaterThanEqual(void* op, Program* prog) {
+void HandleSGreaterThanEqual(void* op, ParseProgram* prog) {
   SSGreaterThanEqual* opSGreaterThanEqual = (SSGreaterThanEqual*)op;
 }
 
-void HandleULessThan(void* op, Program* prog) {
+void HandleULessThan(void* op, ParseProgram* prog) {
   SULessThan* opULessThan = (SULessThan*)op;
 }
 
-void HandleSLessThan(void* op, Program* prog) {
+void HandleSLessThan(void* op, ParseProgram* prog) {
   SSLessThan* opSLessThan = (SSLessThan*)op;
 }
 
-void HandleULessThanEqual(void* op, Program* prog) {
+void HandleULessThanEqual(void* op, ParseProgram* prog) {
   SULessThanEqual* opULessThanEqual = (SULessThanEqual*)op;
 }
 
-void HandleSLessThanEqual(void* op, Program* prog) {
+void HandleSLessThanEqual(void* op, ParseProgram* prog) {
   SSLessThanEqual* opSLessThanEqual = (SSLessThanEqual*)op;
 }
 
-void HandleFOrdEqual(void* op, Program* prog) {
+void HandleFOrdEqual(void* op, ParseProgram* prog) {
   SFOrdEqual* opFOrdEqual = (SFOrdEqual*)op;
 }
 
-void HandleFUnordEqual(void* op, Program* prog) {
+void HandleFUnordEqual(void* op, ParseProgram* prog) {
   SFUnordEqual* opFUnordEqual = (SFUnordEqual*)op;
 }
 
-void HandleFOrdNotEqual(void* op, Program* prog) {
+void HandleFOrdNotEqual(void* op, ParseProgram* prog) {
   SFOrdNotEqual* opFOrdNotEqual = (SFOrdNotEqual*)op;
 }
 
-void HandleFUnordNotEqual(void* op, Program* prog) {
+void HandleFUnordNotEqual(void* op, ParseProgram* prog) {
   SFUnordNotEqual* opFUnordNotEqual = (SFUnordNotEqual*)op;
 }
 
-void HandleFOrdLessThan(void* op, Program* prog) {
+void HandleFOrdLessThan(void* op, ParseProgram* prog) {
   SFOrdLessThan* opFOrdLessThan = (SFOrdLessThan*)op;
 }
 
-void HandleFUnordLessThan(void* op, Program* prog) {
+void HandleFUnordLessThan(void* op, ParseProgram* prog) {
   SFUnordLessThan* opFUnordLessThan = (SFUnordLessThan*)op;
 }
 
-void HandleFOrdGreaterThan(void* op, Program* prog) {
+void HandleFOrdGreaterThan(void* op, ParseProgram* prog) {
   SFOrdGreaterThan* opFOrdGreaterThan = (SFOrdGreaterThan*)op;
 }
 
-void HandleFUnordGreaterThan(void* op, Program* prog) {
+void HandleFUnordGreaterThan(void* op, ParseProgram* prog) {
   SFUnordGreaterThan* opFUnordGreaterThan = (SFUnordGreaterThan*)op;
 }
 
-void HandleFOrdLessThanEqual(void* op, Program* prog) {
+void HandleFOrdLessThanEqual(void* op, ParseProgram* prog) {
   SFOrdLessThanEqual* opFOrdLessThanEqual = (SFOrdLessThanEqual*)op;
 }
 
-void HandleFUnordLessThanEqual(void* op, Program* prog) {
+void HandleFUnordLessThanEqual(void* op, ParseProgram* prog) {
   SFUnordLessThanEqual* opFUnordLessThanEqual = (SFUnordLessThanEqual*)op;
 }
 
-void HandleFOrdGreaterThanEqual(void* op, Program* prog) {
+void HandleFOrdGreaterThanEqual(void* op, ParseProgram* prog) {
   SFOrdGreaterThanEqual* opFOrdGreaterThanEqual = (SFOrdGreaterThanEqual*)op;
 }
 
-void HandleFUnordGreaterThanEqual(void* op, Program* prog) {
+void HandleFUnordGreaterThanEqual(void* op, ParseProgram* prog) {
   SFUnordGreaterThanEqual* opFUnordGreaterThanEqual = (SFUnordGreaterThanEqual*)op;
 }
 
-void HandleShiftRightLogical(void* op, Program* prog) {
+void HandleShiftRightLogical(void* op, ParseProgram* prog) {
   SShiftRightLogical* opShiftRightLogical = (SShiftRightLogical*)op;
 }
 
-void HandleShiftRightArithmetic(void* op, Program* prog) {
+void HandleShiftRightArithmetic(void* op, ParseProgram* prog) {
   SShiftRightArithmetic* opShiftRightArithmetic = (SShiftRightArithmetic*)op;
 }
 
-void HandleShiftLeftLogical(void* op, Program* prog) {
+void HandleShiftLeftLogical(void* op, ParseProgram* prog) {
   SShiftLeftLogical* opShiftLeftLogical = (SShiftLeftLogical*)op;
 }
 
-void HandleBitwiseOr(void* op, Program* prog) {
+void HandleBitwiseOr(void* op, ParseProgram* prog) {
   SBitwiseOr* opBitwiseOr = (SBitwiseOr*)op;
 }
 
-void HandleBitwiseXor(void* op, Program* prog) {
+void HandleBitwiseXor(void* op, ParseProgram* prog) {
   SBitwiseXor* opBitwiseXor = (SBitwiseXor*)op;
 }
 
-void HandleBitwiseAnd(void* op, Program* prog) {
+void HandleBitwiseAnd(void* op, ParseProgram* prog) {
   SBitwiseAnd* opBitwiseAnd = (SBitwiseAnd*)op;
 }
 
-void HandleNot(void* op, Program* prog) {
+void HandleNot(void* op, ParseProgram* prog) {
   SNot* opNot = (SNot*)op;
 }
 
-void HandleBitFieldInsert(void* op, Program* prog) {
+void HandleBitFieldInsert(void* op, ParseProgram* prog) {
   SBitFieldInsert* opBitFieldInsert = (SBitFieldInsert*)op;
 }
 
-void HandleBitFieldSExtract(void* op, Program* prog) {
+void HandleBitFieldSExtract(void* op, ParseProgram* prog) {
   SBitFieldSExtract* opBitFieldSExtract = (SBitFieldSExtract*)op;
 }
 
-void HandleBitFieldUExtract(void* op, Program* prog) {
+void HandleBitFieldUExtract(void* op, ParseProgram* prog) {
   SBitFieldUExtract* opBitFieldUExtract = (SBitFieldUExtract*)op;
 }
 
-void HandleBitReverse(void* op, Program* prog) {
+void HandleBitReverse(void* op, ParseProgram* prog) {
   SBitReverse* opBitReverse = (SBitReverse*)op;
 }
 
-void HandleBitCount(void* op, Program* prog) {
+void HandleBitCount(void* op, ParseProgram* prog) {
   SBitCount* opBitCount = (SBitCount*)op;
 }
 
-void HandleDPdx(void* op, Program* prog) {
+void HandleDPdx(void* op, ParseProgram* prog) {
   SDPdx* opDPdx = (SDPdx*)op;
 }
 
-void HandleDPdy(void* op, Program* prog) {
+void HandleDPdy(void* op, ParseProgram* prog) {
   SDPdy* opDPdy = (SDPdy*)op;
 }
 
-void HandleFwidth(void* op, Program* prog) {
+void HandleFwidth(void* op, ParseProgram* prog) {
   SFwidth* opFwidth = (SFwidth*)op;
 }
 
-void HandleDPdxFine(void* op, Program* prog) {
+void HandleDPdxFine(void* op, ParseProgram* prog) {
   SDPdxFine* opDPdxFine = (SDPdxFine*)op;
 }
 
-void HandleDPdyFine(void* op, Program* prog) {
+void HandleDPdyFine(void* op, ParseProgram* prog) {
   SDPdyFine* opDPdyFine = (SDPdyFine*)op;
 }
 
-void HandleFwidthFine(void* op, Program* prog) {
+void HandleFwidthFine(void* op, ParseProgram* prog) {
   SFwidthFine* opFwidthFine = (SFwidthFine*)op;
 }
 
-void HandleDPdxCoarse(void* op, Program* prog) {
+void HandleDPdxCoarse(void* op, ParseProgram* prog) {
   SDPdxCoarse* opDPdxCoarse = (SDPdxCoarse*)op;
 }
 
-void HandleDPdyCoarse(void* op, Program* prog) {
+void HandleDPdyCoarse(void* op, ParseProgram* prog) {
   SDPdyCoarse* opDPdyCoarse = (SDPdyCoarse*)op;
 }
 
-void HandleFwidthCoarse(void* op, Program* prog) {
+void HandleFwidthCoarse(void* op, ParseProgram* prog) {
   SFwidthCoarse* opFwidthCoarse = (SFwidthCoarse*)op;
 }
 
-void HandleEmitVertex(void* op, Program* prog) {
+void HandleEmitVertex(void* op, ParseProgram* prog) {
   SEmitVertex* opEmitVertex = (SEmitVertex*)op;
 }
 
-void HandleEndPrimitive(void* op, Program* prog) {
+void HandleEndPrimitive(void* op, ParseProgram* prog) {
   SEndPrimitive* opEndPrimitive = (SEndPrimitive*)op;
 }
 
-void HandleEmitStreamVertex(void* op, Program* prog) {
+void HandleEmitStreamVertex(void* op, ParseProgram* prog) {
   SEmitStreamVertex* opEmitStreamVertex = (SEmitStreamVertex*)op;
 }
 
-void HandleEndStreamPrimitive(void* op, Program* prog) {
+void HandleEndStreamPrimitive(void* op, ParseProgram* prog) {
   SEndStreamPrimitive* opEndStreamPrimitive = (SEndStreamPrimitive*)op;
 }
 
-void HandleControlBarrier(void* op, Program* prog) {
+void HandleControlBarrier(void* op, ParseProgram* prog) {
   SControlBarrier* opControlBarrier = (SControlBarrier*)op;
 }
 
-void HandleMemoryBarrier(void* op, Program* prog) {
+void HandleMemoryBarrier(void* op, ParseProgram* prog) {
   SMemoryBarrier* opMemoryBarrier = (SMemoryBarrier*)op;
 }
 
-void HandleAtomicLoad(void* op, Program* prog) {
+void HandleAtomicLoad(void* op, ParseProgram* prog) {
   SAtomicLoad* opAtomicLoad = (SAtomicLoad*)op;
 }
 
-void HandleAtomicStore(void* op, Program* prog) {
+void HandleAtomicStore(void* op, ParseProgram* prog) {
   SAtomicStore* opAtomicStore = (SAtomicStore*)op;
 }
 
-void HandleAtomicExchange(void* op, Program* prog) {
+void HandleAtomicExchange(void* op, ParseProgram* prog) {
   SAtomicExchange* opAtomicExchange = (SAtomicExchange*)op;
 }
 
-void HandleAtomicCompareExchange(void* op, Program* prog) {
+void HandleAtomicCompareExchange(void* op, ParseProgram* prog) {
   SAtomicCompareExchange* opAtomicCompareExchange = (SAtomicCompareExchange*)op;
 }
 
-void HandleAtomicCompareExchangeWeak(void* op, Program* prog) {
+void HandleAtomicCompareExchangeWeak(void* op, ParseProgram* prog) {
   SAtomicCompareExchangeWeak* opAtomicCompareExchangeWeak = (SAtomicCompareExchangeWeak*)op;
 }
 
-void HandleAtomicIIncrement(void* op, Program* prog) {
+void HandleAtomicIIncrement(void* op, ParseProgram* prog) {
   SAtomicIIncrement* opAtomicIIncrement = (SAtomicIIncrement*)op;
 }
 
-void HandleAtomicIDecrement(void* op, Program* prog) {
+void HandleAtomicIDecrement(void* op, ParseProgram* prog) {
   SAtomicIDecrement* opAtomicIDecrement = (SAtomicIDecrement*)op;
 }
 
-void HandleAtomicIAdd(void* op, Program* prog) {
+void HandleAtomicIAdd(void* op, ParseProgram* prog) {
   SAtomicIAdd* opAtomicIAdd = (SAtomicIAdd*)op;
 }
 
-void HandleAtomicISub(void* op, Program* prog) {
+void HandleAtomicISub(void* op, ParseProgram* prog) {
   SAtomicISub* opAtomicISub = (SAtomicISub*)op;
 }
 
-void HandleAtomicSMin(void* op, Program* prog) {
+void HandleAtomicSMin(void* op, ParseProgram* prog) {
   SAtomicSMin* opAtomicSMin = (SAtomicSMin*)op;
 }
 
-void HandleAtomicUMin(void* op, Program* prog) {
+void HandleAtomicUMin(void* op, ParseProgram* prog) {
   SAtomicUMin* opAtomicUMin = (SAtomicUMin*)op;
 }
 
-void HandleAtomicSMax(void* op, Program* prog) {
+void HandleAtomicSMax(void* op, ParseProgram* prog) {
   SAtomicSMax* opAtomicSMax = (SAtomicSMax*)op;
 }
 
-void HandleAtomicUMax(void* op, Program* prog) {
+void HandleAtomicUMax(void* op, ParseProgram* prog) {
   SAtomicUMax* opAtomicUMax = (SAtomicUMax*)op;
 }
 
-void HandleAtomicAnd(void* op, Program* prog) {
+void HandleAtomicAnd(void* op, ParseProgram* prog) {
   SAtomicAnd* opAtomicAnd = (SAtomicAnd*)op;
 }
 
-void HandleAtomicOr(void* op, Program* prog) {
+void HandleAtomicOr(void* op, ParseProgram* prog) {
   SAtomicOr* opAtomicOr = (SAtomicOr*)op;
 }
 
-void HandleAtomicXor(void* op, Program* prog) {
+void HandleAtomicXor(void* op, ParseProgram* prog) {
   SAtomicXor* opAtomicXor = (SAtomicXor*)op;
 }
 
-void HandlePhi(void* op, Program* prog) {
+void HandlePhi(void* op, ParseProgram* prog) {
   SPhi* opPhi = (SPhi*)op;
 }
 
-void HandleLoopMerge(void* op, Program* prog) {
+void HandleLoopMerge(void* op, ParseProgram* prog) {
   SLoopMerge* opLoopMerge = (SLoopMerge*)op;
   startLoop(prog, opLoopMerge);
 }
 
-void HandleSelectionMerge(void* op, Program* prog) {
+void HandleSelectionMerge(void* op, ParseProgram* prog) {
   SSelectionMerge* opSelectionMerge = (SSelectionMerge*)op;
   startSelection(prog, opSelectionMerge);
 }
 
-void HandleLabel(void* op, Program* prog) {
+void HandleLabel(void* op, ParseProgram* prog) {
   SLabel* opLabel = (SLabel*)op;
   addLabel(prog, opLabel);
   startNewBlock(prog, *opLabel);
 }
 
-void HandleBranch(void* op, Program* prog) {
+void HandleBranch(void* op, ParseProgram* prog) {
   SBranch* opBranch = (SBranch*)op;
   addOp(prog, SOp{ Op::OpBranch, opBranch });
   endBlock(prog, SOp{ Op::OpBranch, opBranch });
 }
 
-void HandleBranchConditional(void* op, Program* prog) {
+void HandleBranchConditional(void* op, ParseProgram* prog) {
   SBranchConditional* opBranchConditional = (SBranchConditional*)op;
   addOp(prog, SOp{ Op::OpBranchConditional, opBranchConditional });
   endBlock(prog, SOp{ Op::OpBranchConditional, opBranchConditional });
 }
 
-void HandleSwitch(void* op, Program* prog) {
+void HandleSwitch(void* op, ParseProgram* prog) {
   SSwitch* opSwitch = (SSwitch*)op;
   addOp(prog, SOp{ Op::OpSwitch, opSwitch });
   endBlock(prog, SOp{ Op::OpSwitch, opSwitch });
 }
 
-void HandleKill(void* op, Program* prog) {
+void HandleKill(void* op, ParseProgram* prog) {
   SKill* opKill = (SKill*)op;
   addOp(prog, SOp{ Op::OpKill, opKill });
   endBlock(prog, SOp{ Op::OpKill, opKill });
 }
 
-void HandleReturn(void* op, Program* prog) {
+void HandleReturn(void* op, ParseProgram* prog) {
   SReturn* opReturn = (SReturn*)op;
   addOp(prog, SOp{ Op::OpReturn, opReturn });
   endBlock(prog, SOp{ Op::OpReturn, opReturn });
 }
 
-void HandleReturnValue(void* op, Program* prog) {
+void HandleReturnValue(void* op, ParseProgram* prog) {
   SReturnValue* opReturnValue = (SReturnValue*)op;
   addOp(prog, SOp{ Op::OpReturnValue, opReturnValue });
   endBlock(prog, SOp{ Op::OpReturnValue, opReturnValue });
 }
 
-void HandleUnreachable(void* op, Program* prog) {
+void HandleUnreachable(void* op, ParseProgram* prog) {
   SUnreachable* opUnreachable = (SUnreachable*)op;
   addOp(prog, SOp{ Op::OpUnreachable, opUnreachable });
   endBlock(prog, SOp{ Op::OpUnreachable, opUnreachable });
 }
 
-void HandleLifetimeStart(void* op, Program* prog) {
+void HandleLifetimeStart(void* op, ParseProgram* prog) {
   SLifetimeStart* opLifetimeStart = (SLifetimeStart*)op;
 }
 
-void HandleLifetimeStop(void* op, Program* prog) {
+void HandleLifetimeStop(void* op, ParseProgram* prog) {
   SLifetimeStop* opLifetimeStop = (SLifetimeStop*)op;
 }
 
-void HandleAsyncGroupCopy(void* op, Program* prog) {
+void HandleAsyncGroupCopy(void* op, ParseProgram* prog) {
   SAsyncGroupCopy* opAsyncGroupCopy = (SAsyncGroupCopy*)op;
 }
 
-void HandleWaitGroupEvents(void* op, Program* prog) {
+void HandleWaitGroupEvents(void* op, ParseProgram* prog) {
   SWaitGroupEvents* opWaitGroupEvents = (SWaitGroupEvents*)op;
 }
 
-void HandleGroupAll(void* op, Program* prog) {
+void HandleGroupAll(void* op, ParseProgram* prog) {
   SGroupAll* opGroupAll = (SGroupAll*)op;
 }
 
-void HandleGroupAny(void* op, Program* prog) {
+void HandleGroupAny(void* op, ParseProgram* prog) {
   SGroupAny* opGroupAny = (SGroupAny*)op;
 }
 
-void HandleGroupBroadcast(void* op, Program* prog) {
+void HandleGroupBroadcast(void* op, ParseProgram* prog) {
   SGroupBroadcast* opGroupBroadcast = (SGroupBroadcast*)op;
 }
 
-void HandleGroupIAdd(void* op, Program* prog) {
+void HandleGroupIAdd(void* op, ParseProgram* prog) {
   SGroupIAdd* opGroupIAdd = (SGroupIAdd*)op;
 }
 
-void HandleGroupFAdd(void* op, Program* prog) {
+void HandleGroupFAdd(void* op, ParseProgram* prog) {
   SGroupFAdd* opGroupFAdd = (SGroupFAdd*)op;
 }
 
-void HandleGroupFMin(void* op, Program* prog) {
+void HandleGroupFMin(void* op, ParseProgram* prog) {
   SGroupFMin* opGroupFMin = (SGroupFMin*)op;
 }
 
-void HandleGroupUMin(void* op, Program* prog) {
+void HandleGroupUMin(void* op, ParseProgram* prog) {
   SGroupUMin* opGroupUMin = (SGroupUMin*)op;
 }
 
-void HandleGroupSMin(void* op, Program* prog) {
+void HandleGroupSMin(void* op, ParseProgram* prog) {
   SGroupSMin* opGroupSMin = (SGroupSMin*)op;
 }
 
-void HandleGroupFMax(void* op, Program* prog) {
+void HandleGroupFMax(void* op, ParseProgram* prog) {
   SGroupFMax* opGroupFMax = (SGroupFMax*)op;
 }
 
-void HandleGroupUMax(void* op, Program* prog) {
+void HandleGroupUMax(void* op, ParseProgram* prog) {
   SGroupUMax* opGroupUMax = (SGroupUMax*)op;
 }
 
-void HandleGroupSMax(void* op, Program* prog) {
+void HandleGroupSMax(void* op, ParseProgram* prog) {
   SGroupSMax* opGroupSMax = (SGroupSMax*)op;
 }
 
-void HandleReadPipe(void* op, Program* prog) {
+void HandleReadPipe(void* op, ParseProgram* prog) {
   SReadPipe* opReadPipe = (SReadPipe*)op;
 }
 
-void HandleWritePipe(void* op, Program* prog) {
+void HandleWritePipe(void* op, ParseProgram* prog) {
   SWritePipe* opWritePipe = (SWritePipe*)op;
 }
 
-void HandleReservedReadPipe(void* op, Program* prog) {
+void HandleReservedReadPipe(void* op, ParseProgram* prog) {
   SReservedReadPipe* opReservedReadPipe = (SReservedReadPipe*)op;
 }
 
-void HandleReservedWritePipe(void* op, Program* prog) {
+void HandleReservedWritePipe(void* op, ParseProgram* prog) {
   SReservedWritePipe* opReservedWritePipe = (SReservedWritePipe*)op;
 }
 
-void HandleReserveReadPipePackets(void* op, Program* prog) {
+void HandleReserveReadPipePackets(void* op, ParseProgram* prog) {
   SReserveReadPipePackets* opReserveReadPipePackets = (SReserveReadPipePackets*)op;
 }
 
-void HandleReserveWritePipePackets(void* op, Program* prog) {
+void HandleReserveWritePipePackets(void* op, ParseProgram* prog) {
   SReserveWritePipePackets* opReserveWritePipePackets = (SReserveWritePipePackets*)op;
 }
 
-void HandleCommitReadPipe(void* op, Program* prog) {
+void HandleCommitReadPipe(void* op, ParseProgram* prog) {
   SCommitReadPipe* opCommitReadPipe = (SCommitReadPipe*)op;
 }
 
-void HandleCommitWritePipe(void* op, Program* prog) {
+void HandleCommitWritePipe(void* op, ParseProgram* prog) {
   SCommitWritePipe* opCommitWritePipe = (SCommitWritePipe*)op;
 }
 
-void HandleIsValidReserveId(void* op, Program* prog) {
+void HandleIsValidReserveId(void* op, ParseProgram* prog) {
   SIsValidReserveId* opIsValidReserveId = (SIsValidReserveId*)op;
 }
 
-void HandleGetNumPipePackets(void* op, Program* prog) {
+void HandleGetNumPipePackets(void* op, ParseProgram* prog) {
   SGetNumPipePackets* opGetNumPipePackets = (SGetNumPipePackets*)op;
 }
 
-void HandleGetMaxPipePackets(void* op, Program* prog) {
+void HandleGetMaxPipePackets(void* op, ParseProgram* prog) {
   SGetMaxPipePackets* opGetMaxPipePackets = (SGetMaxPipePackets*)op;
 }
 
-void HandleGroupReserveReadPipePackets(void* op, Program* prog) {
+void HandleGroupReserveReadPipePackets(void* op, ParseProgram* prog) {
   SGroupReserveReadPipePackets* opGroupReserveReadPipePackets = (SGroupReserveReadPipePackets*)op;
 }
 
-void HandleGroupReserveWritePipePackets(void* op, Program* prog) {
+void HandleGroupReserveWritePipePackets(void* op, ParseProgram* prog) {
   SGroupReserveWritePipePackets* opGroupReserveWritePipePackets = (SGroupReserveWritePipePackets*)op;
 }
 
-void HandleGroupCommitReadPipe(void* op, Program* prog) {
+void HandleGroupCommitReadPipe(void* op, ParseProgram* prog) {
   SGroupCommitReadPipe* opGroupCommitReadPipe = (SGroupCommitReadPipe*)op;
 }
 
-void HandleGroupCommitWritePipe(void* op, Program* prog) {
+void HandleGroupCommitWritePipe(void* op, ParseProgram* prog) {
   SGroupCommitWritePipe* opGroupCommitWritePipe = (SGroupCommitWritePipe*)op;
 }
 
-void HandleEnqueueMarker(void* op, Program* prog) {
+void HandleEnqueueMarker(void* op, ParseProgram* prog) {
   SEnqueueMarker* opEnqueueMarker = (SEnqueueMarker*)op;
 }
 
-void HandleEnqueueKernel(void* op, Program* prog) {
+void HandleEnqueueKernel(void* op, ParseProgram* prog) {
   SEnqueueKernel* opEnqueueKernel = (SEnqueueKernel*)op;
 }
 
-void HandleGetKernelNDrangeSubGroupCount(void* op, Program* prog) {
+void HandleGetKernelNDrangeSubGroupCount(void* op, ParseProgram* prog) {
   SGetKernelNDrangeSubGroupCount* opGetKernelNDrangeSubGroupCount = (SGetKernelNDrangeSubGroupCount*)op;
 }
 
-void HandleGetKernelNDrangeMaxSubGroupSize(void* op, Program* prog) {
+void HandleGetKernelNDrangeMaxSubGroupSize(void* op, ParseProgram* prog) {
   SGetKernelNDrangeMaxSubGroupSize* opGetKernelNDrangeMaxSubGroupSize = (SGetKernelNDrangeMaxSubGroupSize*)op;
 }
 
-void HandleGetKernelWorkGroupSize(void* op, Program* prog) {
+void HandleGetKernelWorkGroupSize(void* op, ParseProgram* prog) {
   SGetKernelWorkGroupSize* opGetKernelWorkGroupSize = (SGetKernelWorkGroupSize*)op;
 }
 
-void HandleGetKernelPreferredWorkGroupSizeMultiple(void* op, Program* prog) {
+void HandleGetKernelPreferredWorkGroupSizeMultiple(void* op, ParseProgram* prog) {
   SGetKernelPreferredWorkGroupSizeMultiple* opGetKernelPreferredWorkGroupSizeMultiple = (SGetKernelPreferredWorkGroupSizeMultiple*)op;
 }
 
-void HandleRetainEvent(void* op, Program* prog) {
+void HandleRetainEvent(void* op, ParseProgram* prog) {
   SRetainEvent* opRetainEvent = (SRetainEvent*)op;
 }
 
-void HandleReleaseEvent(void* op, Program* prog) {
+void HandleReleaseEvent(void* op, ParseProgram* prog) {
   SReleaseEvent* opReleaseEvent = (SReleaseEvent*)op;
 }
 
-void HandleCreateUserEvent(void* op, Program* prog) {
+void HandleCreateUserEvent(void* op, ParseProgram* prog) {
   SCreateUserEvent* opCreateUserEvent = (SCreateUserEvent*)op;
 }
 
-void HandleIsValidEvent(void* op, Program* prog) {
+void HandleIsValidEvent(void* op, ParseProgram* prog) {
   SIsValidEvent* opIsValidEvent = (SIsValidEvent*)op;
 }
 
-void HandleSetUserEventStatus(void* op, Program* prog) {
+void HandleSetUserEventStatus(void* op, ParseProgram* prog) {
   SSetUserEventStatus* opSetUserEventStatus = (SSetUserEventStatus*)op;
 }
 
-void HandleCaptureEventProfilingInfo(void* op, Program* prog) {
+void HandleCaptureEventProfilingInfo(void* op, ParseProgram* prog) {
   SCaptureEventProfilingInfo* opCaptureEventProfilingInfo = (SCaptureEventProfilingInfo*)op;
 }
 
-void HandleGetDefaultQueue(void* op, Program* prog) {
+void HandleGetDefaultQueue(void* op, ParseProgram* prog) {
   SGetDefaultQueue* opGetDefaultQueue = (SGetDefaultQueue*)op;
 }
 
-void HandleBuildNDRange(void* op, Program* prog) {
+void HandleBuildNDRange(void* op, ParseProgram* prog) {
   SBuildNDRange* opBuildNDRange = (SBuildNDRange*)op;
 }
 

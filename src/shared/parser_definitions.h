@@ -22,6 +22,7 @@ struct Block {
   std::vector<uint32> Children;
 };
 
+
 struct Function {
   SFunction Info;
   std::vector<SFunctionParameter> Parameters;
@@ -29,13 +30,16 @@ struct Function {
   std::map<uint32, Block> Blocks;
   std::map<uint32, SVariable> Variables;
   std::map<uint32, uint32> Labels;
+};
 
+struct ParseFunction : public Function {
   std::stack<uint32> BlockStack;
   Block* CurrentBlock;
   bool InBlock = false;
   SOp NextBranchInfo = SOp{ Op::OpNop, nullptr };
   SOp NextMergeInfo = SOp{ Op::OpNop, nullptr };
 };
+
 
 struct Program {
   uint32 Version;
@@ -63,28 +67,30 @@ struct Program {
   std::map<uint32, Function> FunctionDeclarations;
   std::map<uint32, Function> FunctionDefinitions;
   std::vector<SOp> Ops;
+};
 
+struct ParseProgram : public Program {
   SOp NextOp;
-  Function* CurrentFunction;
+  ParseFunction* CurrentFunction;
   bool InFunction = false;
 };
 
-static void addVariable(Program* prog, SVariable var) {
+static void addVariable(ParseProgram* prog, SVariable var) {
   if (prog->InFunction) {
-    prog->CurrentFunction->Variables.insert(std::pair<uint32, SVariable>(var.ResultId, var));
+    prog->CurrentFunction->Variables.insert({var.ResultId, var });
   }
   else {
-    prog->Variables.insert(std::pair<uint32, SVariable>(var.ResultId, var));
+    prog->Variables.insert({var.ResultId, var});
   }
 }
 
-static Block* getBlock(Program* prog, uint32 id) {
+static Block* getBlock(ParseProgram* prog, uint32 id) {
   return &prog->CurrentFunction->Blocks.find(id)->second;
 }
 
-static void startNewBlock(Program* prog, SLabel label) {
+static void startNewBlock(ParseProgram* prog, SLabel label) {
   assert(prog->InFunction && !prog->CurrentFunction->InBlock);
-  prog->CurrentFunction->Blocks.insert(std::pair<uint32, Block>(label.ResultId, Block()));
+  prog->CurrentFunction->Blocks.insert({label.ResultId, Block()});
   Block* newBlockPtr = getBlock(prog, label.ResultId);
 
   getBlock(prog, prog->CurrentFunction->BlockStack.top())->Children.push_back(label.ResultId);
@@ -104,21 +110,17 @@ static void startNewBlock(Program* prog, SLabel label) {
   prog->CurrentFunction->CurrentBlock = newBlockPtr;
 }
 
-static void startLoop(Program* prog, SLoopMerge* loop) {
+static void startLoop(ParseProgram* prog, SLoopMerge* loop) {
   assert(prog->InFunction && prog->CurrentFunction->InBlock);
   prog->CurrentFunction->NextMergeInfo = SOp{ Op::OpLoopMerge, loop };
 }
 
-static void startSelection(Program* prog, SSelectionMerge* selection) {
+static void startSelection(ParseProgram* prog, SSelectionMerge* selection) {
   assert(prog->InFunction && prog->CurrentFunction->InBlock);
   prog->CurrentFunction->NextMergeInfo = SOp{ Op::OpSelectionMerge, selection};
 }
 
-static void buildCFG(Program* prog, Function* func) {
-  assert(!prog->InFunction);
-}
-
-static void endBlock(Program* prog, SOp branchInfo) {
+static void endBlock(ParseProgram* prog, SOp branchInfo) {
   assert(prog->InFunction && prog->CurrentFunction->InBlock);
 
   prog->CurrentFunction->NextBranchInfo = branchInfo;
@@ -140,10 +142,10 @@ static void endBlock(Program* prog, SOp branchInfo) {
   }
 }
 
-static void startFunction(Program* prog, SFunction func) {
+static void startFunction(ParseProgram* prog, SFunction func) {
   assert(!prog->InFunction);
 
-  prog->CurrentFunction = new Function();
+  prog->CurrentFunction = new ParseFunction();
   prog->CurrentFunction->Info = func;
   prog->InFunction = true;
   prog->CurrentFunction->Blocks.insert(std::pair<uint32, Block>(0, Block()));
@@ -151,7 +153,7 @@ static void startFunction(Program* prog, SFunction func) {
   prog->CurrentFunction->BlockStack.push(0);
 }
 
-static void endFunction(Program* prog) {
+static void endFunction(ParseProgram* prog) {
   assert(prog->InFunction && !prog->CurrentFunction->InBlock);
   assert(prog->CurrentFunction->BlockStack.top() == 0);
   
@@ -159,19 +161,19 @@ static void endFunction(Program* prog) {
   assert(prog->CurrentFunction->BlockStack.size() == 0);
 
   if (prog->CurrentFunction->Blocks.size() == 0) {
-    prog->FunctionDeclarations.insert(std::pair<uint32, Function>(prog->CurrentFunction->Info.ResultId, *prog->CurrentFunction));
+    prog->FunctionDeclarations.insert({prog->CurrentFunction->Info.ResultId, (Function)*prog->CurrentFunction});
   } else {
-    prog->FunctionDefinitions.insert(std::pair<uint32, Function>(prog->CurrentFunction->Info.ResultId, *prog->CurrentFunction));
+    prog->FunctionDefinitions.insert({prog->CurrentFunction->Info.ResultId, (Function)*prog->CurrentFunction});
   }
   prog->InFunction = false;
 }
 
-static void addLabel(Program* prog, SLabel* label) {
+static void addLabel(ParseProgram* prog, SLabel* label) {
   assert(prog->InFunction);
-  prog->CurrentFunction->Labels[label->ResultId] = prog->CurrentFunction->Ops.size();
+  prog->CurrentFunction->Labels[label->ResultId] = (uint32)prog->CurrentFunction->Ops.size();
 }
 
-static void addOp(Program* prog, SOp op) {
+static void addOp(ParseProgram* prog, SOp op) {
   prog->CurrentFunction->Ops.push_back(op);
   prog->CurrentFunction->CurrentBlock->Ops.push_back(op);
 }

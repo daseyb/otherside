@@ -132,7 +132,7 @@ int main(int argc, const char** argv) {
   Parser parser(args.InputFile);
   Program prog;
 
-  if (!parser.ParseProgram(&prog)) {
+  if (!parser.Parse(&prog)) {
     std::cout << "Could not parse program." << std::endl;
     return -1;
   }

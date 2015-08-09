@@ -10,6 +10,7 @@ class InterpretedVM : public VM {
 private:
   Program& prog;
   Environment& env;
+  Function* currentFunction;
   std::map<uint32, uint32> TypeByteSizes;
   std::vector<std::unique_ptr<byte>> VmMemory;
 
@@ -28,7 +29,7 @@ private:
   bool ImportExt(SExtInstImport import);
 
 public:
-  InterpretedVM(Program& prog, Environment& env) : prog(prog), env(env) { }
+  InterpretedVM(Program& prog, Environment& env) : prog(prog), env(env), currentFunction(nullptr) { }
 
   virtual bool Setup() override;
   virtual bool Run() override;

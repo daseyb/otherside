@@ -5,7 +5,7 @@ int main(int argc, char** argv) {
     Parser parser(argv[1]);
 
     Program prog;
-    if(!parser.ParseProgram(&prog)) {
+    if(!parser.Parse(&prog)) {
         return -1;
     }
 
