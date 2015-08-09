@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2015 The Khronos Group Inc.
+** Copyright (c) 2014-2015 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy
 ** of this software and/or associated documentation files (the "Materials"),
@@ -24,190 +24,107 @@
 ** IN THE MATERIALS.
 */
 
-//
-// Author: John Kessenich, LunarG
-//
+#ifndef GLSLstd450_H
+#define GLSLstd450_H
 
-namespace GLSL_STD_450 {
+const int GLSLstd450Version = 99;
+const int GLSLstd450Revision = 2;
 
-enum Entrypoints {
-    Round = 0,
-    RoundEven = 1,
-    Trunc = 2,
-    Abs = 3,
-    Sign = 4,
-    Floor = 5,
-    Ceil = 6,
-    Fract = 7,
+enum GLSLstd450 {
+    Bad = 0,              // Don't use
 
-    Radians = 8,
-    Degrees = 9,
-    Sin = 10,
-    Cos = 11,
-    Tan = 12,
-    Asin = 13,
-    Acos = 14,
-    Atan = 15,
-    Sinh = 16,
-    Cosh = 17,
-    Tanh = 18,
-    Asinh = 19,
-    Acosh = 20,
-    Atanh = 21,
-    Atan2 = 22,
+    Round = 1,
+    RoundEven = 2,
+    Trunc = 3,
+    FAbs = 4,
+    SAbs = 5,
+    FSign = 6,
+    SSign = 7,
+    Floor = 8,
+    Ceil = 9,
+    Fract = 10,
 
-    Pow = 23,
-    Exp = 24,
-    Log = 25,
-    Exp2 = 26,
-    Log2 = 27,
-    Sqrt = 28,
-    InverseSqrt = 29,
+    Radians = 11,
+    Degrees = 12,
+    Sin = 13,
+    Cos = 14,
+    Tan = 15,
+    Asin = 16,
+    Acos = 17,
+    Atan = 18,
+    Sinh = 19,
+    Cosh = 20,
+    Tanh = 21,
+    Asinh = 22,
+    Acosh = 23,
+    Atanh = 24,
+    Atan2 = 25,
 
-    Determinant = 30,
-    MatrixInverse = 31,
+    Pow = 26,
+    Exp = 27,
+    Log = 28,
+    Exp2 = 29,
+    Log2 = 30,
+    Sqrt = 31,
+    InverseSqrt = 32,
 
-    Modf = 32,            // second argument needs the OpVariable = , not an OpLoad
-    Min = 33,
-    Max = 34,
-    Clamp = 35,
-    Mix = 36,
-    Step = 37,
-    SmoothStep = 38,
+    Determinant = 33,
+    MatrixInverse = 34,
 
-    FloatBitsToInt = 39,
-    FloatBitsToUint = 40,
-    IntBitsToFloat = 41,
-    UintBitsToFloat = 42,
+    Modf = 35,            // second operand needs an OpVariable to write to
+    ModfStruct = 36,      // no OpVariable operand
+    FMin = 37,
+    UMin = 38,
+    SMin = 39,
+    FMax = 40,
+    UMax = 41,
+    SMax = 42,
+    FClamp = 43,
+    UClamp = 44,
+    SClamp = 45,
+    Mix = 46,
+    Step = 47,
+    SmoothStep = 48,
 
-    Fma = 43,
-    Frexp = 44,
-    Ldexp = 45,
+    Fma = 49,
+    Frexp = 50,            // second operand needs an OpVariable to write to
+    FrexpStruct = 51,      // no OpVariable operand
+    Ldexp = 52,
 
-    PackSnorm4x8 = 46,
-    PackUnorm4x8 = 47,
-    PackSnorm2x16 = 48,
-    PackUnorm2x16 = 49,
-    PackHalf2x16 = 50,
-    PackDouble2x32 = 51,
-    UnpackSnorm2x16 = 52,
-    UnpackUnorm2x16 = 53,
-    UnpackHalf2x16 = 54,
-    UnpackSnorm4x8 = 55,
-    UnpackUnorm4x8 = 56,
-    UnpackDouble2x32 = 57,
+    PackSnorm4x8 = 53,
+    PackUnorm4x8 = 54,
+    PackSnorm2x16 = 55,
+    PackUnorm2x16 = 56,
+    PackHalf2x16 = 57,
+    PackDouble2x32 = 58,
+    UnpackSnorm2x16 = 59,
+    UnpackUnorm2x16 = 60,
+    UnpackHalf2x16 = 61,
+    UnpackSnorm4x8 = 62,
+    UnpackUnorm4x8 = 63,
+    UnpackDouble2x32 = 64,
 
-    Length = 58,
-    Distance = 59,
-    Cross = 60,
-    Normalize = 61,
-    Ftransform = 62,
-    FaceForward = 63,
-    Reflect = 64,
-    Refract = 65,
+    Length = 65,
+    Distance = 66,
+    Cross = 67,
+    Normalize = 68,
+    FaceForward = 69,
+    Reflect = 70,
+    Refract = 71,
 
-    UaddCarry = 66,
-    UsubBorrow = 67,
-    UmulExtended = 68,
-    ImulExtended = 69,
-    BitfieldExtract = 70,
-    BitfieldInsert = 71,
-    BitfieldReverse = 72,
-    BitCount = 73,
-    FindLSB = 74,
-    FindMSB = 75,
+    FindILSB = 72,
+    FindSMSB = 73,
+    FindUMSB = 74,
 
-    InterpolateAtCentroid = 76,
-    InterpolateAtSample = 77,
-    InterpolateAtOffset = 78,
+    InterpolateAtCentroid = 75,
+    InterpolateAtSample = 76,
+    InterpolateAtOffset = 77,
+
+    AddCarry = 78,        // These three should move to the core instruction set
+    SubBorrow = 79,
+    MulExtended = 80,
 
     Count
 };
 
-inline void GetDebugNames(const char** names)
-{
-    for (int i = 0; i < Count; ++i)
-        names[i] = "Unknown";
-
-    names[Round]                   = "round";
-    names[RoundEven]               = "roundEven";
-    names[Trunc]                   = "trunc";
-    names[Abs]                     = "abs";
-    names[Sign]                    = "sign";
-    names[Floor]                   = "floor";
-    names[Ceil]                    = "ceil";
-    names[Fract]                   = "fract";
-    names[Radians]                 = "radians";
-    names[Degrees]                 = "degrees";
-    names[Sin]                     = "sin";
-    names[Cos]                     = "cos";
-    names[Tan]                     = "tan";
-    names[Asin]                    = "asin";
-    names[Acos]                    = "acos";
-    names[Atan]                    = "atan";
-    names[Sinh]                    = "sinh";
-    names[Cosh]                    = "cosh";
-    names[Tanh]                    = "tanh";
-    names[Asinh]                   = "asinh";
-    names[Acosh]                   = "acosh";
-    names[Atanh]                   = "atanh";
-    names[Atan2]                   = "atan2";
-    names[Pow]                     = "pow";
-    names[Exp]                     = "exp";
-    names[Log]                     = "log";
-    names[Exp2]                    = "exp2";
-    names[Log2]                    = "log2";
-    names[Sqrt]                    = "sqrt";
-    names[InverseSqrt]             = "inverseSqrt";
-    names[Determinant]             = "determinant";
-    names[MatrixInverse]           = "matrixInverse";
-    names[Modf]                    = "modf";
-    names[Min]                     = "min";
-    names[Max]                     = "max";
-    names[Clamp]                   = "clamp";
-    names[Mix]                     = "mix";
-    names[Step]                    = "step";
-    names[SmoothStep]              = "smoothStep";
-    names[FloatBitsToInt]          = "floatBitsToInt";
-    names[FloatBitsToUint]         = "floatBitsToUint";
-    names[IntBitsToFloat]          = "intBitsToFloat";
-    names[UintBitsToFloat]         = "uintBitsToFloat";
-    names[Fma]                     = "fma";
-    names[Frexp]                   = "frexp";
-    names[Ldexp]                   = "ldexp";
-    names[PackSnorm4x8]            = "packSnorm4x8";
-    names[PackUnorm4x8]            = "packUnorm4x8";
-    names[PackSnorm2x16]           = "packSnorm2x16";
-    names[PackUnorm2x16]           = "packUnorm2x16";
-    names[PackHalf2x16]            = "packHalf2x16";
-    names[PackDouble2x32]          = "packDouble2x32";
-    names[UnpackSnorm2x16]         = "unpackSnorm2x16";
-    names[UnpackUnorm2x16]         = "unpackUnorm2x16";
-    names[UnpackHalf2x16]          = "unpackHalf2x16";
-    names[UnpackSnorm4x8]          = "unpackSnorm4x8";
-    names[UnpackUnorm4x8]          = "unpackUnorm4x8";
-    names[UnpackDouble2x32]        = "unpackDouble2x32";
-    names[Length]                  = "length";
-    names[Distance]                = "distance";
-    names[Cross]                   = "cross";
-    names[Normalize]               = "normalize";
-    names[Ftransform]              = "ftransform";
-    names[FaceForward]             = "faceForward";
-    names[Reflect]                 = "reflect";
-    names[Refract]                 = "refract";
-    names[UaddCarry]               = "uaddCarry";
-    names[UsubBorrow]              = "usubBorrow";
-    names[UmulExtended]            = "umulExtended";
-    names[ImulExtended]            = "imulExtended";
-    names[BitfieldExtract]         = "bitfieldExtract";
-    names[BitfieldInsert]          = "bitfieldInsert";
-    names[BitfieldReverse]         = "bitfieldReverse";
-    names[BitCount]                = "bitCount";
-    names[FindLSB]                 = "findLSB";
-    names[FindMSB]                 = "findMSB";
-    names[InterpolateAtCentroid]   = "interpolateAtCentroid";
-    names[InterpolateAtSample]     = "interpolateAtSample";
-    names[InterpolateAtOffset]     = "interpolateAtOffset";
-}
-
-}; // end namespace GLSL_STD_450
+#endif  // #ifndef GLSLstd450_H

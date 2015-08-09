@@ -560,8 +560,9 @@ bool InterpretedVM::InitializeConstants() {
 void InterpretedVM::ImportExt(SExtInstImport import) {
   std::string name(import.Name);
   std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-  auto filename = ("ext/" + LIB_NAME(name) + LIBRARY_EXT).c_str();
-  HANDLE_TYPE extInst = LOAD_LIBRARY(filename);
+  auto filename = ("ext/" + LIB_NAME(name) + LIBRARY_EXT);
+
+  HANDLE_TYPE extInst = LOAD_LIBRARY(filename.c_str());
 
   if (extInst) {
     const char* funcName = xstr(EXT_EXPORT_TABLE_FUNC_NAME);
