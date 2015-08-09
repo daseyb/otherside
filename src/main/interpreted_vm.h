@@ -25,15 +25,12 @@ private:
 
   bool InitializeConstants();
 
-  void ImportExt(SExtInstImport import);
+  bool ImportExt(SExtInstImport import);
 
 public:
-  InterpretedVM(Program& prog, Environment& env) : prog(prog), env(env) { 
-    for (auto& ext : prog.ExtensionImports) {
-      ImportExt(ext.second);
-    }
-  }
+  InterpretedVM(Program& prog, Environment& env) : prog(prog), env(env) { }
 
+  virtual bool Setup() override;
   virtual bool Run() override;
   bool SetVariable(std::string name, void * value) override;
   void * ReadVariable(std::string name) const override;

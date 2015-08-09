@@ -35,6 +35,7 @@ private:
   virtual byte* VmAlloc(uint32 typeId) abstract;
 
 public:
+  virtual bool Setup() abstract;
   virtual bool Run() abstract;
   virtual bool SetVariable(std::string name, void * value) abstract;
   virtual void * ReadVariable(std::string name) const abstract;

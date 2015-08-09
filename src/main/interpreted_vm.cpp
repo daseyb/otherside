@@ -4,23 +4,29 @@
 #include <iostream>
 #include <algorithm>
 
-#if defined(_WIN32) || defined(_WIN64)   // note the underscore: without it, it's not msdn official!
-#include <Windows.h>
-#define LOAD_LIBRARY(path) LoadLibrary(path)
-#define LOAD_SYMBOL GetProcAddress
-#define LIBRARY_EXT ".dll"
-#define LIB_NAME(name) name
-#define LIB_ERROR ""
-#define HANDLE_TYPE HINSTANCE
+#if defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__)  // note the underscore: without it, it's not msdn official!
+  #include <Windows.h>
+  #define LOAD_LIBRARY(path) LoadLibrary(path)
+  #define LOAD_SYMBOL GetProcAddress
+  #define LIBRARY_EXT ".dll"
+
+  #ifdef __CYGWIN__
+    #define LIB_NAME(name) ("cyg" + name)
+  #else
+    #define LIB_NAME(name) name
+  #endif
+
+  #define LIB_ERROR ""
+  #define HANDLE_TYPE HINSTANCE
 #elif defined(__unix__) || defined(__linux__) || defined(__APPLE__) // all unices, not all compilers
-#include <dlfcn.h>
-#define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
-#define LOAD_SYMBOL dlsym
-#define LIBRARY_EXT ".so"
-#define LIB_NAME(name) ("lib" + name)
-#define LIB_ERROR dlerror()
-#define HANDLE_TYPE void*
-#define TEXT(txt) txt
+  #include <dlfcn.h>
+  #define LOAD_LIBRARY(path) dlopen(path, RTLD_LAZY)
+  #define LOAD_SYMBOL dlsym
+  #define LIBRARY_EXT ".so"
+  #define LIB_NAME(name) ("lib" + name)
+  #define LIB_ERROR dlerror()
+  #define HANDLE_TYPE void*
+  #define TEXT(txt) txt
 #endif
 
 
@@ -557,7 +563,7 @@ bool InterpretedVM::InitializeConstants() {
   return true;
 }
 
-void InterpretedVM::ImportExt(SExtInstImport import) {
+bool InterpretedVM::ImportExt(SExtInstImport import) {
   std::string name(import.Name);
   std::transform(name.begin(), name.end(), name.begin(), ::tolower);
   auto filename = ("ext/" + LIB_NAME(name) + LIBRARY_EXT);
@@ -570,26 +576,36 @@ void InterpretedVM::ImportExt(SExtInstImport import) {
     if (func) {
       auto res = func();
       env.Extensions[import.ResultId] = res;
-    } else {
-      std::cout << LIB_ERROR << std::endl;
+      return true;
     }
-  } else {
-    std::cout << LIB_ERROR << std::endl;
   }
+
+  std::cout << LIB_ERROR << std::endl;
+  return false;
+}
+
+bool InterpretedVM::Setup() {
+    for (auto& ext : prog.ExtensionImports) {
+        if(!ImportExt(ext.second)) {
+            std::cout << "Loading externsion " << ext.second.Name << " failed!" << std::endl;
+            return false;
+        }
+    }
+
+    if (!InitializeConstants()) {
+        std::cout << "Could not define constants!" << std::endl;
+        return false;
+    }
+
+    return true;
 }
 
 bool InterpretedVM::Run() {
-  if (!InitializeConstants()) {
-    std::cout << "Could not define constants!" << std::endl;
-    return false;
-  }
-
   for (auto& ep : prog.EntryPoints) {
     auto func = prog.FunctionDefinitions.at(ep.second.EntryPointId);
     if (Execute(&func) != 0) {
       return false;
     }
   }
-
   return true;
 }

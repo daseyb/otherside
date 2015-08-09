@@ -8,6 +8,7 @@
 #include "parser_definitions.h" 
 #include "parser.h"
 #include "codegen.h"
+#include "validation.h"
 #include "interpreted_vm.h"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -23,7 +24,6 @@ struct TestArgs {
   const char* CppFile;
   std::map<std::string, void*> inputValues;
 };
-
 
 struct CmdArgs {
   const char* InputFile;
@@ -61,7 +61,6 @@ struct TColor {
 
 typedef TColor<float> Color;
 typedef TColor<byte> BColor;
-
 
 struct Texture {
   int width;
@@ -138,6 +137,11 @@ int main(int argc, const char** argv) {
     return -1;
   }
 
+  if(!validate(prog, std::cout)) {
+    std::cout << "Validation failed." << std::endl;
+    return -1;
+  }
+
   if (!genCode(args.OutputFile, prog)) {
     std::cout << "Could not generate code for program." << std::endl;
     return -1;
@@ -145,7 +149,11 @@ int main(int argc, const char** argv) {
 
   Environment env;
   InterpretedVM vm(prog, env);
-  
+  if(!vm.Setup()) {
+      std::cout << "Could not setup the VM." << std::endl;
+      return -1;
+  }
+
   Color* col = new Color{ 1, 0.5f, 0.25f };
   Vec2* uv = new Vec2{ 1.0f, 1.0f };
 
@@ -161,7 +169,6 @@ int main(int argc, const char** argv) {
 
   Vec2* texSize = new Vec2{ (float)inTex.width, (float)inTex.height};
   Light* light = new Light{ {1, 0, 0, 1}, {0.5f, 0.5f} };
-
   Color* fragColor = new Color{ 0, 0, 0, 0 };
 
   vm.SetVariable("uv", &uv);

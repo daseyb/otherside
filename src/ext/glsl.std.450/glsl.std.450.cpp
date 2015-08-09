@@ -48,7 +48,7 @@ extern "C" {
   };
 
   EXT_INST_FUNC(sabs_ext) {
-    ONE_ARG_OP_S(abs);
+    ONE_ARG_OP_S([](int s) { return s < 0 ? -s : s; });
   };
 
   EXT_INST_FUNC(fsign_ext) {

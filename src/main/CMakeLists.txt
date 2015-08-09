@@ -10,7 +10,7 @@ add_subdirectory(./../shared shared)
 include_directories(${CMAKE_SOURCE_DIR}/src/main)
 include_directories(${SHARED_LIB_INCLUDE_DIR})
 
-set(SRCS parser.cpp codegen.cpp interpreted_vm.cpp)
+set(SRCS parser.cpp validation.cpp codegen.cpp interpreted_vm.cpp)
 add_library(otherside STATIC ${SRCS})
 
 add_executable(otherside_exe otherside_main.cpp)
@@ -23,5 +23,3 @@ ELSE()
 ENDIF()
 
 add_test(NAME otherside_exe_end2end COMMAND otherside_exe -i data/light.frag.spv -o data/light.frag.cpp WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-
-
