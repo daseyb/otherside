@@ -62,6 +62,7 @@ namespace SpecParser
             case "LiteralNumber":
             case "Id": typename = "uint32"; break;
             case "LiteralString": typename = "char*"; break;
+            default: typename = "spv::" + typename; break;
           }
 
           if (param.IsList)
@@ -103,7 +104,7 @@ namespace SpecParser
 
       HtmlDocument doc = new HtmlDocument();
       doc.LoadHtml(htmlCode);
-      var nodes = doc.DocumentNode.SelectNodes(@"html[1]/body[1]/div[2]/div[4]/div[1]/div[28]/div/table");
+      var nodes = doc.DocumentNode.SelectNodes(@"html[1]/body[1]/div[2]/div[4]/div[1]/div[33]/div/table");
 
       var ops = new List<Op>();
 
@@ -162,6 +163,12 @@ namespace SpecParser
               paramType = "LiteralNumber";
               paramName = paramName.Replace("See", "").Replace(".", "").Trim('[', ']');
             }
+            else if(paramType == "optionalliteral(s)")
+            {
+              isList = true;
+              paramType = "LiteralNumber";
+              paramName = paramName.Replace("See", "").Replace(".", "").Trim('[', ']');
+            }
           }
 
           if (isList)
@@ -190,15 +197,21 @@ namespace SpecParser
       StringBuilder fileContents = new StringBuilder();
 
       fileContents.AppendLine("#pragma once");
+      fileContents.AppendLine("#include \"types.h\"");
       fileContents.AppendLine("#include \"lookups.h\"");
-      fileContents.AppendLine("#include \"parser_definitions.h\"");
       fileContents.AppendLine("");
+
+      fileContents.AppendLine("struct Program;");
+
+      fileContents.AppendLine("");
+      fileContents.AppendLine("#pragma pack(push, 1)");
 
       foreach (var op in ops)
       {
         fileContents.AppendLine(op.GenerateHandlerDecleration() + ";");
         fileContents.AppendLine(op.GenerateStructCode());
       }
+      fileContents.AppendLine("#pragma pack(pop)");
 
       fileContents.AppendLine("");
       foreach (var op in ops)
@@ -229,12 +242,14 @@ namespace SpecParser
         fileContents.AppendLine(string.Format("  Handle{0},", op.Name));
       }
       fileContents.AppendLine("};");
-
       File.WriteAllText("lookups_gen.h", fileContents.ToString());
+
 
       fileContents.Clear();
       fileContents.AppendLine("#include \"lookups_gen.h\"");
+      fileContents.AppendLine("#include \"parser_definitions.h\"");
       fileContents.AppendLine("");
+
       foreach (var op in ops)
       {
         fileContents.AppendLine(op.GenerateHandlerDecleration() + " {");

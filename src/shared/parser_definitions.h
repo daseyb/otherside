@@ -28,7 +28,6 @@ struct Function {
   std::vector<SOp> Ops;
   std::map<uint32, Block> Blocks;
   std::map<uint32, SVariable> Variables;
-  std::map<uint32, SVariableArray> Arrays;
   std::map<uint32, uint32> Labels;
 
   std::stack<uint32> BlockStack;
@@ -60,7 +59,6 @@ struct Program {
   std::map<uint32, SOp> DefinedTypes;
   std::map<uint32, SOp> Constants;
   std::map<uint32, SVariable> Variables;
-  std::map<uint32, SVariableArray> Arrays;
 
   std::map<uint32, Function> FunctionDeclarations;
   std::map<uint32, Function> FunctionDefinitions;
@@ -76,15 +74,6 @@ static void addVariable(Program* prog, SVariable var) {
   }
   else {
     prog->Variables.insert(std::pair<uint32, SVariable>(var.ResultId, var));
-  }
-}
-
-static void addArray(Program* prog, SVariableArray var) {
-  if (prog->InFunction) {
-    prog->CurrentFunction->Arrays.insert(std::pair<uint32, SVariableArray>(var.ResultId, var));
-  }
-  else {
-    prog->Arrays.insert(std::pair<uint32, SVariableArray>(var.ResultId, var));
   }
 }
 
