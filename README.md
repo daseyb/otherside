@@ -55,46 +55,68 @@ C++ code:
         std::cout << "Could not parse arguments. Usage: " << USAGE << std::endl;
         return -1;
       }
-
+    
       Parser parser(args.InputFile);
       Program prog;
 
-      if (!parser.ParseProgram(&prog)) {
+      if (!parser.Parse(&prog)) {
         std::cout << "Could not parse program." << std::endl;
         return -1;
       }
-
+    
+      std::cout << "Validating program:...";
+      if(!validate(prog, std::cout)) {
+        std::cout << "Validation failed." << std::endl;
+        return -1;
+      }
+      std::cout << "done" << std::endl;
+    
+      std::cout << "Generationg code:...";
       if (!genCode(args.OutputFile, prog)) {
         std::cout << "Could not generate code for program." << std::endl;
         return -1;
       }
-
+      std::cout << "done" << std::endl;
+    
       Environment env;
       InterpretedVM vm(prog, env);
-  
-      Color* col = new Color{ 1, 0.5f, 0.25f };
-      Color* uv = new Color{ 1.0f, 1.0f, 0, 0 };
+      if(!vm.Setup()) {
+          std::cout << "Could not setup the VM." << std::endl;
+          return -1;
+      }
+    
+      std::cout << "Running program:...";
 
-      Texture inTex;
-      int comps;
-      BColor* inputData = (BColor*)stbi_load("data/testin.bmp", &inTex.width, &inTex.height, &comps, 4);
-      inTex.data = ConvertToFloat(inTex.width, inTex.height, inputData);
+      Texture inTex = load_tex("data/testin.bmp");
 
-      Sampler* sampler = new Sampler{ 2, (uint32*)&inTex, inTex.data, FilterMode::Point, WrapMode::Repeat };
+      Sampler* sampler = new Sampler{ 2, (uint32*)&inTex, inTex.data, FilterMode::FMPoint, WrapMode::WMRepeat };
+      Vec2* texSize = new Vec2{ (float)inTex.width, (float)inTex.height};
+      Light* light = new Light{ {1, 0, 0, 1}, {0.5f, 0.5f} };
+      Color* fragColor = new Color{ 0, 0, 0, 0 };
+      Vec2* uv = new Vec2{ 1.0f, 1.0f };
+    
+      bool allVariablesSet = true;
+      allVariablesSet &= vm.SetVariable("uv", &uv);
+      allVariablesSet &= vm.SetVariable("texSize", &texSize);
+      allVariablesSet &= vm.SetVariable("testTex", &sampler);
+      allVariablesSet &= vm.SetVariable("light", &light);
+      allVariablesSet &= vm.SetVariable("gl_FragColor", &fragColor);
+    
+      if(!allVariablesSet) {
+        std::cout << "Could not set all variables." << std::endl;
+        return -1;
+      }
+    
       Texture outTex = MakeFlatTexture(inTex.width, inTex.height, { 0, 0, 0, 1 });
-
-      std::cout << "Running program: ...";
-
-      vm.SetVariable("uv", &uv);
-      vm.SetVariable("testTex", &sampler);
       bool didFail = false;
       for (int x = 0; x < outTex.width && !didFail; x++) {
         for (int y = 0; y < outTex.height; y++) {
-          uv->r = float(x) / outTex.width;
-          uv->g = float(y) / outTex.height;
+          uv->x = float(x) / outTex.width;
+          uv->y = float(y) / outTex.height;
     
           if (!vm.Run()) {
             std::cout << "Program failed to run.";
+            getchar();
             return -1;
           }
     
@@ -102,10 +124,8 @@ C++ code:
         }
       }
     
-      BColor* outData = ConvertToByte(outTex.width, outTex.height, outTex.data);
-      stbi_write_bmp("data/testout.bmp", outTex.width, outTex.height, 4, outData);
-
+      save_bmp("data/testout.bmp", outTex);
+    
       std::cout << " done";
-
       return 0;
     }
