@@ -52,7 +52,7 @@ SOp Parser::readInstruction() {
 
   if (sizeof(LUTOpWordTypes) / sizeof(void*) <= (int)op) {
     wordTypes[0] = WordType::TOp;
-    for (int i = 1; i < wordCount; i++) {
+    for (uint32 i = 1; i < wordCount; i++) {
       wordTypes[i] = WordType::TLiteralNumber;
     }
   }
@@ -71,7 +71,7 @@ SOp Parser::readInstruction() {
   auto bufferBegin = buffer;
   int indexBegin = index;
 
-  for (int i = 1; i < wordCount; i++) {
+  for (uint32 i = 1; i < wordCount; i++) {
     word = getAndEat();
     void* currMem = opMem + i - 1;
     uint32* currMemU32 = (uint32*)currMem;
@@ -159,12 +159,12 @@ std::string writeOp(SOp op, const Program* prog) {
     WordType* opWordTypes = (WordType*)LUTOpWordTypes[(int)op.Op];
     opWordCount = LUTOpWordTypesCount[(int)op.Op];
 
-    for (int i = 0; i < opWordCount; i++) {
+    for (uint32 i = 0; i < opWordCount; i++) {
       wordTypes[i] = opWordTypes[i];
     }
   }
 
-  for (int i = 1; i < opWordCount; i++) {
+  for (uint32 i = 1; i < opWordCount; i++) {
     uint32 word = *((uint32*)op.Memory + i - 1);
 
     if (wordTypes[i] == WordType::TLiteralNumber) {
@@ -184,7 +184,7 @@ std::string writeOp(SOp op, const Program* prog) {
       uint32 count = word;
       uint32* ptr = *(uint32**)((uint32*)op.Memory + i);
       opline << " [";
-      for (int j = 0; j < count; j++) {
+      for (uint32 j = 0; j < count; j++) {
         word = ptr[j];
         opline << "[" << word;
         if(prog != nullptr && op.Op != Op::OpName && op.Op != Op::OpMemberName) {
@@ -203,7 +203,7 @@ std::string writeOp(SOp op, const Program* prog) {
       uint32 count = word;
       uint32* ptr = *(uint32**)((uint32*)op.Memory + i);
       opline << " [";
-      for (int j = 0; j < count; j++) {
+      for (uint32 j = 0; j < count; j++) {
         word = ptr[j];
         opline << word << (j != count - 1 ? ", " : "");
       }

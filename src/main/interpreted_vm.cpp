@@ -57,7 +57,7 @@ Value InterpretedVM::IndexMemberValue(uint32 typeId, byte* val, uint32 index) co
     auto s = (STypeStruct*)compDef.Memory;
     result.TypeId = s->MembertypeIds[index];
     result.Memory = val;
-    for (int i = 0; i < index; i++) {
+    for (uint32 i = 0; i < index; i++) {
       result.Memory += GetTypeByteSize(s->MembertypeIds[i]);
     }
     break;
@@ -140,7 +140,7 @@ Value InterpretedVM::TextureSample(Value sampler, Value coord, Value bias, uint3
   
   uint32 index = 0;
   uint32 acc = 1;
-  for (int d = 0; d < s->DimCount; d++) {
+  for (uint32 d = 0; d < s->DimCount; d++) {
     uint32 dd = s->Dims[d];
     uint32 add = (uint32)(*(float*)IndexMemberValue(coord, d).Memory * (dd - 1) + 0.5f);
     switch (s->Wrap) {
@@ -181,10 +181,11 @@ uint32 InterpretedVM::Execute(Function* func) {
     case Op::OpFunctionCall: {
       auto call = (SFunctionCall*)op.Memory;
       Function toCall = prog.FunctionDefinitions.at(call->FunctionId);
-      for (int i = 0; i < call->ArgumentIdsCount; i++) {
+      for (uint32 i = 0; i < call->ArgumentIdsCount; i++) {
         env.Values[toCall.Parameters[i].ResultId] = Dereference(env.Values.at(call->ArgumentIds[i]));
       }
       uint32 resultId = Execute(&toCall);
+      // This works since (uint32)-1 is never a valid ID.
       if (resultId == -1) {
         return -1;
       }
@@ -195,12 +196,12 @@ uint32 InterpretedVM::Execute(Function* func) {
     case Op::OpExtInst: {
       auto extInst = (SExtInst*)op.Memory;
       Value* ops = new Value[extInst->OperandIdsCount];
-      for (int i = 0; i < extInst->OperandIdsCount; i++) {
+      for (uint32 i = 0; i < extInst->OperandIdsCount; i++) {
         ops[i] = Dereference(env.Values.at(extInst->OperandIds[i]));
       }
 
-      ExtInstFunc* func = env.Extensions[extInst->SetId][extInst->Instruction];
-      env.Values[extInst->ResultId] = func(this, extInst->ResultTypeId, extInst->OperandIdsCount, ops);
+      ExtInstFunc* extFunc = env.Extensions[extInst->SetId][extInst->Instruction];
+      env.Values[extInst->ResultId] = extFunc(this, extInst->ResultTypeId, extInst->OperandIdsCount, ops);
       break;
     }
     case Op::OpConvertSToF: {
@@ -333,7 +334,7 @@ uint32 InterpretedVM::Execute(Function* func) {
 
       auto result = VmInit(vecShuffle->ResultTypeId, nullptr);
       int v1ElCount = ElementCount(vec1.TypeId);
-      for (int i = 0; i < vecShuffle->ComponentsCount; i++) {
+      for (uint32 i = 0; i < vecShuffle->ComponentsCount; i++) {
         int index = vecShuffle->Components[i];
         Value toCopy;
         if (index < v1ElCount) {
@@ -408,7 +409,6 @@ uint32 InterpretedVM::Execute(Function* func) {
 
     pc++;
   }
-  return 0;
 }
 
 void* InterpretedVM::ReadVariable(uint32 id) const {
@@ -498,7 +498,7 @@ uint32 InterpretedVM::GetTypeByteSize(uint32 typeId) const {
   }
   case Op::OpTypeStruct: {
     auto s = (STypeStruct*)definedType.Memory;
-    for (int i = 0; i < s->MembertypeIdsCount; i++) {
+    for (uint32 i = 0; i < s->MembertypeIdsCount; i++) {
       uint32 id = s->MembertypeIds[i];
       size += GetTypeByteSize(id);
     }

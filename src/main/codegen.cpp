@@ -130,7 +130,7 @@ bool g_types(std::stringstream* ss, const Program& prog) {
       }
 
       *ss << "struct " << idName.str() << " {" << std::endl;
-      for (int i = 0; i < opStruct->MembertypeIdsCount; i++) {
+      for (uint32 i = 0; i < opStruct->MembertypeIdsCount; i++) {
         std::stringstream memberName;
         uint32 key = (opStruct->ResultId << 16) & i;
         if (prog.MemberNames.find(key) != prog.MemberNames.end()) {
@@ -291,7 +291,7 @@ bool g_function(std::stringstream* ss, const Program& prog, const Function& func
 
   *ss << "static " << ids[func.Info.ResultTypeId] << " " << idName.str() << "(";
 
-  int paramIndex = 0;
+  uint32 paramIndex = 0;
   for (auto param : func.Parameters) {
     std::stringstream paramName;
     if (prog.Names.find(param.ResultId) != prog.Names.end())

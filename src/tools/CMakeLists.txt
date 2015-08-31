@@ -5,4 +5,5 @@ project (tools C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
+add_subdirectory(assembler)
 add_subdirectory(disassembler)
