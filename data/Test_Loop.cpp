@@ -33,6 +33,7 @@ struct v_float32_3 {
     a.v[0] += b.v[0];
     a.v[1] += b.v[1];
     a.v[2] += b.v[2];
+    return a;
   }
 
 
@@ -40,6 +41,7 @@ struct v_float32_3 {
     a.v[0] -= b.v[0];
     a.v[1] -= b.v[1];
     a.v[2] -= b.v[2];
+    return a;
   }
 
 
@@ -47,6 +49,7 @@ struct v_float32_3 {
     a.v[0] *= b.v[0];
     a.v[1] *= b.v[1];
     a.v[2] *= b.v[2];
+    return a;
   }
 
 
@@ -54,6 +57,7 @@ struct v_float32_3 {
     a.v[0] /= b.v[0];
     a.v[1] /= b.v[1];
     a.v[2] /= b.v[2];
+    return a;
   }
 
 };
@@ -69,6 +73,7 @@ struct v_float32_4 {
     a.v[1] += b.v[1];
     a.v[2] += b.v[2];
     a.v[3] += b.v[3];
+    return a;
   }
 
 
@@ -77,6 +82,7 @@ struct v_float32_4 {
     a.v[1] -= b.v[1];
     a.v[2] -= b.v[2];
     a.v[3] -= b.v[3];
+    return a;
   }
 
 
@@ -85,6 +91,7 @@ struct v_float32_4 {
     a.v[1] *= b.v[1];
     a.v[2] *= b.v[2];
     a.v[3] *= b.v[3];
+    return a;
   }
 
 
@@ -93,6 +100,7 @@ struct v_float32_4 {
     a.v[1] /= b.v[1];
     a.v[2] /= b.v[2];
     a.v[3] /= b.v[3];
+    return a;
   }
 
 };

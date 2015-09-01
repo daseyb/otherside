@@ -108,6 +108,7 @@ bool g_types(std::stringstream* ss, const Program& prog) {
         for (int i = 0; i < opVector->ComponentCount; i++) {
           *ss << "    a.v[" << i << "] " << op << "= b.v[" << i << "];" << std::endl;
         }
+        *ss << "    return a;" << std::endl;
         *ss << "  }" << std::endl;
         *ss << std::endl;
       };
