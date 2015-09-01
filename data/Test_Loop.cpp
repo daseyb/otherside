@@ -114,7 +114,7 @@ const int32 c_17 = 0;
 const int32 c_31 = 1;
 const float32 c_37 = 1.000000f;
 
-void main() {
+void spv_main() {
   label_5:
   p_v_float32_3 currColor = (p_v_float32_3)malloc(sizeof(v_float32_3));
   p_int32 i = (p_int32)malloc(sizeof(int32));

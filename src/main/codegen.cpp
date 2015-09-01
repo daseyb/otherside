@@ -371,9 +371,9 @@ bool g_block(std::stringstream* ss, const Program& prog, const Function& func, c
 bool g_function(std::stringstream* ss, const Program& prog, const Function& func) {
   std::stringstream idName;
   if (prog.Names.find(func.Info.ResultId) != prog.Names.end()) {
-    idName << prog.Names.at(func.Info.ResultId).Name;
+    idName << "spv_" << prog.Names.at(func.Info.ResultId).Name;
   } else {
-    idName << "fun" << func.Info.ResultId;
+    idName << "spv_fun" << func.Info.ResultId;
   }
 
   *ss << ids[func.Info.ResultTypeId] << " " << idName.str() << "(";
