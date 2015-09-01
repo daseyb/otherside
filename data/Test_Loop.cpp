@@ -7,6 +7,7 @@ Instruction Schema: 0
 */
 
 #include <stdint.h>
+#include <stdlib.h>
 #include <vector>
 #include <string>
 #include "GLSL.std.450.h"
@@ -27,6 +28,34 @@ typedef int64_t int64;
 
 struct v_float32_3 {
   float32 v[3];
+
+  friend v_float32_3 operator+(v_float32_3 a, const v_float32_3& b) {
+    a.v[0] += b.v[0];
+    a.v[1] += b.v[1];
+    a.v[2] += b.v[2];
+  }
+
+
+  friend v_float32_3 operator-(v_float32_3 a, const v_float32_3& b) {
+    a.v[0] -= b.v[0];
+    a.v[1] -= b.v[1];
+    a.v[2] -= b.v[2];
+  }
+
+
+  friend v_float32_3 operator*(v_float32_3 a, const v_float32_3& b) {
+    a.v[0] *= b.v[0];
+    a.v[1] *= b.v[1];
+    a.v[2] *= b.v[2];
+  }
+
+
+  friend v_float32_3 operator/(v_float32_3 a, const v_float32_3& b) {
+    a.v[0] /= b.v[0];
+    a.v[1] /= b.v[1];
+    a.v[2] /= b.v[2];
+  }
+
 };
 typedef v_float32_3* p_v_float32_3;
 typedef v_float32_3* p_v_float32_3;
@@ -34,6 +63,38 @@ typedef int32* p_int32;
 typedef int32* p_int32;
 struct v_float32_4 {
   float32 v[4];
+
+  friend v_float32_4 operator+(v_float32_4 a, const v_float32_4& b) {
+    a.v[0] += b.v[0];
+    a.v[1] += b.v[1];
+    a.v[2] += b.v[2];
+    a.v[3] += b.v[3];
+  }
+
+
+  friend v_float32_4 operator-(v_float32_4 a, const v_float32_4& b) {
+    a.v[0] -= b.v[0];
+    a.v[1] -= b.v[1];
+    a.v[2] -= b.v[2];
+    a.v[3] -= b.v[3];
+  }
+
+
+  friend v_float32_4 operator*(v_float32_4 a, const v_float32_4& b) {
+    a.v[0] *= b.v[0];
+    a.v[1] *= b.v[1];
+    a.v[2] *= b.v[2];
+    a.v[3] *= b.v[3];
+  }
+
+
+  friend v_float32_4 operator/(v_float32_4 a, const v_float32_4& b) {
+    a.v[0] /= b.v[0];
+    a.v[1] /= b.v[1];
+    a.v[2] /= b.v[2];
+    a.v[3] /= b.v[3];
+  }
+
 };
 typedef v_float32_4* p_v_float32_4;
 
@@ -43,9 +104,9 @@ static p_v_float32_4 gl_FragColor;
 
 const int32 c_17 = 0;
 const int32 c_31 = 1;
-const float32 c_37 = 1f;
+const float32 c_37 = 1.000000f;
 
-static void main() {
+void main() {
   label_5:
   p_v_float32_3 currColor = (p_v_float32_3)malloc(sizeof(v_float32_3));
   p_int32 i = (p_int32)malloc(sizeof(int32));

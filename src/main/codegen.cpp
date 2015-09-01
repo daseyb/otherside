@@ -31,6 +31,7 @@ bool g_header(std::stringstream* ss, const Program& prog) {
 bool g_imports(std::stringstream* ss, const Program& prog) {
   *ss << std::endl;
   *ss << "#include <stdint.h>" << std::endl;
+  *ss << "#include <stdlib.h>" << std::endl;
   *ss << "#include <vector>" << std::endl;
   *ss << "#include <string>" << std::endl;
 
@@ -100,8 +101,23 @@ bool g_types(std::stringstream* ss, const Program& prog) {
     {
       STypeVector* opVector = (STypeVector*)type.second.Memory;
       idName << "v_" << ids[opVector->ComponentTypeId] << "_" << opVector->ComponentCount;
+      auto idNameStr = idName.str();
+      auto makeElementWiseOp = [opVector, idNameStr, ss](std::string op) {
+        *ss << std::endl;
+        *ss << "  friend " << idNameStr << " operator"<< op << "(" << idNameStr << " a, const " << idNameStr << "& b) {" << std::endl;
+        for (int i = 0; i < opVector->ComponentCount; i++) {
+          *ss << "    a.v[" << i << "] " << op << "= b.v[" << i << "];" << std::endl;
+        }
+        *ss << "  }" << std::endl;
+        *ss << std::endl;
+      };
+
       *ss << "struct " << idName.str() << " {" << std::endl;
       *ss << "  " << ids[opVector->ComponentTypeId] << " " << "v[" << opVector->ComponentCount << "];" << std::endl;
+      makeElementWiseOp("+");
+      makeElementWiseOp("-");
+      makeElementWiseOp("*");
+      makeElementWiseOp("/");
       *ss << "};" << std::endl;
       break;
     }
@@ -155,14 +171,20 @@ bool g_literal(std::stringstream* ss, const Program& prog, int typeId, int value
 
   switch (type.Op)
   {
-  case Op::OpTypeFloat:
+  case Op::OpTypeFloat: {
     assert(valuesCount == 1 || valuesCount == 2);
+    std::string fstring = "";
     if (valuesCount == 1) {
-      *ss << *(float*)values << "f";
-    } else if (valuesCount == 2) {
-      *ss << *(double*)values << "f";
+      fstring = std::to_string(*(float*)values);
     }
+    else if (valuesCount == 2) {
+      fstring = std::to_string(*(double*)values);
+    }
+
+    *ss << fstring << "f";
+
     break;
+  }
   case Op::OpTypeInt:
     assert(valuesCount == 1 || valuesCount == 2);
     if (valuesCount == 1) {
@@ -353,7 +375,7 @@ bool g_function(std::stringstream* ss, const Program& prog, const Function& func
     idName << "fun" << func.Info.ResultId;
   }
 
-  *ss << "static " << ids[func.Info.ResultTypeId] << " " << idName.str() << "(";
+  *ss << ids[func.Info.ResultTypeId] << " " << idName.str() << "(";
 
   uint32 paramIndex = 0;
   for (auto param : func.Parameters) {
