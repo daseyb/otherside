@@ -50,7 +50,6 @@ struct Program {
   SMemoryModel MemoryModel;
   std::vector<std::string> SourceExtensions;
   std::vector<std::string> SPIRVExtensions;
-  std::vector<std::string> CompileFlags;
 
   std::map<uint32, SString> Strings;
   std::map<uint32, SName> Names;

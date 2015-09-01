@@ -66,3 +66,4 @@ public:
 
 std::string writeProgram(const Program& prog);
 std::string writeOp(SOp op);
+std::string writeOp(SOp op, const Program* prog);

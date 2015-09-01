@@ -131,8 +131,6 @@ bool Parser::Parse(Program *outProg) {
   return true;
 }
 
-
-
 std::string getDescriptor(uint32 id, const Program* prog) {
   if(prog->Names.find(id) != prog->Names.end()) {
     return prog->Names.at(id).Name;
@@ -143,10 +141,69 @@ std::string getDescriptor(uint32 id, const Program* prog) {
   return  "";
 }
 
+bool writeOpArg(std::stringstream& opline, SOp op, int i, const Program* prog, const WordType* wordTypes) {
+  uint32 word = *((uint32*)op.Memory + i - 1);
+
+  if (wordTypes[i] == WordType::TLiteralNumber) {
+    opline << " " << word;
+  }
+  else if (wordTypes[i] == WordType::TId) {
+    opline << " [" << word;
+    if (prog != nullptr && op.Op != Op::OpName && op.Op != Op::OpMemberName) {
+      auto desc = getDescriptor(word, prog);
+      if (desc.size() > 0) {
+        opline << "(" << getDescriptor(word, prog) << ")";
+      }
+    }
+    opline << "]";
+  }
+  else if (wordTypes[i] == WordType::TIdList) {
+    uint32 count = word;
+    uint32* ptr = *(uint32**)((uint32*)op.Memory + i);
+    opline << " [";
+    for (uint32 j = 0; j < count; j++) {
+      word = ptr[j];
+      opline << "[" << word;
+      if (prog != nullptr && op.Op != Op::OpName && op.Op != Op::OpMemberName) {
+        auto desc = getDescriptor(word, prog);
+        if (desc.size() > 0) {
+          opline << "(" << getDescriptor(word, prog) << ")";
+        }
+      }
+      opline << "]" << (j != count - 1 ? ", " : "");
+    }
+    opline << "]";
+
+    return false;
+  }
+  else if (wordTypes[i] == WordType::TLiteralNumberList) {
+    uint32 count = word;
+    uint32* ptr = *(uint32**)((uint32*)op.Memory + i);
+    opline << " [";
+    for (uint32 j = 0; j < count; j++) {
+      word = ptr[j];
+      opline << word << (j != count - 1 ? ", " : "");
+    }
+    opline << "]";
+
+    return false;
+  }
+  else if (wordTypes[i] == WordType::TLiteralString) {
+    if (wordTypes[i - 1] != WordType::TLiteralString) {
+      char* str = *((char**)((uint32*)op.Memory + i - 1));
+      opline << " " << str;
+    }
+  }
+  else {
+    std::string* lutPointer = *((std::string**)LUTPointers + (uint32)wordTypes[i]);
+    std::string name = lutPointer[word];
+    opline << " " << name;
+  }
+
+}
+
 std::string writeOp(SOp op, const Program* prog) {
   std::stringstream opline;
-
-  opline << OpStrings[(int)op.Op];
 
   WordType wordTypes[255];
 
@@ -154,8 +211,7 @@ std::string writeOp(SOp op, const Program* prog) {
 
   if (sizeof(LUTOpWordTypes) / sizeof(void*) <= (int)op.Op) {
     return "";
-  }
-  else {
+  } else {
     WordType* opWordTypes = (WordType*)LUTOpWordTypes[(int)op.Op];
     opWordCount = LUTOpWordTypesCount[(int)op.Op];
 
@@ -164,65 +220,9 @@ std::string writeOp(SOp op, const Program* prog) {
     }
   }
 
-  for (uint32 i = 1; i < opWordCount; i++) {
-    uint32 word = *((uint32*)op.Memory + i - 1);
+  opline << OpStrings[(int)op.Op];
 
-    if (wordTypes[i] == WordType::TLiteralNumber) {
-      opline << " " << word;
-    }
-    else if (wordTypes[i] == WordType::TId) {
-      opline << " [" << word;
-      if(prog != nullptr && op.Op != Op::OpName && op.Op != Op::OpMemberName) {
-        auto desc = getDescriptor(word, prog);
-        if(desc.size() > 0) {
-          opline << "(" << getDescriptor(word, prog) << ")";
-        }
-      }
-      opline << "]";
-    }
-    else if (wordTypes[i] == WordType::TIdList) {
-      uint32 count = word;
-      uint32* ptr = *(uint32**)((uint32*)op.Memory + i);
-      opline << " [";
-      for (uint32 j = 0; j < count; j++) {
-        word = ptr[j];
-        opline << "[" << word;
-        if(prog != nullptr && op.Op != Op::OpName && op.Op != Op::OpMemberName) {
-          auto desc = getDescriptor(word, prog);
-          if(desc.size() > 0) {
-            opline << "(" << getDescriptor(word, prog) << ")";
-          }
-        }
-        opline << "]" << (j != count - 1 ? ", " : "");
-      }
-      opline << "]";
-
-      break;
-    }
-    else if (wordTypes[i] == WordType::TLiteralNumberList) {
-      uint32 count = word;
-      uint32* ptr = *(uint32**)((uint32*)op.Memory + i);
-      opline << " [";
-      for (uint32 j = 0; j < count; j++) {
-        word = ptr[j];
-        opline << word << (j != count - 1 ? ", " : "");
-      }
-      opline << "]";
-
-      break;
-    }
-    else if (wordTypes[i] == WordType::TLiteralString) {
-      if (wordTypes[i - 1] != WordType::TLiteralString) {
-        char* str = *((char**)((uint32*)op.Memory + i - 1));
-        opline << " " << str;
-      }
-    }
-    else {
-      std::string* lutPointer = *((std::string**)LUTPointers + (uint32)wordTypes[i]);
-      std::string name = lutPointer[word];
-      opline << " " << name;
-    }
-  }
+  for (uint32 i = 1; i < opWordCount && writeOpArg(opline, op, i, prog, wordTypes); i++);
 
   opline << std::endl;
   return opline.str();

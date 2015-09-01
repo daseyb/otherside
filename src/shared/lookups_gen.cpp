@@ -28,7 +28,7 @@ void HandleName(void* op, ParseProgram* prog) {
 
 void HandleMemberName(void* op, ParseProgram* prog) {
   SMemberName* opMemberName = (SMemberName*)op;
-  uint32 key = (opMemberName->TypeId << 16) & opMemberName->TypeId;
+  uint32 key = (opMemberName->TypeId << 16) & opMemberName->Member;
   prog->MemberNames.insert(std::pair<uint32, SMemberName>(key, *opMemberName));
 }
 

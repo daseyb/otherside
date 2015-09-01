@@ -68,7 +68,7 @@ int main(int argc, const char** argv) {
   }
   std::cout << "done" << std::endl;
 
-  //std::cout << writeProgram(prog);
+  std::cout << writeProgram(prog);
 
   std::cout << "Generationg code:...";
   if (!genCode(args.OutputFile, prog)) {
