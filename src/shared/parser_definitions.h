@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <vector>
 #include <map>
 #include <stack>
@@ -122,8 +122,9 @@ static void startSelection(ParseProgram* prog, SSelectionMerge* selection) {
 static void endBlock(ParseProgram* prog, SOp branchInfo) {
   assert(prog->InFunction && prog->CurrentFunction->InBlock);
 
-  prog->CurrentFunction->NextBranchInfo = branchInfo;
   prog->CurrentFunction->InBlock = false;
+
+  prog->CurrentFunction->NextBranchInfo = branchInfo;
 
   prog->CurrentFunction->CurrentBlock = getBlock(prog, prog->CurrentFunction->BlockStack.top());
 
@@ -141,7 +142,7 @@ static void endBlock(ParseProgram* prog, SOp branchInfo) {
   }
 }
 
-static void startFunction(ParseProgram* prog, SFunction func) {
+static void startFunction(ParseProgram* prog, const SFunction& func) {
   assert(!prog->InFunction);
 
   prog->CurrentFunction = new ParseFunction();
@@ -153,13 +154,16 @@ static void startFunction(ParseProgram* prog, SFunction func) {
 }
 
 static void endFunction(ParseProgram* prog) {
-  assert(prog->InFunction && !prog->CurrentFunction->InBlock);
+  assert(prog->InFunction);
+  if (prog->CurrentFunction->InBlock) {
+    endBlock(prog, SOp{ Op::OpNop, nullptr });
+  }
   assert(prog->CurrentFunction->BlockStack.top() == 0);
   
   prog->CurrentFunction->BlockStack.pop();
   assert(prog->CurrentFunction->BlockStack.size() == 0);
 
-  if (prog->CurrentFunction->Blocks.size() == 0) {
+  if (prog->CurrentFunction->Blocks.size() == 1) {
     prog->FunctionDeclarations.insert({prog->CurrentFunction->Info.ResultId, (Function)*prog->CurrentFunction});
   } else {
     prog->FunctionDefinitions.insert({prog->CurrentFunction->Info.ResultId, (Function)*prog->CurrentFunction});

@@ -265,7 +265,7 @@ void unindent(char* indentStr) {
   indentStr[len - 2] = 0;
 }
 
-bool g_block(std::stringstream* ss, const Program& prog, const Function& func, const Block& block, char* indentStr) {
+bool g_block(std::stringstream* ops, std::stringstream* variableDefinitions, const Program& prog, const Function& func, const Block& block, char* indentStr) {
 
   bool doIndent = block.MergeInfo.Memory != nullptr;
   if (doIndent) {
@@ -273,90 +273,105 @@ bool g_block(std::stringstream* ss, const Program& prog, const Function& func, c
   }
 
   for (auto op : block.Ops) {
-    *ss << indentStr;
+    *ops << indentStr;
     switch (op.Op) {
     case Op::OpLabel: {
       SLabel* label = (SLabel*)op.Memory;
       ids[label->ResultId] = "label_" + std::to_string(label->ResultId);
-      *ss << ids[label->ResultId] << ":";
+      *ops << ids[label->ResultId] << ":";
       break;
     }
     case Op::OpBranch: {
       SBranch* branch = (SBranch*)op.Memory;
-      *ss << "goto label_" << branch->TargetLabelId << ";";
+      *ops << "goto label_" << branch->TargetLabelId << ";";
       break;
     }
     case Op::OpBranchConditional: {
       SBranchConditional* branch = (SBranchConditional*)op.Memory;
-      *ss << "if(" << ids[branch->ConditionId] << ") { " << "goto label_" << branch->TrueLabelId << "; }" << std::endl;
-      *ss << indentStr << "else { goto label_" << branch->FalseLabelId << "; }";
+      *ops << "if(" << ids[branch->ConditionId] << ") { " << "goto label_" << branch->TrueLabelId << "; }" << std::endl;
+      *ops << indentStr << "else { goto label_" << branch->FalseLabelId << "; }";
       break;
     }
     case Op::OpVariable: {
       SVariable* variable = (SVariable*)op.Memory;
-      g_variable(ss, variable, prog);
+      
+      *variableDefinitions << "  ";
+      g_variable(variableDefinitions, variable, prog);
       auto resultTypeName = ids[variable->ResultTypeId];
-      *ss << " = (" << resultTypeName << ")malloc(sizeof(" << resultTypeName.substr(2, resultTypeName.length() - 2) << "));";
+      *variableDefinitions << " = (" << resultTypeName 
+        << ")malloc(sizeof(" << resultTypeName.substr(2, resultTypeName.length() - 2) 
+        << "));" << std::endl;
       break;
     }
     case Op::OpReturn: {
-      *ss << "return;";
+      *ops << "return;";
       break;
     }
     case Op::OpLoad: {
       SLoad* load = (SLoad*)op.Memory;
       ids[load->ResultId] = "var_" + std::to_string(load->ResultId);
-      *ss << ids[load->ResultTypeId] << " " << ids[load->ResultId] << " = *" << ids[load->PointerId] << ";";
+      *variableDefinitions << "  " << ids[load->ResultTypeId] << " " << ids[load->ResultId] << ";" << std::endl;
+      *ops << ids[load->ResultId] << " = *" << ids[load->PointerId] << ";";
       break;
     }
     case Op::OpStore: {
       SStore* store = (SStore*)op.Memory;
-      *ss << "*" << ids[store->PointerId] << " = " << ids[store->ObjectId] << ";";
+      *ops << "*" << ids[store->PointerId] << " = " << ids[store->ObjectId] << ";";
+      break;
+    }
+    case Op::OpSGreaterThan: {
+      SSGreaterThan* greaterThan = (SSGreaterThan*)op.Memory;
+      ids[greaterThan->ResultId] = "var_" + std::to_string(greaterThan->ResultId);
+      *variableDefinitions << "  bool " << ids[greaterThan->ResultId] << ";" << std::endl;
+      *ops << ids[greaterThan->ResultId] << " = " << ids[greaterThan->Operand1Id] << " > " << ids[greaterThan->Operand2Id] << ";";
       break;
     }
     case Op::OpSLessThan: {
       SSLessThan* lessThan = (SSLessThan*)op.Memory;
       ids[lessThan->ResultId] = "var_" + std::to_string(lessThan->ResultId);
-      *ss << "bool " << ids[lessThan->ResultId] << " = " << ids[lessThan->Operand1Id] << " < " << ids[lessThan->Operand2Id] << ";";
-
+      *variableDefinitions << "  bool " << ids[lessThan->ResultId] << ";" << std::endl;
+      *ops << ids[lessThan->ResultId] << " = " << ids[lessThan->Operand1Id] << " < " << ids[lessThan->Operand2Id] << ";";
       break;
     }
     case Op::OpFAdd: 
     case Op::OpIAdd: {
       SFAdd* fadd = (SFAdd*)op.Memory;
       ids[fadd->ResultId] = "var_" + std::to_string(fadd->ResultId);
-      *ss << ids[fadd->ResultTypeId] << " " << ids[fadd->ResultId] << " = " << ids[fadd->Operand1Id] << " + " << ids[fadd->Operand2Id] << ";";
+      *variableDefinitions << "  " << ids[fadd->ResultTypeId] << " " << ids[fadd->ResultId] << ";" << std::endl;
+      *ops << ids[fadd->ResultId] << " = " << ids[fadd->Operand1Id] << " + " << ids[fadd->Operand2Id] << ";";
       break;
     }
     case Op::OpCompositeExtract: {
       SCompositeExtract* ce = (SCompositeExtract*)op.Memory;
       ids[ce->ResultId] = "var_" + std::to_string(ce->ResultId);
-      *ss << ids[ce->ResultTypeId] << " " << ids[ce->ResultId] << " = " << ids[ce->CompositeId] << ".v[" << ce->Indexes[0] << "];";
+      *variableDefinitions << "  " << ids[ce->ResultTypeId] << " " << ids[ce->ResultId] << ";" << std::endl;
+      *ops << ids[ce->ResultId] << " = " << ids[ce->CompositeId] << ".v[" << ce->Indexes[0] << "];";
       break;
     }
     case Op::OpCompositeConstruct: {
       SCompositeConstruct* cc = (SCompositeConstruct*)op.Memory;
       ids[cc->ResultId] = "var_" + std::to_string(cc->ResultId);
-      *ss << ids[cc->ResultTypeId] << " " << ids[cc->ResultId] << " = {";
+      *variableDefinitions << "  " << ids[cc->ResultTypeId] << " " << ids[cc->ResultId] << ";" << std::endl;
+      *ops << ids[cc->ResultId] << " = {";
       for (int i = 0; i < cc->ConstituentsIdsCount; i++) {
-        *ss << ids[cc->ConstituentsIds[i]];
+        *ops << ids[cc->ConstituentsIds[i]];
         if (i < cc->ConstituentsIdsCount - 1) {
-          *ss << ", ";
+          *ops << ", ";
         }
       }
-      *ss << "};";
+      *ops << "};";
       break;
     }
     default: {
-      *ss << "// " << writeOp(op, &prog);
+      *ops << "// " << writeOp(op, &prog);
       break;
     }
     }
-    *ss << std::endl;
+    *ops << std::endl;
   }
 
   for (auto child : block.Children) {
-    if (!g_block(ss, prog, func, func.Blocks.at(child), indentStr)) {
+    if (!g_block(ops, variableDefinitions, prog, func, func.Blocks.at(child), indentStr)) {
       return false;
     }
   }
@@ -401,10 +416,15 @@ bool g_function(std::stringstream* ss, const Program& prog, const Function& func
     char indentBuff[255];
     memset(indentBuff, 0, 255);
     indent(indentBuff);
-    if (!g_block(ss, prog, func, func.Blocks.at(0), indentBuff)) {
+
+    std::stringstream opStream;
+    std::stringstream variableStream;
+    if (!g_block(&opStream, &variableStream, prog, func, func.Blocks.at(0), indentBuff)) {
       return false;
     }
     unindent(indentBuff);
+
+    *ss << variableStream.str() << opStream.str();
 
     *ss << "}" << std::endl;
   }

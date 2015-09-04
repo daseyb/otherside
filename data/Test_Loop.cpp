@@ -115,36 +115,52 @@ const int32 c_31 = 1;
 const float32 c_37 = 1.000000f;
 
 void spv_main() {
-  label_5:
   p_v_float32_3 currColor = (p_v_float32_3)malloc(sizeof(v_float32_3));
   p_int32 i = (p_int32)malloc(sizeof(int32));
-  v_float32_3 var_13 = *color;
+  v_float32_3 var_13;
+  int32 var_21;
+  int32 var_24;
+  bool var_26;
+  v_float32_3 var_27;
+  v_float32_3 var_28;
+  v_float32_3 var_29;
+  int32 var_30;
+  int32 var_32;
+  v_float32_3 var_36;
+  float32 var_38;
+  float32 var_39;
+  float32 var_40;
+  v_float32_4 var_41;
+  label_5:
+  
+  
+  var_13 = *color;
   *currColor = var_13;
   *i = c_17;
   goto label_18;
   label_18:
-  int32 var_21 = *i;
-  int32 var_24 = *iterations;
-  bool var_26 = var_21 < var_24;
+  var_21 = *i;
+  var_24 = *iterations;
+  var_26 = var_21 < var_24;
   // LoopMerge [19] Unroll
 
   if(var_26) { goto label_20; }
   else { goto label_19; }
     label_20:
-    v_float32_3 var_27 = *color;
-    v_float32_3 var_28 = *currColor;
-    v_float32_3 var_29 = var_28 + var_27;
+    var_27 = *color;
+    var_28 = *currColor;
+    var_29 = var_28 + var_27;
     *currColor = var_29;
-    int32 var_30 = *i;
-    int32 var_32 = var_30 + c_31;
+    var_30 = *i;
+    var_32 = var_30 + c_31;
     *i = var_32;
     goto label_18;
   label_19:
-  v_float32_3 var_36 = *currColor;
-  float32 var_38 = var_36.v[0];
-  float32 var_39 = var_36.v[1];
-  float32 var_40 = var_36.v[2];
-  v_float32_4 var_41 = {var_38, var_39, var_40, c_37};
+  var_36 = *currColor;
+  var_38 = var_36.v[0];
+  var_39 = var_36.v[1];
+  var_40 = var_36.v[2];
+  var_41 = {var_38, var_39, var_40, c_37};
   *gl_FragColor = var_41;
   goto label_6;
   label_6:

@@ -1,4 +1,4 @@
-#include <fstream>
+﻿#include <fstream>
 #include <assert.h>
 #include <iostream>
 #include <sstream>
@@ -107,15 +107,14 @@ int main(int argc, const char** argv) {
   }
 
   Texture outTex = MakeFlatTexture(inTex.width, inTex.height, { 0, 0, 0, 1 });
-  bool didFail = false;
-  for (int x = 0; x < outTex.width && !didFail; x++) {
+
+  for (int x = 0; x < outTex.width; x++) {
     for (int y = 0; y < outTex.height; y++) {
       uv->x = float(x) / outTex.width;
       uv->y = float(y) / outTex.height;
 
       if (!vm.Run()) {
         std::cout << "Program failed to run.";
-        getchar();
         return -1;
       }
 
