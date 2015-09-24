@@ -132,8 +132,6 @@ void spv_main() {
   float32 var_40;
   v_float32_4 var_41;
   label_5:
-  
-  
   var_13 = *color;
   *currColor = var_13;
   *i = c_17;
