@@ -1,11 +1,21 @@
 #include "codegen.h"
-#include <string>
 #include <iomanip>
 #include <fstream>
 #include <cstring>
 #include "parser_definitions.h"
-#include "lookups_gen.h"
 #include "parser.h"
+
+namespace patch {
+    template<typename T>
+    std::string to_string(const T &n) {
+      std::ostringstream stm;
+      stm << n;
+      return stm.str();
+    }
+}
+
+#pragma GCC diagnostic ignored "-Wswitch"
+
 
 std::map<uint32, std::string> ids;
 
@@ -72,21 +82,18 @@ bool g_types(std::stringstream* ss, const Program& prog) {
     }
     case Op::OpTypeBool:
     {
-      STypeBool* opBool = (STypeBool*)type.second.Memory;
       idName << "bool";
       break;
     }
     case Op::OpTypeInt:
     {
       STypeInt* opInt = (STypeInt*)type.second.Memory;
-      std::stringstream baseType;
       if (opInt->Signedness == 0) idName << "u";
       idName << "int" << opInt->Width;
       break;
     }
     case Op::OpTypeVoid:
     {
-      STypeVoid* opBool = (STypeVoid*)type.second.Memory;
       idName << "void";
       break;
     }
@@ -105,7 +112,7 @@ bool g_types(std::stringstream* ss, const Program& prog) {
       auto makeElementWiseOp = [opVector, idNameStr, ss](std::string op) {
         *ss << std::endl;
         *ss << "  friend " << idNameStr << " operator"<< op << "(" << idNameStr << " a, const " << idNameStr << "& b) {" << std::endl;
-        for (int i = 0; i < opVector->ComponentCount; i++) {
+          for (size_t i = 0; i < opVector->ComponentCount; i++) {
           *ss << "    a.v[" << i << "] " << op << "= b.v[" << i << "];" << std::endl;
         }
         *ss << "    return a;" << std::endl;
@@ -176,10 +183,10 @@ bool g_literal(std::stringstream* ss, const Program& prog, int typeId, int value
     assert(valuesCount == 1 || valuesCount == 2);
     std::string fstring = "";
     if (valuesCount == 1) {
-      fstring = std::to_string(*(float*)values);
+      fstring = patch::to_string(*(float *) values);
     }
     else if (valuesCount == 2) {
-      fstring = std::to_string(*(double*)values);
+      fstring = patch::to_string(*(double *) values);
     }
 
     *ss << fstring << "f";
@@ -189,7 +196,7 @@ bool g_literal(std::stringstream* ss, const Program& prog, int typeId, int value
   case Op::OpTypeInt:
     assert(valuesCount == 1 || valuesCount == 2);
     if (valuesCount == 1) {
-      *ss << *(uint32*)values;
+      *ss << *values;
     }
     else if (valuesCount == 2) {
       *ss << *(uint64*)values;
@@ -254,14 +261,14 @@ bool g_variables(std::stringstream* ss, const Program& prog) {
 }
 
 void indent(char* indentStr) {
-  int len = strlen(indentStr);
+  size_t len = strlen(indentStr);
   indentStr[len] = ' ';
   indentStr[len + 1] = ' ';
 }
 
 
 void unindent(char* indentStr) {
-  int len = strlen(indentStr);
+  size_t len = strlen(indentStr);
   indentStr[len - 2] = 0;
 }
 
@@ -273,11 +280,14 @@ bool g_block(std::stringstream* ops, std::stringstream* variableDefinitions, con
   }
 
   for (auto op : block.Ops) {
-    *ops << indentStr;
+    if (op.Op != Op::OpVariable) {
+      *ops << indentStr;
+    }
+
     switch (op.Op) {
     case Op::OpLabel: {
       SLabel* label = (SLabel*)op.Memory;
-      ids[label->ResultId] = "label_" + std::to_string(label->ResultId);
+      ids[label->ResultId] = "label_" + patch::to_string(label->ResultId);
       *ops << ids[label->ResultId] << ":";
       break;
     }
@@ -294,12 +304,12 @@ bool g_block(std::stringstream* ops, std::stringstream* variableDefinitions, con
     }
     case Op::OpVariable: {
       SVariable* variable = (SVariable*)op.Memory;
-      
+
       *variableDefinitions << "  ";
       g_variable(variableDefinitions, variable, prog);
       auto resultTypeName = ids[variable->ResultTypeId];
-      *variableDefinitions << " = (" << resultTypeName 
-        << ")malloc(sizeof(" << resultTypeName.substr(2, resultTypeName.length() - 2) 
+      *variableDefinitions << " = (" << resultTypeName
+      << ")malloc(sizeof(" << resultTypeName.substr(2, resultTypeName.length() - 2)
         << "));" << std::endl;
       break;
     }
@@ -309,7 +319,7 @@ bool g_block(std::stringstream* ops, std::stringstream* variableDefinitions, con
     }
     case Op::OpLoad: {
       SLoad* load = (SLoad*)op.Memory;
-      ids[load->ResultId] = "var_" + std::to_string(load->ResultId);
+      ids[load->ResultId] = "var_" + patch::to_string(load->ResultId);
       *variableDefinitions << "  " << ids[load->ResultTypeId] << " " << ids[load->ResultId] << ";" << std::endl;
       *ops << ids[load->ResultId] << " = *" << ids[load->PointerId] << ";";
       break;
@@ -321,39 +331,39 @@ bool g_block(std::stringstream* ops, std::stringstream* variableDefinitions, con
     }
     case Op::OpSGreaterThan: {
       SSGreaterThan* greaterThan = (SSGreaterThan*)op.Memory;
-      ids[greaterThan->ResultId] = "var_" + std::to_string(greaterThan->ResultId);
+      ids[greaterThan->ResultId] = "var_" + patch::to_string(greaterThan->ResultId);
       *variableDefinitions << "  bool " << ids[greaterThan->ResultId] << ";" << std::endl;
       *ops << ids[greaterThan->ResultId] << " = " << ids[greaterThan->Operand1Id] << " > " << ids[greaterThan->Operand2Id] << ";";
       break;
     }
     case Op::OpSLessThan: {
       SSLessThan* lessThan = (SSLessThan*)op.Memory;
-      ids[lessThan->ResultId] = "var_" + std::to_string(lessThan->ResultId);
+      ids[lessThan->ResultId] = "var_" + patch::to_string(lessThan->ResultId);
       *variableDefinitions << "  bool " << ids[lessThan->ResultId] << ";" << std::endl;
       *ops << ids[lessThan->ResultId] << " = " << ids[lessThan->Operand1Id] << " < " << ids[lessThan->Operand2Id] << ";";
       break;
     }
-    case Op::OpFAdd: 
+      case Op::OpFAdd:
     case Op::OpIAdd: {
       SFAdd* fadd = (SFAdd*)op.Memory;
-      ids[fadd->ResultId] = "var_" + std::to_string(fadd->ResultId);
+      ids[fadd->ResultId] = "var_" + patch::to_string(fadd->ResultId);
       *variableDefinitions << "  " << ids[fadd->ResultTypeId] << " " << ids[fadd->ResultId] << ";" << std::endl;
       *ops << ids[fadd->ResultId] << " = " << ids[fadd->Operand1Id] << " + " << ids[fadd->Operand2Id] << ";";
       break;
     }
     case Op::OpCompositeExtract: {
       SCompositeExtract* ce = (SCompositeExtract*)op.Memory;
-      ids[ce->ResultId] = "var_" + std::to_string(ce->ResultId);
+      ids[ce->ResultId] = "var_" + patch::to_string(ce->ResultId);
       *variableDefinitions << "  " << ids[ce->ResultTypeId] << " " << ids[ce->ResultId] << ";" << std::endl;
       *ops << ids[ce->ResultId] << " = " << ids[ce->CompositeId] << ".v[" << ce->Indexes[0] << "];";
       break;
     }
     case Op::OpCompositeConstruct: {
       SCompositeConstruct* cc = (SCompositeConstruct*)op.Memory;
-      ids[cc->ResultId] = "var_" + std::to_string(cc->ResultId);
+      ids[cc->ResultId] = "var_" + patch::to_string(cc->ResultId);
       *variableDefinitions << "  " << ids[cc->ResultTypeId] << " " << ids[cc->ResultId] << ";" << std::endl;
       *ops << ids[cc->ResultId] << " = {";
-      for (int i = 0; i < cc->ConstituentsIdsCount; i++) {
+      for (size_t i = 0; i < cc->ConstituentsIdsCount; i++) {
         *ops << ids[cc->ConstituentsIds[i]];
         if (i < cc->ConstituentsIdsCount - 1) {
           *ops << ", ";
@@ -367,7 +377,10 @@ bool g_block(std::stringstream* ops, std::stringstream* variableDefinitions, con
       break;
     }
     }
-    *ops << std::endl;
+
+    if (op.Op != Op::OpVariable) {
+      *ops << std::endl;
+    }
   }
 
   for (auto child : block.Children) {

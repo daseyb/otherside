@@ -38,7 +38,7 @@ public:
   virtual bool Setup() abstract;
   virtual bool Run() abstract;
   virtual bool SetVariable(std::string name, void * value) abstract;
-  virtual void * ReadVariable(std::string name) const abstract;
+  virtual void* ReadVariable(std::string name) const abstract;
   virtual Value VmInit(uint32 typeId, void * val) abstract;
 
   template<typename Func, typename Arg, typename ...Args>
@@ -49,7 +49,7 @@ public:
   virtual Value IndexMemberValue(uint32 typeId, byte * val, uint32 index) const abstract;
 
   virtual uint32 GetTypeByteSize(uint32 typeId) const abstract;
-  virtual byte * GetPointerInComposite(uint32 typeId, byte * composite, uint32 indexCount, uint32 * indices, uint32 currLevel) const abstract;
+  virtual byte* GetPointerInComposite(uint32 typeId, byte * composite, uint32 indexCount, uint32 * indices, uint32 currLevel) const abstract;
   virtual SOp GetType(uint32 typeId) const abstract;
   virtual bool IsVectorType(uint32 typeId) const abstract;
   virtual uint32 ElementCount(uint32 typeId) const abstract;

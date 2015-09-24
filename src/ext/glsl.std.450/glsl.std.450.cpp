@@ -33,75 +33,75 @@ extern "C" {
 
   EXT_INST_FUNC(round_ext) {
     ONE_ARG_OP_F(roundf);
-  };
+  }
 
   EXT_INST_FUNC(roundEven_ext) {
     return values[0];
-  };
+  }
 
   EXT_INST_FUNC(trunc_ext) {
     ONE_ARG_OP_F(trunc);
-  };
+  }
 
   EXT_INST_FUNC(fabs_ext) {
     ONE_ARG_OP_F(fabsf);
-  };
+  }
 
   EXT_INST_FUNC(sabs_ext) {
     ONE_ARG_OP_S([](int s) { return s < 0 ? -s : s; });
-  };
+  }
 
   EXT_INST_FUNC(fsign_ext) {
     ONE_ARG_OP_F([](float f) { return signbit(f) ? 0 : 1;})
-  };
+  }
 
   EXT_INST_FUNC(ssign_ext) {
     ONE_ARG_OP_S([](int s) { return s < 0 ? 0 : 1;})
-  };
+  }
 
   EXT_INST_FUNC(floor_ext) {
     ONE_ARG_OP_F(floorf);
-  };
+  }
 
   EXT_INST_FUNC(ceil_ext) {
     ONE_ARG_OP_F(ceilf);
-  };
+  }
 
   EXT_INST_FUNC(fract_ext) {
     return values[0];
-  };
+  }
 
   EXT_INST_FUNC(radians_ext) {
     return values[0];
-  };
+  }
 
   EXT_INST_FUNC(degrees_ext) {
     return values[0];
-  };
+  }
 
   EXT_INST_FUNC(sin_ext) {
     ONE_ARG_OP_F(sinf);
-  };
+  }
 
   EXT_INST_FUNC(cos_ext) {
     ONE_ARG_OP_F(cosf);
-  };
+  }
 
   EXT_INST_FUNC(tan_ext) {
     ONE_ARG_OP_F(tanf);
-  };
+  }
 
   EXT_INST_FUNC(asin_ext) {
     ONE_ARG_OP_F(asinf);
-  };
+  }
 
   EXT_INST_FUNC(acos_ext) {
     ONE_ARG_OP_F(acosf);
-  };
+  }
 
   EXT_INST_FUNC(atan_ext) {
     ONE_ARG_OP_F(atanf);
-  };
+  }
 
   EXT_INST_FUNC(sinh_ext) {
     ONE_ARG_OP_F(sinhf);
@@ -209,7 +209,7 @@ extern "C" {
 
     uint32 elCount = vm->ElementCount(a.TypeId);
     float sum = 0;
-    for (int i = 0; i < elCount; i++) {
+    for (size_t i = 0; i < elCount; i++) {
       float val = *(float*)vm->IndexMemberValue(a, i).Memory;
       sum += val * val;
     }
@@ -245,98 +245,98 @@ extern "C" {
 
 
   ExtInstFunc* exports[]{
-    nullptr,
-    
-    round_ext,
-    roundEven_ext,
-    trunc_ext,
-    fabs_ext,
-    sabs_ext,
-    fsign_ext,
-    ssign_ext,
-    floor_ext,
-    ceil_ext,
-    fract_ext,
+      nullptr,
 
-    radians_ext,
-    degrees_ext,
-    sin_ext,
-    cos_ext,
-    tan_ext,
-    asin_ext,
-    acos_ext,
-    atan_ext,
-    sinh_ext,
-    cosh_ext,
-    tanh_ext,
-    asinh_ext,
-    acosh_ext,
-    atanh_ext,
-    atan2_ext,
+      round_ext,
+      roundEven_ext,
+      trunc_ext,
+      fabs_ext,
+      sabs_ext,
+      fsign_ext,
+      ssign_ext,
+      floor_ext,
+      ceil_ext,
+      fract_ext,
 
-    pow_ext,
-    exp_ext,
-    log_ext,
-    exp2_ext,
-    log2_ext,
-    sqrt_ext,
-    inverseSqrt_ext,
+      radians_ext,
+      degrees_ext,
+      sin_ext,
+      cos_ext,
+      tan_ext,
+      asin_ext,
+      acos_ext,
+      atan_ext,
+      sinh_ext,
+      cosh_ext,
+      tanh_ext,
+      asinh_ext,
+      acosh_ext,
+      atanh_ext,
+      atan2_ext,
 
-    determinant_ext,
-    matrixInverse_ext,
+      pow_ext,
+      exp_ext,
+      log_ext,
+      exp2_ext,
+      log2_ext,
+      sqrt_ext,
+      inverseSqrt_ext,
 
-    modf_ext,            // second argument needs the OpVariable_ext, not an OpLoad
-    modf_struct_ext,
-    fmin_ext,
-    umin_ext,
-    smin_ext,
-    fmax_ext,
-    umax_ext,
-    smax_ext,
-    fclamp_ext,
-    uclamp_ext,
-    sclamp_ext,
-    mix_ext,
-    step_ext,
-    smoothStep_ext,
+      determinant_ext,
+      matrixInverse_ext,
 
-    fma_ext,
-    frexp_ext,
-    frexp_struct_ext,
-    ldexp_ext,
+      modf_ext,            // second argument needs the OpVariable_ext, not an OpLoad
+      modf_struct_ext,
+      fmin_ext,
+      umin_ext,
+      smin_ext,
+      fmax_ext,
+      umax_ext,
+      smax_ext,
+      fclamp_ext,
+      uclamp_ext,
+      sclamp_ext,
+      mix_ext,
+      step_ext,
+      smoothStep_ext,
 
-    packSnorm4x8_ext,
-    packUnorm4x8_ext,
-    packSnorm2x16_ext,
-    packUnorm2x16_ext,
-    packHalf2x16_ext,
-    packDouble2x32_ext,
-    unpackSnorm2x16_ext,
-    unpackUnorm2x16_ext,
-    unpackHalf2x16_ext,
-    unpackSnorm4x8_ext,
-    unpackUnorm4x8_ext,
-    unpackDouble2x32_ext,
+      fma_ext,
+      frexp_ext,
+      frexp_struct_ext,
+      ldexp_ext,
 
-    length_ext,
-    distance_ext,
-    cross_ext,
-    normalize_ext,
-    faceForward_ext,
-    reflect_ext,
-    refract_ext,
+      packSnorm4x8_ext,
+      packUnorm4x8_ext,
+      packSnorm2x16_ext,
+      packUnorm2x16_ext,
+      packHalf2x16_ext,
+      packDouble2x32_ext,
+      unpackSnorm2x16_ext,
+      unpackUnorm2x16_ext,
+      unpackHalf2x16_ext,
+      unpackSnorm4x8_ext,
+      unpackUnorm4x8_ext,
+      unpackDouble2x32_ext,
 
-    findILSB_ext,
-    findSMSB_ext,
-    findUMSB_ext,
+      length_ext,
+      distance_ext,
+      cross_ext,
+      normalize_ext,
+      faceForward_ext,
+      reflect_ext,
+      refract_ext,
 
-    interpolateAtCentroid_ext,
-    interpolateAtSample_ext,
-    interpolateAtOffset_ext,
+      findILSB_ext,
+      findSMSB_ext,
+      findUMSB_ext,
 
-    addCarry_ext,
-    subBorrow_ext,
-    mulExtended_ext,
+      interpolateAtCentroid_ext,
+      interpolateAtSample_ext,
+      interpolateAtOffset_ext,
+
+      addCarry_ext,
+      subBorrow_ext,
+      mulExtended_ext,
   };
 
   EXT_EXPORT_TABLE_FUNC(exports)

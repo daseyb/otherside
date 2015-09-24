@@ -12,7 +12,7 @@ private:
   Environment& env;
   Function* currentFunction;
   std::map<uint32, uint32> TypeByteSizes;
-  std::vector<std::unique_ptr<byte>> VmMemory;
+    std::vector<std::unique_ptr<byte[]>> VmMemory;
 
   byte* VmAlloc(uint32 typeId) override;
   
@@ -33,6 +33,8 @@ public:
 
   virtual bool Setup() override;
   virtual bool Run() override;
+
+    void Compile();
   bool SetVariable(std::string name, void * value) override;
   void * ReadVariable(std::string name) const override;
   Value VmInit(uint32 typeId, void * val) override;

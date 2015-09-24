@@ -4,6 +4,7 @@
 #include <stack>
 #include <string>
 #include <assert.h>
+#include <memory>
 
 #include "types.h"
 #include "lookups.h"
@@ -21,7 +22,6 @@ struct Block {
   std::vector<SOp> Ops;
   std::vector<uint32> Children;
 };
-
 
 struct Function {
   SFunction Info;
@@ -70,7 +70,7 @@ struct Program {
 
 struct ParseProgram : public Program {
   SOp NextOp;
-  ParseFunction* CurrentFunction;
+  std::unique_ptr<ParseFunction> CurrentFunction;
   bool InFunction = false;
 };
 
@@ -145,7 +145,7 @@ static void endBlock(ParseProgram* prog, SOp branchInfo) {
 static void startFunction(ParseProgram* prog, const SFunction& func) {
   assert(!prog->InFunction);
 
-  prog->CurrentFunction = new ParseFunction();
+  prog->CurrentFunction.reset(new ParseFunction());
   prog->CurrentFunction->Info = func;
   prog->InFunction = true;
   prog->CurrentFunction->Blocks.insert(std::pair<uint32, Block>(0, Block()));

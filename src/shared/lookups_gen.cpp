@@ -1,6 +1,8 @@
 #include "lookups_gen.h"
 #include "parser_definitions.h"
 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 
 void HandleNop(void* op, ParseProgram* prog) {
   SNop* opNop = (SNop*)op;

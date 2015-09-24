@@ -1,8 +1,6 @@
 ﻿#include <fstream>
-#include <assert.h>
 #include <iostream>
 #include <sstream>
-#include <string>
 #include "types.h"
 
 #include "parser_definitions.h" 
@@ -13,12 +11,6 @@
 #include "utils.h"
 
 std::string USAGE = "-i <input file> -o <outputFile>";
-
-struct TestArgs {
-  const char* ShaderFile;
-  const char* CppFile;
-  std::map<std::string, void*> inputValues;
-};
 
 struct CmdArgs {
   const char* InputFile;
@@ -88,11 +80,13 @@ int main(int argc, const char** argv) {
 
   Texture inTex = load_tex("data/testin.bmp");
 
-  Sampler* sampler = new Sampler{ 2, (uint32*)&inTex, inTex.data, FilterMode::FMPoint, WrapMode::WMRepeat };
-  Vec2* texSize = new Vec2{ (float)inTex.width, (float)inTex.height};
-  Light* light = new Light{ {1, 0, 0, 1}, {0.5f, 0.5f} };
-  Color* fragColor = new Color{ 0, 0, 0, 0 };
-  Vec2* uv = new Vec2{ 1.0f, 1.0f };
+  Sampler sampler{2, (uint32 *) &inTex, inTex.data, FilterMode::FMPoint, WrapMode::WMRepeat};
+  Vec2 texSize{(float) inTex.width, (float) inTex.height};
+  Light light{{1,    0, 0, 1},
+              {0.5f, 0.5f}};
+  Color fragColor{0, 0, 0, 0};
+  Vec2 uv{1.0f, 1.0f};
+
 
   bool allVariablesSet = true;
   allVariablesSet &= vm.SetVariable("uv", &uv);
@@ -110,8 +104,8 @@ int main(int argc, const char** argv) {
 
   for (int x = 0; x < outTex.width; x++) {
     for (int y = 0; y < outTex.height; y++) {
-      uv->x = float(x) / outTex.width;
-      uv->y = float(y) / outTex.height;
+      uv.x = float(x) / outTex.width;
+      uv.y = float(y) / outTex.height;
 
       if (!vm.Run()) {
         std::cout << "Program failed to run.";

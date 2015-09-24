@@ -1,7 +1,5 @@
 #include "interpreted_vm.h"
 #include "parser.h"
-#include <cstring>
-#include <iostream>
 #include <algorithm>
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__)  // note the underscore: without it, it's not msdn official!
@@ -33,8 +31,8 @@
 byte* InterpretedVM::VmAlloc(uint32 typeId) {
   uint32 compositeSize = GetTypeByteSize(typeId);
   byte* mem = (byte*)malloc(compositeSize);
-  VmMemory.push_back(std::unique_ptr<byte>(mem));
-  return (byte*)mem;
+  VmMemory.push_back(std::unique_ptr<byte[]>(mem));
+  return mem;
 }
 
 Value InterpretedVM::IndexMemberValue(Value val, uint32 index) const {
@@ -186,7 +184,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       }
       uint32 resultId = Execute(&toCall);
       // This works since (uint32)-1 is never a valid ID.
-      if (resultId == -1) {
+      if (resultId == (uint32) -1) {
         return -1;
       }
       currentFunction = func;
@@ -195,13 +193,13 @@ uint32 InterpretedVM::Execute(Function* func) {
     }
     case Op::OpExtInst: {
       auto extInst = (SExtInst*)op.Memory;
-      Value* ops = new Value[extInst->OperandIdsCount];
+      std::unique_ptr<Value[]> ops(new Value[extInst->OperandIdsCount]);
       for (uint32 i = 0; i < extInst->OperandIdsCount; i++) {
         ops[i] = Dereference(env.Values.at(extInst->OperandIds[i]));
       }
 
       ExtInstFunc* extFunc = env.Extensions[extInst->SetId][extInst->Instruction];
-      env.Values[extInst->ResultId] = extFunc(this, extInst->ResultTypeId, extInst->OperandIdsCount, ops);
+      env.Values[extInst->ResultId] = extFunc(this, extInst->ResultTypeId, extInst->OperandIdsCount, ops.get());
       break;
     }
     case Op::OpConvertSToF: {
@@ -315,13 +313,12 @@ uint32 InterpretedVM::Execute(Function* func) {
       auto access = (SAccessChain*)op.Memory;
       auto val = Dereference(env.Values.at(access->BaseId));
 
-      uint32* indices = new uint32[access->IndexesIdsCount];
-      for (int i = 0; i < access->IndexesIdsCount; i++) {
+      std::unique_ptr<uint32[]> indices(new uint32[access->IndexesIdsCount]);
+      for (size_t i = 0; i < access->IndexesIdsCount; i++) {
         indices[i] = *(uint32*)Dereference(env.Values[access->IndexesIds[i]]).Memory;
       }
 
-      byte* mem = GetPointerInComposite(val.TypeId, val.Memory, access->IndexesIdsCount, indices);
-      delete indices;
+      byte *mem = GetPointerInComposite(val.TypeId, val.Memory, access->IndexesIdsCount, indices.get());
 
       Value res = VmInit(access->ResultTypeId, &mem);
       env.Values[access->ResultId] = res;
@@ -375,7 +372,7 @@ uint32 InterpretedVM::Execute(Function* func) {
       Value val = { construct->ResultTypeId, VmAlloc(construct->ResultTypeId) };
       env.Values[construct->ResultId] = val;
       byte* memPtr = val.Memory;
-      for (int i = 0; i < construct->ConstituentsIdsCount; i++) {
+      for (size_t i = 0; i < construct->ConstituentsIdsCount; i++) {
         auto memVal = env.Values[construct->ConstituentsIds[i]];
         uint32 memSize = GetTypeByteSize(memVal.TypeId);
         std::memcpy(memPtr, memVal.Memory, memSize);
@@ -455,7 +452,7 @@ bool InterpretedVM::SetVariable(uint32 id, void* value) {
 bool InterpretedVM::SetVariable(std::string name, void* value) {
   for (auto& nameOp : prog.Names) {
     if (nameOp.second.Name == name) {
-      return SetVariable(nameOp.second.TargetId, value);
+      return SetVariable(nameOp.second.TargetId, &value);
     }
   }
   return false;
@@ -533,7 +530,7 @@ bool InterpretedVM::InitializeConstants() {
       Value val = { constant->ResultTypeId, VmAlloc(constant->ResultTypeId) };
       env.Values[constant->ResultId] = val;
       byte* memPtr = val.Memory;
-      for (int i = 0; i < constant->ConstituentsIdsCount; i++) {
+      for (size_t i = 0; i < constant->ConstituentsIdsCount; i++) {
         auto memVal = env.Values[constant->ConstituentsIds[i]];
         uint32 memSize = GetTypeByteSize(memVal.TypeId);
         std::memcpy(memPtr, memVal.Memory, memSize);
@@ -598,6 +595,10 @@ bool InterpretedVM::Setup() {
     }
 
     return true;
+}
+
+void InterpretedVM::Compile() {
+
 }
 
 bool InterpretedVM::Run() {

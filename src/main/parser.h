@@ -11,7 +11,7 @@ struct SOp;
 
 class Parser {
 private:
-  std::unique_ptr<uint32> bufferStart;
+    std::unique_ptr<uint32[]> bufferStart;
   uint32* buffer;
   int length;
   int index;
@@ -25,10 +25,9 @@ private:
   SOp readInstruction();
 
 public:
-  Parser(int length) {
+    Parser(int length) : bufferStart(new uint32[length]) {
     this->index = 0;
     this->length = length;
-    this->bufferStart = std::unique_ptr<uint32>(new uint32[length]);
     this->buffer = bufferStart.get();
   }
 
@@ -47,14 +46,12 @@ public:
     assert(size % 4 == 0);
 
     this->length = size / 4;
-    this->bufferStart = std::unique_ptr<uint32>(new uint32[length]);
+    this->bufferStart.reset(new uint32[length]);
     this->buffer = bufferStart.get();
 
     if (!inputFile.read((char*)GetBufferPtr(), size)) {
       std::cout << "Could not read file." << std::endl;
     }
-    
-    inputFile.close();
   }
 
   bool Parse(Program *prog);
