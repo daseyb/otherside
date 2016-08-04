@@ -1,7 +1,7 @@
 # otherside
 
-[![Join the chat at https://gitter.im/bonus2113/otherside](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bonus2113/otherside?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/bonus2113/otherside.svg?branch=master)](https://travis-ci.org/bonus2113/otherside)
+[![Join the chat at https://gitter.im/bonus2113/otherside](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/daseyb/otherside?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/bonus2113/otherside.svg?branch=master)](https://travis-ci.org/daseyb/otherside)
 
 A VM running SPIR-V code on the CPU
 
