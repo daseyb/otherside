@@ -11,7 +11,7 @@ install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.6 40 --slave /usr/bin/g++ g++ /usr/bin/g++-4.6
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
   - echo 2 | sudo update-alternatives --config gcc
-  - wget http://www.cmake.org/files/v3.3/cmake-3.3.0-Linux-x86_64.tar.gz
+  - wget http://www.cmake.org/files/v3.3/cmake-3.3.0-Linux-x86_64.tar.gz --no-check-certificate
   - tar -xzf cmake-3.3.0-Linux-x86_64.tar.gz
   - sudo cp -fR cmake-3.3.0-Linux-x86_64/* /usr
   - rm -rf cmake-3.3.0-Linux-x86_64
